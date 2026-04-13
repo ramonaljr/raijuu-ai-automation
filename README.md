@@ -45,6 +45,15 @@ Populate `.env.local` with real values:
 - The four `NEXT_PUBLIC_CLERK_*_URL` lines can stay at their defaults.
 - `DATABASE_URL_CI` is optional; point it at a separate Neon branch when you want isolated CI runs.
 
+### Phase 1 demo env vars (all optional in dev)
+
+The `/demo` gated funnel integrates three external services. **All three are optional at dev time** — the form submits fine without any of them (Turnstile/Resend short-circuit, Cal.com CTA renders a "not configured" notice).
+
+- **`NEXT_PUBLIC_CAL_USERNAME`** — Your [Cal.com](https://cal.com) public username (e.g. `jane-doe`). Used by the "Book a call" CTA on the demo result screen.
+- **`RESEND_API_KEY`** + **`RESEND_FROM`** + **`RESEND_ADMIN_EMAIL`** — Sign up at [Resend](https://resend.com) (3k free emails/mo). `RESEND_FROM` must be a verified sending domain — for testing, `onboarding@resend.dev` works out of the box. `RESEND_ADMIN_EMAIL` is where admin notifications land on each demo submission.
+- **`NEXT_PUBLIC_TURNSTILE_SITE_KEY`** + **`TURNSTILE_SECRET_KEY`** — Get from [Cloudflare Turnstile](https://dash.cloudflare.com/?to=/:account/turnstile) (unlimited free). When both are set, the demo form renders the Turnstile widget and the server action verifies the token before writing a lead.
+- **`IP_HASH_SALT`** — Any stable random string. Used to hash submitter IPs for rate-limit tracking (we never store raw IPs). Set to a fresh value in prod; the default fallback is fine for local dev.
+
 ### Apply the database schema
 
 ```bash
