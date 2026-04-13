@@ -1,0 +1,22 @@
+{
+  "industry": "agency",
+  "displayName": "Agency",
+  "cards": [
+    {
+      "title": "Timesheet → Invoice Pipeline",
+      "body": "Harvest or Toggl entries flow into a weekly review queue, get matched to the right client + project + rate, and generate draft invoices in QuickBooks or Xero on your billing day. Partners review the diff, not the raw data. For {{situationDetail}}, we'd add a 'non-billable sanity check' step so the ops lead catches the quiet 8 hours nobody tagged.",
+      "metric": "Billing cycle from 2 days to ~90 minutes"
+    },
+    {
+      "title": "Client Reporting Auto-Generation",
+      "body": "Monthly client reports pull from GA4, Meta, LinkedIn Ads, and the project's Notion log into a branded template, with a one-paragraph commentary draft generated from the deltas. The account lead edits tone and hits send — no more Sunday-night report scramble.",
+      "metric": "~6 hours/account/month saved; reports go out on time"
+    },
+    {
+      "title": "Lead Qualification",
+      "body": "Inbound form submissions get enriched (Clearbit-style), scored against your ICP, and either booked straight into Calendly or routed to a human for a judgment call. Low-fit leads get a polite decline template instead of ghosting, which protects your referral reputation.",
+      "metric": "~2× qualified-meeting rate; no more ghosted leads"
+    }
+  ],
+  "ctaLine": "Typical build is 2–3 weeks for an agency of 10–40. Book a call — bring one painful internal workflow and we'll scope it live."
+}
