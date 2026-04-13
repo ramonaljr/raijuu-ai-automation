@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX "runs_n8n_execution_id_uniq" ON "runs" USING btree ("n8n_execution_id");

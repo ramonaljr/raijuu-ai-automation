@@ -130,6 +130,9 @@ export const runs = pgTable(
   (t) => ({
     automationIdIdx: index('runs_automation_id_idx').on(t.automationId),
     startedAtIdx: index('runs_started_at_idx').on(t.startedAt),
+    n8nExecutionIdUniq: uniqueIndex('runs_n8n_execution_id_uniq').on(
+      t.n8nExecutionId,
+    ),
   }),
 );
 
