@@ -107,7 +107,15 @@ app/                         Next.js App Router
   sign-up/[[...sign-up]]/    Clerk sign-up catch-all
   app/                       Client portal (role: client | admin)
   admin/                     Ops console (role: admin)
-  demo/                      Gated demo (Phase 1, TBD)
+  demo/                      Gated demo (Phase 1)
+  onboard/[engagementId]/    Magic-link intake flow (Phase 2)
+
+  admin/_components/         Shared admin table primitives (Phase 3)
+  admin/leads/               Leads table + convert-to-client (Phase 3)
+  admin/clients/             Engagements list + detail (Phase 3)
+  admin/clients/[id]/        Engagement detail with joined lead/intake
+  admin/automations/         Automations list (empty until Phase 4)
+  admin/intake/              Intake submissions list + detail (Phase 3)
 
 components/                  Shared UI (existing marketing components)
 lib/
@@ -118,8 +126,10 @@ lib/
   auth/
     roles.ts                 getRole() — maps publicMetadata to Role
     roles.test.ts
+  admin/                     Server-side query helpers per admin surface
+  intake/                    Magic-link helpers + intake schemas (Phase 2)
+  demo/                      Demo content + submission helpers (Phase 1)
 tests/e2e/                   Playwright specs
-proxy.ts                     Clerk auth + role-based route protection
 drizzle.config.ts            Drizzle Kit config
 docs/plans/                  Design + implementation plans
 ```
