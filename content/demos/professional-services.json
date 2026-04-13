@@ -1,0 +1,22 @@
+{
+  "industry": "professional-services",
+  "displayName": "Professional Services",
+  "cards": [
+    {
+      "title": "Proposal Generation",
+      "body": "Discovery call notes (Fathom, Fireflies, or a shared doc) get turned into a scoped proposal draft — matched against your last 20 signed SOWs for pricing and phrasing — ready for the partner to edit in 15 minutes instead of rebuilding from scratch. For {{situationDetail}}, we'd index your won-deal corpus so the drafts sound like your firm, not a generic template.",
+      "metric": "Proposal turnaround from 3–5 days to same-day"
+    },
+    {
+      "title": "Client Onboarding Packet",
+      "body": "Signed engagement letter triggers a packet build: shared drive provisioned, intake forms dispatched via DocuSign, kickoff scheduled in Calendly, welcome email personalized to the engagement type. The client's first 48 hours feel deliberate instead of chaotic.",
+      "metric": "Onboarding admin from ~4 hours to 20 min per client"
+    },
+    {
+      "title": "Billable-Time Capture",
+      "body": "Calendar events, Gmail threads, and Slack DMs with client contacts get suggested as billable entries in a nightly review queue. The partner approves, edits, or rejects — no more reconstructing last Thursday from memory on billing day. Writes straight into Clio, MyCase, or your PM system of choice.",
+      "metric": "~15% recovered billable hours most firms were silently leaking"
+    }
+  ],
+  "ctaLine": "Typical build is 3–4 weeks for a firm of 5–25 professionals. Book a call — we'll pick the workflow with the highest recovered-revenue math and scope it on-screen."
+}

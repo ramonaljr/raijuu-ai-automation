@@ -1,0 +1,22 @@
+{
+  "industry": "saas",
+  "displayName": "SaaS",
+  "cards": [
+    {
+      "title": "Churn Signal Detection",
+      "body": "Combine product usage drops, support ticket sentiment, and invoice payment delays into a single at-risk score, refreshed nightly. Accounts crossing the threshold land in a #cs-at-risk Slack channel with the trigger explained in plain English and a recommended next play.",
+      "metric": "CS teams catch 60–70% of churn 30+ days earlier"
+    },
+    {
+      "title": "Support Ticket Routing",
+      "body": "Intercom and Zendesk tickets get classified by topic, urgency, and plan tier, then routed to the right on-call engineer or CS rep with a draft reply grounded in your docs. For {{situationDetail}}, we'd train the router on your last 3 months of tickets so it mirrors how your lead actually triages.",
+      "metric": "~50% drop in mis-routed tickets; p50 response <15 min"
+    },
+    {
+      "title": "Onboarding Nudges",
+      "body": "New accounts get a behavior-driven nudge sequence — Slack DM from the CSM if they're a top-tier account, templated email otherwise — tied to activation milestones in your product. Stuck users get a real human ping; on-track users are left alone.",
+      "metric": "~20% lift in week-1 activation; fewer CSM babysitting hours"
+    }
+  ],
+  "ctaLine": "Typical build is 2–3 weeks for a SaaS team of 5–20. Book a call — we'll map your activation funnel on-screen and point at the three cheapest wins."
+}

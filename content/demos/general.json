@@ -1,0 +1,22 @@
+{
+  "industry": "general",
+  "displayName": "General Operations",
+  "cards": [
+    {
+      "title": "Inbox Triage Pipeline",
+      "body": "Route incoming Gmail threads by intent — sales, support, vendor, noise — using a classifier with a short custom prompt tuned to your team's voice. High-signal threads get auto-labeled and pushed into Slack with a one-line summary; low-signal gets archived. For {{situationDetail}}, we'd wire the classifier to respect your existing label taxonomy so nothing retrains your muscle memory.",
+      "metric": "~6 hours/week saved per operator"
+    },
+    {
+      "title": "Cross-Tool Data Sync",
+      "body": "Keep HubSpot, Airtable, and your finance system in agreement without anyone copy-pasting. A scheduled job reconciles records every 15 minutes, flags conflicts to a #ops-sync Slack channel, and writes an audit row to a Postgres log so you can prove what changed and when.",
+      "metric": "Eliminates ~90% of manual reconciliation"
+    },
+    {
+      "title": "Monthly Reporting Pipeline",
+      "body": "Pull numbers from Stripe, Google Analytics, and your CRM into a templated Notion doc on the first of each month — same sections, same charts, same commentary slots waiting for your take. No more 'who owns the Monday report' thread at 8pm the night before.",
+      "metric": "Reports shipped in 20 min vs. half a day"
+    }
+  ],
+  "ctaLine": "Typical build is 2–3 weeks for an ops team of 5–20. Book a scoping call and we'll tell you within 30 minutes whether this is worth doing."
+}

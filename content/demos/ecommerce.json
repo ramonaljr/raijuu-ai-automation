@@ -1,0 +1,22 @@
+{
+  "industry": "ecommerce",
+  "displayName": "Ecommerce",
+  "cards": [
+    {
+      "title": "Abandoned Cart Recovery",
+      "body": "Three-touch recovery across email and SMS, timed off Shopify checkout events, with copy that references the actual product left behind — not a generic 'you forgot something'. For {{situationDetail}}, we'd segment the flow by cart value so a $40 cart doesn't get the same discount ladder as a $400 one.",
+      "metric": "~15–20% cart recovery, often $4k–$12k/mo recovered"
+    },
+    {
+      "title": "Daily Shopify ↔ Airtable Inventory Sync",
+      "body": "Stock levels, SKU metadata, and supplier lead times stay in sync across Shopify, your 3PL, and the Airtable ops board the team actually uses. Low-stock thresholds fire a Slack alert with a pre-filled reorder draft so purchasing takes 30 seconds instead of an afternoon.",
+      "metric": "~8 hours/week back for ops; near-zero oversold SKUs"
+    },
+    {
+      "title": "Customer Service Triage",
+      "body": "Zendesk and Gorgias tickets get auto-classified — order status, return, product question, fraud — and the first two categories get drafted replies from order data before a human even opens the ticket. Agents approve or edit; complex cases route straight to senior staff.",
+      "metric": "Median first-reply time from 4h to 20 min"
+    }
+  ],
+  "ctaLine": "Typical build is 2–4 weeks for a DTC brand doing $1M–$20M/yr. Book a call — bring your Shopify metrics and we'll estimate recovery $ in the first 20 minutes."
+}

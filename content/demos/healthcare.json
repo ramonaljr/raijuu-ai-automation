@@ -1,0 +1,22 @@
+{
+  "industry": "healthcare",
+  "displayName": "Healthcare",
+  "cards": [
+    {
+      "title": "Patient Intake Scheduling",
+      "body": "New-patient form submissions — name, insurance carrier, reason for visit at a high level — flow into your scheduler and pre-populate a Calendly-style booking link within minutes. We keep the pipeline clear of PHI: clinical details stay inside your EHR, the automation only touches scheduling metadata.",
+      "metric": "Intake-to-first-appointment time cut by ~40%"
+    },
+    {
+      "title": "Appointment Reminder Sequence",
+      "body": "Two-way SMS reminders at 72h, 24h, and 2h before appointments, with a one-tap reschedule that writes back to your practice management system. For {{situationDetail}}, we'd tune the cadence and language to your no-show patterns — the right reminder schedule for dental is not the right one for behavioral health.",
+      "metric": "No-show rate down from ~18% to ~7%"
+    },
+    {
+      "title": "Insurance Document Routing (Non-PHI)",
+      "body": "Faxed and emailed insurance verification docs get classified by carrier and plan type, then routed to the right billing coordinator's queue — without the automation ever reading clinical notes. Everything is kept inside your BAA-covered infrastructure; we scope out PHI-touching work unless you have a compliance lead driving the build.",
+      "metric": "~5 hours/week back for billing; fewer mis-routed docs"
+    }
+  ],
+  "ctaLine": "Typical build is 3–5 weeks for a 5–30 provider practice. Book a call — we'll talk through what's in-scope vs. what needs a compliance-led engagement before we touch anything PHI-adjacent."
+}

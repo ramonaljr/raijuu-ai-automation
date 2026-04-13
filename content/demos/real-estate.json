@@ -1,0 +1,22 @@
+{
+  "industry": "real-estate",
+  "displayName": "Real Estate",
+  "cards": [
+    {
+      "title": "Lead Scoring & Routing",
+      "body": "Every Zillow, Realtor.com, and site-form lead gets scored on intent signals — timeline, financing, neighborhood specificity — and routed to the right agent in under 60 seconds with a drafted first-touch SMS. For {{situationDetail}}, we'd tune the scoring weights against your last 6 months of closed vs. dead leads so the model reflects what actually converts for your team.",
+      "metric": "3–5× faster first response; ~25% lift in booked showings"
+    },
+    {
+      "title": "MLS ↔ Website Listing Sync",
+      "body": "New listings, price changes, and status flips propagate from MLS to your site, social scheduler, and email drip in one pass — with auto-generated copy variants per channel. No more stale 'available' listings embarrassing you on Instagram two weeks after they closed.",
+      "metric": "Listings live across channels in <10 min vs. 2–3 days"
+    },
+    {
+      "title": "Drip Nurture + Showing Reminders",
+      "body": "Leads who aren't ready today get a 12-touch drip tailored to their stated neighborhood and price band, and anyone with a scheduled showing gets SMS + calendar reminders 24h and 1h out. Re-engagement is triggered automatically when they revisit a listing.",
+      "metric": "~40% of cold leads re-engage within 90 days"
+    }
+  ],
+  "ctaLine": "Typical build is 3–4 weeks for a brokerage of 10–50 agents. Book a call — we'll show you the exact pipeline running on our own test MLS feed."
+}
