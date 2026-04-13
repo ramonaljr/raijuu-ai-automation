@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { submitDemo, type SubmitDemoResult } from './actions';
+import { DemoResult } from './DemoResult';
 import { SUPPORTED_INDUSTRIES, type Industry } from '@/lib/demo/content';
 
 type Step = 'form' | 'analyzing' | 'result' | 'error';
@@ -144,7 +145,3 @@ function DemoError({ error, onRetry }: { error: string; onRetry: () => void }) {
   );
 }
 
-// DemoResult will be filled in Task 7
-function DemoResult(_props: { industry: string; situationText: string }) {
-  return <div>result placeholder</div>;
-}
