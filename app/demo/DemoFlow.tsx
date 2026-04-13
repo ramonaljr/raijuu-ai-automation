@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { submitDemo, type SubmitDemoResult } from './actions';
 import { DemoResult } from './DemoResult';
@@ -8,12 +8,26 @@ import { SUPPORTED_INDUSTRIES, type Industry } from '@/lib/demo/content';
 
 type Step = 'form' | 'analyzing' | 'result' | 'error';
 
+const TURNSTILE_SITE_KEY = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
+
 export function DemoFlow() {
   const [step, setStep] = useState<Step>('form');
   const [email, setEmail] = useState('');
   const [industry, setIndustry] = useState<Industry>('general');
   const [situationText, setSituationText] = useState('');
+  const [turnstileToken, setTurnstileToken] = useState('');
   const [result, setResult] = useState<SubmitDemoResult | null>(null);
+
+  useEffect(() => {
+    if (!TURNSTILE_SITE_KEY) return;
+    (window as unknown as { onTurnstileCallback?: (token: string) => void }).onTurnstileCallback = (
+      token: string,
+    ) => setTurnstileToken(token);
+    return () => {
+      delete (window as unknown as { onTurnstileCallback?: (token: string) => void })
+        .onTurnstileCallback;
+    };
+  }, []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -22,7 +36,7 @@ export function DemoFlow() {
     fd.set('email', email);
     fd.set('industry', industry);
     fd.set('situationText', situationText);
-    // Turnstile token populated later if enabled
+    fd.set('turnstileToken', turnstileToken);
     const r = await submitDemo(fd);
     setResult(r);
     // Artificial delay so the "analyzing" animation always plays for at least 2s
@@ -81,6 +95,20 @@ export function DemoFlow() {
               placeholder="e.g. My team manually pastes Shopify order data into Airtable every day..."
             />
           </label>
+          {TURNSTILE_SITE_KEY && (
+            <>
+              <div
+                className="cf-turnstile"
+                data-sitekey={TURNSTILE_SITE_KEY}
+                data-callback="onTurnstileCallback"
+              />
+              <script
+                src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+                async
+                defer
+              />
+            </>
+          )}
           <button
             type="submit"
             disabled={situationText.length < 10}
