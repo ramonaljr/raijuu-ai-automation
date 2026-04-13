@@ -385,34 +385,57 @@ git commit -m "feat(db): initial migration"
 **Files:**
 - Modify: `app/layout.tsx`
 
+**Before you start:** Per Clerk v7's **current** App Router guide (https://clerk.com/docs/nextjs/getting-started/quickstart):
+- `<ClerkProvider>` goes **inside `<body>`**, not wrapping `<html>`. This is a change from older versions — do not revert to the outer-wrap pattern even if training-data snippets show it.
+- The deprecated components `<SignedIn>` / `<SignedOut>` have been replaced by `<Show when="signed-in">` / `<Show when="signed-out">`. Use `<Show>` exclusively.
+
 **Step 1: Read existing layout** to understand current providers.
 
 Run: `cat app/layout.tsx`
 
-**Step 2: Wrap with ClerkProvider**
+**Step 2: Wrap with ClerkProvider (inside `<body>`)**
 
-In `app/layout.tsx`, import `ClerkProvider` from `@clerk/nextjs` and wrap the `<html>` (or the existing top-level provider). Keep all existing children. Reference: `node_modules/@clerk/nextjs/README.md` if signature differs from training data.
+In `app/layout.tsx`, import from `@clerk/nextjs`. Put `<ClerkProvider>` inside the existing `<body>`, so it wraps the app content but not `<html>`. Keep all existing classes, fonts, R3F dynamic imports — preserve them verbatim.
 
 ```tsx
-import { ClerkProvider } from '@clerk/nextjs';
+import { ClerkProvider, SignInButton, SignUpButton, Show, UserButton } from '@clerk/nextjs';
+// ...existing imports (fonts, globals.css, etc.) preserved...
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <ClerkProvider>
-      <html lang="en">
-        <body>{children}</body>
-      </html>
-    </ClerkProvider>
+    <html lang="en">
+      <body /* preserve existing className / font variables */>
+        <ClerkProvider>
+          {/* Optional header with auth controls — only add if the existing
+              landing page doesn't already have its own nav. If there is
+              existing marketing nav, skip adding this header and just
+              return {children}. */}
+          {children}
+        </ClerkProvider>
+      </body>
+    </html>
   );
 }
 ```
 
-(Adapt to whatever `app/layout.tsx` already does — preserve existing classes, fonts, R3F dynamic imports, etc.)
+If adding the auth header block is desired (defer to the implementer's judgment based on the existing landing layout):
+
+```tsx
+<header>
+  <Show when="signed-out">
+    <SignInButton />
+    <SignUpButton />
+  </Show>
+  <Show when="signed-in">
+    <UserButton />
+  </Show>
+</header>
+```
 
 **Step 3: Verify the dev server starts**
 
 Run: `pnpm dev`
-Expected: server boots on port 3000 with no Clerk-related errors. Visit `/`, see the existing landing page intact.
+Expected: server boots on port 3000 with no Clerk-related errors. Visit `/`, see the existing landing page intact (R3F hero, all sections, Framer Motion).
 
 **Step 4: Commit**
 
@@ -423,13 +446,18 @@ git commit -m "feat(auth): wrap root layout with ClerkProvider"
 
 ---
 
-### Task 7: Add middleware for role-based route protection
+### Task 7: Add proxy for role-based route protection
 
 **Files:**
-- Create: `middleware.ts` (project root)
+- Create: `proxy.ts` (project root — **NOT `middleware.ts`**)
 - Create: `lib/auth/roles.ts`
 
-**Before you start:** Heed the **Clerk v7 gotcha** from the Pre-flight section. Use `clerkMiddleware` (NOT the legacy `authMiddleware`), and **always `await auth()`** — in v7 it returns a Promise. v5/v6 snippets from the web or training data will look correct but silently return a truthy Promise object, bypassing auth checks. Consult Context7 `/clerk/javascript` before writing this middleware.
+**Before you start:** Two **current** conventions per Clerk v7 + Next.js 16 (https://clerk.com/docs/nextjs/getting-started/quickstart):
+- The file is **`proxy.ts`**, not `middleware.ts`. Next.js 16 renamed the mechanism; Clerk v7's quickstart uses `proxy.ts` as the canonical name. Older docs still say `middleware.ts` — do not use that name here.
+- Use `clerkMiddleware` (NOT the legacy `authMiddleware`), and **always `await auth()`** — in v7 it returns a Promise. v5/v6 snippets from the web or training data will look correct but silently return a truthy Promise object, bypassing auth checks.
+- Use the current matcher pattern (file-extension-aware), not the older `.*\\..*` shortcut.
+
+Consult Context7 `/clerk/javascript` if signatures diverge.
 
 **Step 1: Write `lib/auth/roles.ts`** (small role helper)
 
@@ -472,9 +500,9 @@ describe('getRole', () => {
 Run: `pnpm vitest run lib/auth/roles.test.ts`
 Expected: PASS.
 
-**Step 3: Write `middleware.ts`**
+**Step 3: Write `proxy.ts`** (project root)
 
-Reference Clerk's current middleware API (read `node_modules/@clerk/nextjs/dist/types/server/index.d.ts` if signature differs):
+Reference Clerk's current API (read `node_modules/@clerk/nextjs/dist/types/server/index.d.ts` if signature differs). Use the file-extension-aware matcher from Clerk's current quickstart:
 
 ```ts
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server';
@@ -502,7 +530,10 @@ export default clerkMiddleware(async (auth, req) => {
 });
 
 export const config = {
-  matcher: ['/((?!_next|.*\\..*).*)', '/(api|trpc)(.*)'],
+  matcher: [
+    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
+    '/(api|trpc)(.*)',
+  ],
 };
 ```
 
@@ -513,8 +544,8 @@ Run: `pnpm dev`. Visit `/admin` while signed out → expect redirect to `/sign-i
 **Step 5: Commit**
 
 ```bash
-git add middleware.ts lib/auth/roles.ts lib/auth/roles.test.ts
-git commit -m "feat(auth): role-based middleware for /admin and /app"
+git add proxy.ts lib/auth/roles.ts lib/auth/roles.test.ts
+git commit -m "feat(auth): role-based proxy for /admin and /app"
 ```
 
 ---
