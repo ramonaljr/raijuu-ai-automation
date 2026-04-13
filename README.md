@@ -55,6 +55,20 @@ The `/demo` gated funnel integrates three external services. **All three are opt
 - **`IP_HASH_SALT`** — Any stable random string. Used to hash submitter IPs for rate-limit tracking (we never store raw IPs). Set to a fresh value in prod; the default fallback is fine for local dev.
 - **`APP_BASE_URL`** — Set in production to the public origin (e.g. `https://raijuu.ai`) so magic-link onboarding emails point at the right domain. In dev, leave it at `http://localhost:3000` or omit — the API falls back to the request origin (which would otherwise bake Vercel preview URLs into emails).
 
+### Phase 4 portal + cron env vars
+
+- **`N8N_WEBHOOK_SECRET`** — Shared secret for the `/api/n8n/run-callback` webhook. Set it here AND in your n8n HTTP Request node's `Authorization: Bearer <value>` header. If unset, the webhook rejects everything with 401. The unique index on `runs.n8n_execution_id` makes the insert idempotent — n8n's own retries are safe.
+- **`CRON_SECRET`** — Authorizes `/api/cron/aggregate-monthly`. In production, Vercel auto-injects this when the cron defined in `vercel.json` fires (`0 6 1 * *` — 06:00 UTC on the 1st). Locally you can recompute last month with:
+  ```bash
+  curl -H "Authorization: Bearer $CRON_SECRET" \
+    http://localhost:3000/api/cron/aggregate-monthly
+  ```
+  Response: `{ "ok": true, "month": "2026-03", "upserts": <n> }`.
+
+### Engagement claiming (`/app`)
+
+The first time a signed-in client hits `/app`, the layout looks up engagements where `lead.email` matches their Clerk primary email and `clerk_user_id` is null. If exactly one matches, it's atomically claimed. Zero or multiple matches redirect to `/no-engagement` — a dead-end page asking the client to contact you. Fix manually via `pnpm db:studio` (set `engagements.clerk_user_id`) or by ensuring the client signs up with the email recorded in `leads.email`.
+
 ### Apply the database schema
 
 ```bash
@@ -131,6 +145,7 @@ lib/
   demo/                      Demo content + submission helpers (Phase 1)
 tests/e2e/                   Playwright specs
 drizzle.config.ts            Drizzle Kit config
+vercel.json                  Vercel Cron schedule (Phase 4)
 docs/plans/                  Design + implementation plans
 ```
 
