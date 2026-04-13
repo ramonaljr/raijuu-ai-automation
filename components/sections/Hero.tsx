@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, Zap } from "lucide-react";
 import { CLIENT_LOGOS } from "@/lib/constants";
@@ -84,8 +85,8 @@ export default function Hero() {
               Explore Services
               <ArrowRight className="h-4 w-4 transition-transform duration-500 group-hover:translate-x-1" />
             </a>
-            <a
-              href="#CTA-Form"
+            <Link
+              href="/demo"
               className="inline-flex items-center gap-3 rounded-full bg-white/10 px-6 py-3 text-sm font-medium text-white backdrop-blur-sm transition-all duration-500 hover:bg-white/20 active:scale-[0.97]"
             >
               <div className="flex -space-x-2">
@@ -93,7 +94,7 @@ export default function Hero() {
                 <div className="h-7 w-7 rounded-full bg-gradient-to-br from-blue-400 to-cyan-400" />
               </div>
               Work with Us
-            </a>
+            </Link>
           </motion.div>
         </div>
 
