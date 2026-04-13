@@ -53,6 +53,7 @@ The `/demo` gated funnel integrates three external services. **All three are opt
 - **`RESEND_API_KEY`** + **`RESEND_FROM`** + **`RESEND_ADMIN_EMAIL`** — Sign up at [Resend](https://resend.com) (3k free emails/mo). `RESEND_FROM` must be a verified sending domain — for testing, `onboarding@resend.dev` works out of the box. `RESEND_ADMIN_EMAIL` is where admin notifications land on each demo submission.
 - **`NEXT_PUBLIC_TURNSTILE_SITE_KEY`** + **`TURNSTILE_SECRET_KEY`** — Get from [Cloudflare Turnstile](https://dash.cloudflare.com/?to=/:account/turnstile) (unlimited free). When both are set, the demo form renders the Turnstile widget and the server action verifies the token before writing a lead.
 - **`IP_HASH_SALT`** — Any stable random string. Used to hash submitter IPs for rate-limit tracking (we never store raw IPs). Set to a fresh value in prod; the default fallback is fine for local dev.
+- **`APP_BASE_URL`** — Set in production to the public origin (e.g. `https://raijuu.ai`) so magic-link onboarding emails point at the right domain. In dev, leave it at `http://localhost:3000` or omit — the API falls back to the request origin (which would otherwise bake Vercel preview URLs into emails).
 
 ### Apply the database schema
 
