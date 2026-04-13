@@ -12,6 +12,10 @@
 
 **Pre-flight rule (from AGENTS.md):** Next.js 16 has breaking changes from training data. Before writing any Next.js-specific code (middleware, layout, route handlers, server actions), read `node_modules/next/dist/docs/` for the relevant API.
 
+**Known API gotchas in our pinned majors (verified 2026-04-14):**
+- **Clerk v7:** middleware is `clerkMiddleware` (NOT `authMiddleware`). Server-side `auth()` is **async** — always `await auth()`. v5/v6 snippets on the web will look correct but silently return a truthy Promise object, causing auth bypasses. Consult Context7 `/clerk/javascript` before writing auth code.
+- **Zod v4:** `z.record(V)` now requires `z.record(z.string(), V)`. Error formatting moved (`.format()` → `z.treeifyError`). `.strict()`/`.passthrough()` semantics shifted. Consult Context7 `/colinhacks/zod` before writing schemas.
+
 ---
 
 ## Phase 0 Scope
@@ -165,6 +169,8 @@ git commit -m "feat(db): drizzle + neon client setup"
 **Files:**
 - Create: `lib/db/schema.ts`
 - Create: `lib/db/schema.test.ts`
+
+**Before you start:** This task uses Drizzle only (no Zod yet), but when Zod schemas land in later phases, remember the **Zod v4 gotcha** noted in the Pre-flight section: `z.record(V)` requires `z.record(z.string(), V)`, `.format()` → `z.treeifyError`, and `.strict()`/`.passthrough()` semantics shifted. Consult Context7 `/colinhacks/zod` before writing any Zod schema.
 
 **Step 1: Write the failing test first**
 
@@ -422,6 +428,8 @@ git commit -m "feat(auth): wrap root layout with ClerkProvider"
 **Files:**
 - Create: `middleware.ts` (project root)
 - Create: `lib/auth/roles.ts`
+
+**Before you start:** Heed the **Clerk v7 gotcha** from the Pre-flight section. Use `clerkMiddleware` (NOT the legacy `authMiddleware`), and **always `await auth()`** — in v7 it returns a Promise. v5/v6 snippets from the web or training data will look correct but silently return a truthy Promise object, bypassing auth checks. Consult Context7 `/clerk/javascript` before writing this middleware.
 
 **Step 1: Write `lib/auth/roles.ts`** (small role helper)
 
