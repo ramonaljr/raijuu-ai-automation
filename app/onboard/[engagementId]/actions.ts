@@ -29,17 +29,23 @@ export async function submitIntake(formData: FormData): Promise<SubmitIntakeResu
   }
   if (!parsed.success) return { ok: false, error: 'invalid' };
 
+  // Note: neon-http driver doesn't support db.transaction(). Run sequentially.
+  // Worst case on a partial failure is an orphaned intake_submission row with
+  // engagement.status still 'onboarding' — recoverable, and the
+  // verifyMagicLink 'already-submitted' check still gates re-submits because
+  // we flip status only after the insert succeeds.
   try {
-    await db.transaction(async (tx) => {
-      await tx.insert(intakeSubmissions).values({
-        engagementId,
-        toolsJson: { tools: parsed.data.tools, customTools: parsed.data.customTools ?? '' },
-        credentialsVaultRef: parsed.data.credentialsVaultUrl ?? null,
-        goalsText: parsed.data.goals.join('\n\n'),
-        constraintsText: parsed.data.constraints ?? null,
-      });
-      await tx.update(engagements).set({ status: 'active' }).where(eq(engagements.id, engagementId));
+    await db.insert(intakeSubmissions).values({
+      engagementId,
+      toolsJson: { tools: parsed.data.tools, customTools: parsed.data.customTools ?? '' },
+      credentialsVaultRef: parsed.data.credentialsVaultUrl ?? null,
+      goalsText: parsed.data.goals.join('\n\n'),
+      constraintsText: parsed.data.constraints ?? null,
     });
+    await db
+      .update(engagements)
+      .set({ status: 'active' })
+      .where(eq(engagements.id, engagementId));
   } catch (err) {
     console.error('[intake] submit failed', err);
     return { ok: false, error: 'server' };
