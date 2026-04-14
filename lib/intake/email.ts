@@ -1,8 +1,18 @@
+import { outboundEmailDisabled } from '@/lib/email/disabled';
+
 export async function sendMagicLinkEmail(params: {
   to: string;
   companyName: string;
   magicLinkUrl: string;
 }): Promise<void> {
+  if (outboundEmailDisabled()) {
+    console.log(
+      '[intake] outbound disabled, would send magic link to',
+      params.to,
+      params.magicLinkUrl,
+    );
+    return;
+  }
   const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.RESEND_FROM;
   if (!apiKey || !from) {

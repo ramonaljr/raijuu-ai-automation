@@ -1,3 +1,5 @@
+import { outboundEmailDisabled } from '@/lib/email/disabled';
+
 type AdminNotification = {
   email: string;
   industry: string;
@@ -5,6 +7,10 @@ type AdminNotification = {
 };
 
 export async function notifyAdminOfLead(submission: AdminNotification): Promise<void> {
+  if (outboundEmailDisabled()) {
+    console.log('[resend] outbound disabled, would send:', submission.email);
+    return;
+  }
   const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.RESEND_FROM;
   const to = process.env.RESEND_ADMIN_EMAIL;

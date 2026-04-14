@@ -16,5 +16,9 @@ export default defineConfig({
     command: 'pnpm dev',
     url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
+    env: {
+      // Keep e2e runs from hitting Resend — otherwise every run pings the admin inbox.
+      DISABLE_OUTBOUND_EMAIL: '1',
+    },
   },
 });

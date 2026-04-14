@@ -4,6 +4,7 @@ import { db } from '@/lib/db';
 import { engagements, intakeSubmissions } from '@/lib/db/schema';
 import { intakeSubmissionSchema } from '@/lib/intake/schema';
 import { verifyMagicLink } from '@/lib/intake/magic-link';
+import { outboundEmailDisabled } from '@/lib/email/disabled';
 import { eq } from 'drizzle-orm';
 
 export type SubmitIntakeResult =
@@ -60,6 +61,10 @@ export async function submitIntake(formData: FormData): Promise<SubmitIntakeResu
 }
 
 async function notifyAdminOfIntake(params: { engagementId: number; companyName: string }) {
+  if (outboundEmailDisabled()) {
+    console.log('[intake] outbound disabled, would notify admin of', params);
+    return;
+  }
   const apiKey = process.env.RESEND_API_KEY;
   const from = process.env.RESEND_FROM;
   const to = process.env.RESEND_ADMIN_EMAIL;
