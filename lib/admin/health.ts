@@ -30,6 +30,25 @@ export function computeHealth(
  * least one run in the window. Engagements with no runs are omitted — the
  * caller decides how to render 'unknown' for them.
  */
+export type GlobalRunStats = {
+  total: number;
+  failures: number;
+};
+
+export async function getGlobalRunStats(
+  windowDays = 7,
+): Promise<GlobalRunStats> {
+  const since = new Date(Date.now() - windowDays * 24 * 60 * 60 * 1000);
+  const [row] = await db
+    .select({
+      total: sql<number>`count(*)::int`,
+      failures: sql<number>`count(*) filter (where ${runs.status} = 'failure')::int`,
+    })
+    .from(runs)
+    .where(gte(runs.startedAt, since));
+  return { total: row?.total ?? 0, failures: row?.failures ?? 0 };
+}
+
 export async function engagementHealthMap(
   windowDays = 7,
 ): Promise<Map<number, EngagementHealth>> {
