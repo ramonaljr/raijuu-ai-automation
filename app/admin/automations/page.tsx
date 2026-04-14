@@ -7,6 +7,7 @@ import {
   formatRelative,
 } from '@/app/admin/_components/formatters';
 import { listAutomationsWithCompany } from '@/lib/admin/automations';
+import { buildN8nWorkflowUrl } from '@/lib/n8n/workflow-url';
 
 export const dynamic = 'force-dynamic';
 
@@ -43,7 +44,25 @@ export default async function AutomationsPage() {
           <span className="text-xs text-neutral-400">never</span>
         ),
     },
-    { header: 'n8n workflow', cell: (r) => r.n8nWorkflowId ?? '—' },
+    {
+      header: 'n8n workflow',
+      cell: (r) => {
+        if (!r.n8nWorkflowId) return '—';
+        const url = buildN8nWorkflowUrl(r.n8nWorkflowId);
+        return url ? (
+          <a
+            className="underline"
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {r.n8nWorkflowId}
+          </a>
+        ) : (
+          <span className="font-mono text-xs">{r.n8nWorkflowId}</span>
+        );
+      },
+    },
     { header: 'Created', cell: (r) => formatDate(r.createdAt) },
   ];
 
