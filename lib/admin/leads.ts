@@ -1,4 +1,4 @@
-import { and, count, desc, ilike, isNotNull, isNull, sql } from 'drizzle-orm';
+import { and, count, desc, isNotNull, isNull, sql } from 'drizzle-orm';
 import type { SQL } from 'drizzle-orm';
 import { db } from '@/lib/db';
 import { leads, type Lead } from '@/lib/db/schema';
@@ -27,9 +27,6 @@ function buildWhere(q: string | undefined, booked: BookedFilter): SQL | undefine
     clauses.push(
       sql`(${leads.email} ILIKE ${pattern} OR ${leads.situationText} ILIKE ${pattern} OR ${leads.industry} ILIKE ${pattern})`,
     );
-    // silence unused-import warning for ilike; left as an aliased import in
-    // case we want per-column ILIKE later.
-    void ilike;
   }
   if (booked === 'yes') clauses.push(isNotNull(leads.bookedAt));
   if (booked === 'no') clauses.push(isNull(leads.bookedAt));
