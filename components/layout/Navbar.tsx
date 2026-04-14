@@ -3,12 +3,14 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Zap } from "lucide-react";
+import { useUser, UserButton } from "@clerk/nextjs";
 import { NAV_ITEMS } from "@/lib/constants";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const headerRef = useRef<HTMLElement>(null);
+  const { isSignedIn, isLoaded } = useUser();
 
   const close = useCallback(() => setIsOpen(false), []);
 
@@ -79,17 +81,52 @@ export default function Navbar() {
           Menu
         </button>
 
-        {/* CTA */}
-        <a
-          href="#CTA-Form"
-          className={`rounded-full px-5 py-2 text-sm font-medium transition-all duration-500 active:scale-[0.97] ${
-            scrolled
-              ? "bg-foreground text-background hover:bg-gray-800"
-              : "bg-white text-foreground hover:bg-gray-100"
-          }`}
-        >
-          Work with Us
-        </a>
+        {/* Auth entry */}
+        {isLoaded && isSignedIn ? (
+          <a
+            href="/app"
+            className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+              scrolled
+                ? "text-foreground hover:bg-gray-100"
+                : "text-white hover:bg-white/10"
+            }`}
+          >
+            Portal
+          </a>
+        ) : (
+          <a
+            href="/sign-in"
+            className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
+              scrolled
+                ? "text-foreground hover:bg-gray-100"
+                : "text-white hover:bg-white/10"
+            }`}
+          >
+            Sign in
+          </a>
+        )}
+
+        {/* CTA / user */}
+        {isLoaded && isSignedIn ? (
+          <div
+            className={`flex items-center justify-center rounded-full ${
+              scrolled ? "bg-gray-100" : "bg-white/10"
+            } h-10 w-10`}
+          >
+            <UserButton />
+          </div>
+        ) : (
+          <a
+            href="#CTA-Form"
+            className={`rounded-full px-5 py-2 text-sm font-medium transition-all duration-500 active:scale-[0.97] ${
+              scrolled
+                ? "bg-foreground text-background hover:bg-gray-800"
+                : "bg-white text-foreground hover:bg-gray-100"
+            }`}
+          >
+            Work with Us
+          </a>
+        )}
       </nav>
 
       {/* Dropdown menu */}
