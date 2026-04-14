@@ -49,12 +49,20 @@ export default async function ReportsPage({
         ) : (
           <div />
         )}
-        <a
-          href={`/api/reports/export?month=${month}`}
-          className="rounded-full border border-[color:var(--portal-border)] bg-white px-3 py-1 text-xs font-medium text-neutral-700 hover:border-[color:var(--accent)]"
-        >
-          Download CSV
-        </a>
+        <div className="flex items-center gap-2">
+          <a
+            href={`/api/reports/export?month=${month}`}
+            className="rounded-full border border-[color:var(--portal-border)] bg-white px-3 py-1 text-xs font-medium text-neutral-700 hover:border-[color:var(--accent)]"
+          >
+            Download CSV
+          </a>
+          <a
+            href={`/api/reports/export-pdf?month=${month}`}
+            className="rounded-full border border-[color:var(--portal-border)] bg-white px-3 py-1 text-xs font-medium text-neutral-700 hover:border-[color:var(--accent)]"
+          >
+            Download PDF
+          </a>
+        </div>
       </div>
       {outcome ? (
         <div className="space-y-8">
