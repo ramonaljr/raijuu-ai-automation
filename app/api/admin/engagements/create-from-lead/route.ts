@@ -47,6 +47,23 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'lead-not-found' }, { status: 404 });
   }
 
+  const existingRows = await db
+    .select({ id: engagements.id, status: engagements.status })
+    .from(engagements)
+    .where(eq(engagements.leadId, lead.id))
+    .limit(1);
+  const existing = existingRows[0];
+  if (existing) {
+    return NextResponse.json(
+      {
+        error: 'already-converted',
+        engagementId: existing.id,
+        status: existing.status,
+      },
+      { status: 409 },
+    );
+  }
+
   const [engagement] = await db
     .insert(engagements)
     .values({

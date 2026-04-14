@@ -4,6 +4,7 @@ import { useState, useTransition } from 'react';
 
 type Result =
   | { ok: true; engagementId: number; emailSent: boolean; url?: string }
+  | { ok: 'conflict'; engagementId: number; status: string }
   | { ok: false; error: string };
 
 export function ConvertLeadButton({
@@ -32,6 +33,14 @@ export function ConvertLeadButton({
           }),
         });
         const body = await res.json();
+        if (res.status === 409 && body.error === 'already-converted') {
+          setResult({
+            ok: 'conflict',
+            engagementId: body.engagementId,
+            status: body.status,
+          });
+          return;
+        }
         if (!res.ok && res.status !== 207) {
           setResult({ ok: false, error: body.error ?? `http-${res.status}` });
           return;
@@ -98,7 +107,7 @@ export function ConvertLeadButton({
           Cancel
         </button>
       </div>
-      {result && result.ok && (
+      {result && result.ok === true && (
         <div className="text-green-700 space-y-1">
           <p>Engagement #{result.engagementId} created.</p>
           <p>
@@ -114,7 +123,22 @@ export function ConvertLeadButton({
           )}
         </div>
       )}
-      {result && !result.ok && (
+      {result && result.ok === 'conflict' && (
+        <div className="text-amber-700 space-y-1">
+          <p>Already converted.</p>
+          <p>
+            Existing engagement{' '}
+            <a
+              className="underline"
+              href={`/admin/clients/${result.engagementId}`}
+            >
+              #{result.engagementId}
+            </a>{' '}
+            ({result.status}).
+          </p>
+        </div>
+      )}
+      {result && result.ok === false && (
         <p className="text-red-700">Error: {result.error}</p>
       )}
     </div>
