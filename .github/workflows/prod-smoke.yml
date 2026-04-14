@@ -1,0 +1,53 @@
+name: Production smoke
+
+on:
+  schedule:
+    # 07:00 UTC daily — one hour after the monthly aggregation cron so they
+    # don't race on the 1st of each month
+    - cron: '0 7 * * *'
+  workflow_dispatch: {}
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Probe production routes
+        env:
+          APP_PROD_URL: ${{ secrets.APP_PROD_URL }}
+        run: |
+          set -euo pipefail
+          if [ -z "$APP_PROD_URL" ]; then
+            echo "Missing APP_PROD_URL GitHub secret" >&2
+            exit 1
+          fi
+
+          check() {
+            local label="$1" url="$2" expected="$3" method="${4:-GET}"
+            local actual
+            actual=$(curl -sS -o /dev/null -w '%{http_code}' \
+              --max-time 20 -X "$method" "$url" || echo "000")
+            if [ "$actual" = "$expected" ]; then
+              echo "OK  $label  $actual  ($url)"
+            else
+              echo "FAIL $label  got=$actual expected=$expected  ($url)"
+              return 1
+            fi
+          }
+
+          failures=0
+
+          check 'landing'     "$APP_PROD_URL/"                            200      || failures=$((failures+1))
+          check 'demo'        "$APP_PROD_URL/demo"                        200      || failures=$((failures+1))
+          check 'admin-gated' "$APP_PROD_URL/admin"                       307      || failures=$((failures+1))
+          check 'app-gated'   "$APP_PROD_URL/app"                         307      || failures=$((failures+1))
+          check 'n8n-webhook' "$APP_PROD_URL/api/n8n/run-callback"        401 POST || failures=$((failures+1))
+          check 'cron-route'  "$APP_PROD_URL/api/cron/aggregate-monthly"  401      || failures=$((failures+1))
+
+          if [ "$failures" -gt 0 ]; then
+            echo "" >&2
+            echo "$failures smoke check(s) failed" >&2
+            exit 1
+          fi
+          echo ""
+          echo "All smoke checks passed."
