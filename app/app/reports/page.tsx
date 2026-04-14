@@ -1,12 +1,11 @@
 import { currentUser } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 import {
-  formatMoneyCents,
-} from '@/app/admin/_components/formatters';
-import {
   getEngagementByClerkUserId,
   getCurrentMonthOutcome,
 } from '@/lib/portal/data';
+import { formatMoneyCents } from '@/lib/format/time';
+import { PageHeader } from '../_components/PageHeader';
 
 export const dynamic = 'force-dynamic';
 
@@ -19,29 +18,25 @@ export default async function ReportsPage() {
   const { month, outcome } = await getCurrentMonthOutcome(engagement.id);
 
   return (
-    <div className="space-y-6 max-w-2xl">
-      <div>
-        <h1 className="text-lg font-semibold">Reports</h1>
-        <p className="text-sm text-neutral-600">{month}</p>
-      </div>
-
+    <div className="space-y-8">
+      <PageHeader eyebrow={month} title="Reports" />
       {outcome ? (
         <div className="grid gap-4 sm:grid-cols-3">
           <Stat label="Runs this month" value={String(outcome.runsCount)} />
-          <Stat
-            label="Time saved"
-            value={`${outcome.timeSavedMinutes} min`}
-          />
+          <Stat label="Time saved" value={`${outcome.timeSavedMinutes} min`} />
           <Stat
             label="Dollars influenced"
             value={formatMoneyCents(outcome.dollarsInfluencedCents)}
           />
         </div>
       ) : (
-        <p className="text-sm text-neutral-600">
-          This month's report computes on the 1st of next month. Check back
-          then — or ping Raijuu if you want a snapshot sooner.
-        </p>
+        <div className="rounded-xl border border-dashed border-[color:var(--portal-border)] bg-white p-8">
+          <p className="text-sm font-medium">No report yet</p>
+          <p className="mt-1 max-w-xl text-sm text-neutral-600">
+            Your first monthly report computes on the 1st of next month. Need a
+            snapshot sooner? Ping Raijuu and we&apos;ll pull it by hand.
+          </p>
+        </div>
       )}
     </div>
   );
@@ -49,11 +44,11 @@ export default async function ReportsPage() {
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="border rounded-lg p-4">
-      <p className="text-xs text-neutral-500 uppercase tracking-wide">
+    <div className="rounded-xl border border-[color:var(--portal-border)] bg-white p-5">
+      <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-neutral-500">
         {label}
       </p>
-      <p className="mt-2 text-2xl font-semibold">{value}</p>
+      <p className="mt-2 text-2xl font-semibold tracking-tight">{value}</p>
     </div>
   );
 }
