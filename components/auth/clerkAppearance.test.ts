@@ -33,4 +33,8 @@ describe('clerkAppearance', () => {
     expect(clerkAppearance.elements?.formButtonPrimary).toContain('focus-visible:ring-2');
     expect(clerkAppearance.elements?.socialButtonsBlockButton).toContain('focus-visible:ring-2');
   });
+
+  it('hides Clerk default footer action to avoid duplicate sign-up link', () => {
+    expect(clerkAppearance.elements?.footerAction).toBe('hidden');
+  });
 });
