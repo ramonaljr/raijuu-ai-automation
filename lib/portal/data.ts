@@ -86,9 +86,20 @@ export async function getLastRunForEngagement(engagementId: number) {
   return row ?? null;
 }
 
-export async function getCurrentMonthOutcome(engagementId: number) {
+export function currentUtcMonth(): string {
   const now = new Date();
-  const month = `${now.getUTCFullYear()}-${String(now.getUTCMonth() + 1).padStart(2, '0')}`;
+  return `${now.getUTCFullYear()}-${String(now.getUTCMonth() + 1).padStart(2, '0')}`;
+}
+
+export async function getCurrentMonthOutcome(engagementId: number) {
+  const month = currentUtcMonth();
+  return getOutcomeForMonth(engagementId, month);
+}
+
+export async function getOutcomeForMonth(
+  engagementId: number,
+  month: string,
+) {
   const [row] = await db
     .select()
     .from(outcomesMonthly)
@@ -100,4 +111,15 @@ export async function getCurrentMonthOutcome(engagementId: number) {
     )
     .limit(1);
   return { month, outcome: row ?? null };
+}
+
+export async function listMonthsWithOutcomes(
+  engagementId: number,
+): Promise<string[]> {
+  const rows = await db
+    .select({ month: outcomesMonthly.month })
+    .from(outcomesMonthly)
+    .where(eq(outcomesMonthly.engagementId, engagementId))
+    .orderBy(desc(outcomesMonthly.month));
+  return rows.map((r) => r.month);
 }

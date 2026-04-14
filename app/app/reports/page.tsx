@@ -1,25 +1,51 @@
 import { currentUser } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
+import Link from 'next/link';
 import {
   getEngagementByClerkUserId,
-  getCurrentMonthOutcome,
+  getOutcomeForMonth,
+  listMonthsWithOutcomes,
+  currentUtcMonth,
 } from '@/lib/portal/data';
 import { formatMoneyCents } from '@/lib/format/time';
 import { PageHeader } from '../_components/PageHeader';
 
 export const dynamic = 'force-dynamic';
 
-export default async function ReportsPage() {
+const MONTH_RE = /^\d{4}-\d{2}$/;
+
+export default async function ReportsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ month?: string }>;
+}) {
   const user = await currentUser();
   if (!user) redirect('/sign-in?redirect_url=/app/reports');
   const engagement = await getEngagementByClerkUserId(user.id);
   if (!engagement) redirect('/no-engagement');
 
-  const { month, outcome } = await getCurrentMonthOutcome(engagement.id);
+  const { month: raw } = await searchParams;
+  const requested = raw && MONTH_RE.test(raw) ? raw : null;
+  const current = currentUtcMonth();
+  const selectedMonth = requested ?? current;
+
+  const [{ outcome }, historyMonths] = await Promise.all([
+    getOutcomeForMonth(engagement.id, selectedMonth),
+    listMonthsWithOutcomes(engagement.id),
+  ]);
+
+  // Always surface the current month in the selector, even if there's no row yet.
+  const monthsForNav = historyMonths.includes(current)
+    ? historyMonths
+    : [current, ...historyMonths];
+  const month = selectedMonth;
 
   return (
     <div className="space-y-8">
       <PageHeader eyebrow={month} title="Reports" />
+      {monthsForNav.length > 1 && (
+        <MonthSelector months={monthsForNav} selected={month} />
+      )}
       {outcome ? (
         <div className="space-y-8">
           <div className="grid gap-4 sm:grid-cols-3">
@@ -54,6 +80,39 @@ export default async function ReportsPage() {
         </div>
       )}
     </div>
+  );
+}
+
+function MonthSelector({
+  months,
+  selected,
+}: {
+  months: string[];
+  selected: string;
+}) {
+  return (
+    <nav
+      aria-label="Reports month selector"
+      className="flex flex-wrap gap-2"
+    >
+      {months.map((m) => {
+        const isActive = m === selected;
+        return (
+          <Link
+            key={m}
+            href={`/app/reports?month=${m}`}
+            aria-current={isActive ? 'page' : undefined}
+            className={
+              isActive
+                ? 'rounded-full bg-foreground px-3 py-1 text-xs font-medium text-background'
+                : 'rounded-full border border-[color:var(--portal-border)] bg-white px-3 py-1 text-xs font-medium text-neutral-700 hover:border-[color:var(--accent)]'
+            }
+          >
+            {m}
+          </Link>
+        );
+      })}
+    </nav>
   );
 }
 
