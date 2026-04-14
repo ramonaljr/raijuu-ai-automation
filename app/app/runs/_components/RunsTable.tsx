@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { StatusPill } from '@/app/admin/_components/StatusPill';
 import { formatRelative } from '@/lib/format/time';
 import type { listRecentRunsForEngagement } from '@/lib/portal/data';
@@ -33,26 +34,33 @@ export function RunsTable({ rows }: { rows: Row[] }) {
             <Th>Status</Th>
             <Th>Outcome</Th>
             <Th>Started</Th>
+            <Th className="w-10" aria-label="Open" />
           </tr>
         </thead>
         <tbody>
           {rows.map((r) => (
             <tr
               key={r.id}
-              className="border-t border-[color:var(--portal-border)]"
+              className="border-t border-[color:var(--portal-border)] transition-colors hover:bg-[color:var(--portal-surface)]"
             >
-              <Td>
-                <span className="font-medium">{r.automationName}</span>
-              </Td>
-              <Td>
+              <Cell>
+                <Link
+                  href={`/app/runs/${r.id}`}
+                  className="block font-medium after:absolute after:inset-0"
+                >
+                  {r.automationName}
+                </Link>
+              </Cell>
+              <Cell>
                 <StatusPill status={r.status} />
-              </Td>
-              <Td className="max-w-md text-neutral-600">
+              </Cell>
+              <Cell className="max-w-md text-neutral-600">
                 {summarizeOutcome(r.outcomeJson)}
-              </Td>
-              <Td className="font-mono text-xs text-neutral-500">
+              </Cell>
+              <Cell className="font-mono text-xs text-neutral-500">
                 {formatRelative(r.startedAt)}
-              </Td>
+              </Cell>
+              <Cell className="text-neutral-400">→</Cell>
             </tr>
           ))}
         </tbody>
@@ -61,20 +69,31 @@ export function RunsTable({ rows }: { rows: Row[] }) {
   );
 }
 
-function Th({ children }: { children: React.ReactNode }) {
+function Th({
+  children,
+  className,
+  ...rest
+}: React.ThHTMLAttributes<HTMLTableCellElement>) {
   return (
-    <th className="px-4 py-2.5 text-[11px] font-medium uppercase tracking-wider text-neutral-500">
+    <th
+      {...rest}
+      className={`px-4 py-2.5 text-[11px] font-medium uppercase tracking-wider text-neutral-500 ${className ?? ''}`}
+    >
       {children}
     </th>
   );
 }
 
-function Td({
+function Cell({
   children,
   className,
 }: {
   children: React.ReactNode;
   className?: string;
 }) {
-  return <td className={`px-4 py-3 align-middle ${className ?? ''}`}>{children}</td>;
+  return (
+    <td className={`relative px-4 py-3 align-middle ${className ?? ''}`}>
+      {children}
+    </td>
+  );
 }

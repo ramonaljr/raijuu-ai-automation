@@ -6,7 +6,7 @@ export const WORKSPACE_ITEMS = [
 
 export const ACCOUNT_ITEMS = [
   { label: 'Settings', href: '/app/settings' },
-  { label: 'Help', href: 'mailto:ramonvallejerajr@gmail.com' },
+  { label: 'Help', href: '/app/help' },
 ] as const;
 
 export function isActive(itemHref: string, currentPath: string): boolean {

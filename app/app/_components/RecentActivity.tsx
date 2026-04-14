@@ -21,12 +21,17 @@ export function RecentActivity({ runs }: { runs: Row[] }) {
       </div>
       <ul className="divide-y divide-[color:var(--portal-border)] overflow-hidden rounded-xl border border-[color:var(--portal-border)] bg-white">
         {runs.map((r) => (
-          <li key={r.id} className="flex items-center gap-4 px-4 py-3">
-            <StatusPill status={r.status} />
-            <span className="flex-1 truncate text-sm">{r.automationName}</span>
-            <span className="font-mono text-xs text-neutral-500">
-              {formatRelative(r.startedAt)}
-            </span>
+          <li key={r.id} className="relative">
+            <Link
+              href={`/app/runs/${r.id}`}
+              className="flex items-center gap-4 px-4 py-3 transition-colors hover:bg-[color:var(--portal-surface)]"
+            >
+              <StatusPill status={r.status} />
+              <span className="flex-1 truncate text-sm">{r.automationName}</span>
+              <span className="font-mono text-xs text-neutral-500">
+                {formatRelative(r.startedAt)}
+              </span>
+            </Link>
           </li>
         ))}
       </ul>

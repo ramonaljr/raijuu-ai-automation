@@ -8,7 +8,7 @@ export function PageHeader({
   subtitle,
   reveal = false,
 }: {
-  eyebrow?: string;
+  eyebrow?: React.ReactNode;
   title: string;
   subtitle?: string;
   reveal?: boolean;

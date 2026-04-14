@@ -43,6 +43,30 @@ export async function listRecentRunsForEngagement(engagementId: number) {
     .limit(30);
 }
 
+export async function getRunForEngagement(
+  engagementId: number,
+  runId: number,
+) {
+  const [row] = await db
+    .select({
+      id: runs.id,
+      automationId: runs.automationId,
+      automationName: automations.name,
+      startedAt: runs.startedAt,
+      finishedAt: runs.finishedAt,
+      status: runs.status,
+      outcomeJson: runs.outcomeJson,
+      n8nExecutionId: runs.n8nExecutionId,
+    })
+    .from(runs)
+    .innerJoin(automations, eq(automations.id, runs.automationId))
+    .where(
+      and(eq(automations.engagementId, engagementId), eq(runs.id, runId)),
+    )
+    .limit(1);
+  return row ?? null;
+}
+
 export async function getLastRunForEngagement(engagementId: number) {
   const [row] = await db
     .select({

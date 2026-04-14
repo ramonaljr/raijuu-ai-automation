@@ -10,6 +10,21 @@ test('signed-out user hitting /app/reports is redirected to /sign-in', async ({ 
   await expect(page).toHaveURL(/\/sign-in/);
 });
 
+test('signed-out user hitting /app/settings is redirected to /sign-in', async ({ page }) => {
+  await page.goto('/app/settings');
+  await expect(page).toHaveURL(/\/sign-in/);
+});
+
+test('signed-out user hitting /app/help is redirected to /sign-in', async ({ page }) => {
+  await page.goto('/app/help');
+  await expect(page).toHaveURL(/\/sign-in/);
+});
+
+test('signed-out user hitting /app/runs/1 is redirected to /sign-in', async ({ page }) => {
+  await page.goto('/app/runs/1');
+  await expect(page).toHaveURL(/\/sign-in/);
+});
+
 test('/no-engagement renders the dead-end message (no auth required for the page itself)', async ({ page }) => {
   await page.goto('/no-engagement');
   await expect(

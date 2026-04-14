@@ -15,4 +15,10 @@ describe('isActive', () => {
   it('does not match mailto: or external hrefs', () => {
     expect(isActive('mailto:foo@bar.com', '/app')).toBe(false);
   });
+  it('matches /app/settings for its profile subroute', () => {
+    expect(isActive('/app/settings', '/app/settings/profile')).toBe(true);
+  });
+  it('matches /app/help for itself', () => {
+    expect(isActive('/app/help', '/app/help')).toBe(true);
+  });
 });
