@@ -61,8 +61,8 @@ describe('clerkAppearance', () => {
     expect(clerkAppearance.variables).toMatchObject({
       colorPrimary: '#4d65ff',
       colorBackground: '#141414',
-      colorText: '#f9fafb',
-      colorInputBackground: '#1f1f1f',
+      colorForeground: '#f9fafb',
+      colorInput: '#1f1f1f',
       borderRadius: '0.75rem',
     });
   });
@@ -93,10 +93,10 @@ export const clerkAppearance: Appearance = {
   variables: {
     colorPrimary: '#4d65ff',
     colorBackground: '#141414',
-    colorText: '#f9fafb',
-    colorTextSecondary: '#6b7280',
-    colorInputBackground: '#1f1f1f',
-    colorInputText: '#f9fafb',
+    colorForeground: '#f9fafb',
+    colorMutedForeground: '#6b7280',
+    colorInput: '#1f1f1f',
+    colorInputForeground: '#f9fafb',
     borderRadius: '0.75rem',
     fontFamily: 'var(--font-geist-sans)',
   },
