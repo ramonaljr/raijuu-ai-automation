@@ -4,7 +4,7 @@ test.describe('Portal visual — signed out', () => {
   test('/sign-in renders split brand panel', async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto('/sign-in');
-    await expect(page.getByText(/Your automations, live/i)).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Welcome back' })).toBeVisible();
     // Wait for the Clerk form to hydrate so the left half isn't blank.
     await expect(
       page.getByRole('textbox', { name: /email/i }),
