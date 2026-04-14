@@ -12,7 +12,9 @@ test('signed-out user hitting /app/reports is redirected to /sign-in', async ({ 
 
 test('/no-engagement renders the dead-end message (no auth required for the page itself)', async ({ page }) => {
   await page.goto('/no-engagement');
-  await expect(page.getByText("We can't find your engagement")).toBeVisible();
+  await expect(
+    page.getByText(/don't have an engagement tied to this email/i),
+  ).toBeVisible();
 });
 
 test('webhook rejects unauthenticated requests', async () => {
