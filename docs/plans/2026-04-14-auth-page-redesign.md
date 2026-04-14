@@ -132,42 +132,10 @@ git commit -m "feat(auth): clerk appearance tokens for dark brand shell"
 
 **Files:**
 - Create: `components/auth/LiveSystemPanel.tsx`
-- Create: `components/auth/LiveSystemPanel.test.tsx`
 
-**Step 1: Write the failing test**
+**Unit test status — SKIPPED per plan fallback.** Pre-flight confirmed `@testing-library/react` is NOT a dev dep and `vitest.config.ts` uses `environment: 'node'`. Adding RTL + jsdom just to assert static DOM presence would be duplicate coverage — Task 5's Playwright smoke asserts the same things against a real render. Do not create `components/auth/LiveSystemPanel.test.tsx`.
 
-```tsx
-// components/auth/LiveSystemPanel.test.tsx
-import { describe, expect, it } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import LiveSystemPanel from './LiveSystemPanel';
-
-describe('LiveSystemPanel', () => {
-  it('renders the wordmark and tagline', () => {
-    render(<LiveSystemPanel />);
-    expect(screen.getByText('Raijuu')).toBeInTheDocument();
-    expect(screen.getByText(/automation that runs itself/i)).toBeInTheDocument();
-  });
-
-  it('renders at least 6 ticker rows', () => {
-    render(<LiveSystemPanel />);
-    const rows = screen.getAllByTestId('ticker-row');
-    expect(rows.length).toBeGreaterThanOrEqual(6);
-  });
-
-  it('uses the existing animate-ticker utility class so reduced-motion CSS applies', () => {
-    const { container } = render(<LiveSystemPanel />);
-    expect(container.querySelector('.animate-ticker')).not.toBeNull();
-  });
-});
-```
-
-If `@testing-library/react` isn't already a dev dep, check `package.json`. If absent, ask before adding — plan fallback is to delete this test file and rely on the Playwright check in Task 5.
-
-**Step 2: Run test to verify it fails**
-
-Run: `pnpm test components/auth/LiveSystemPanel.test.tsx`
-Expected: FAIL — component missing.
+**Step 1 & 2: SKIPPED.**
 
 **Step 3: Write the component**
 
@@ -233,15 +201,12 @@ export default function LiveSystemPanel() {
 }
 ```
 
-**Step 4: Run test to verify it passes**
-
-Run: `pnpm test components/auth/LiveSystemPanel.test.tsx`
-Expected: PASS, 3/3. (Skip this step if `@testing-library/react` wasn't available — covered by Playwright later.)
+**Step 4: SKIPPED** (no unit test to run — see fallback note above).
 
 **Step 5: Commit**
 
 ```bash
-git add components/auth/LiveSystemPanel.tsx components/auth/LiveSystemPanel.test.tsx
+git add components/auth/LiveSystemPanel.tsx
 git commit -m "feat(auth): live system panel for auth shell brand column"
 ```
 
@@ -251,42 +216,10 @@ git commit -m "feat(auth): live system panel for auth shell brand column"
 
 **Files:**
 - Create: `components/auth/AuthShell.tsx`
-- Create: `components/auth/AuthShell.test.tsx`
 
-**Step 1: Write the failing test**
+**Unit test status — SKIPPED for the same reason as Task 2.** Presentational server component; behavior is covered by the Playwright smoke in Task 5.
 
-```tsx
-// components/auth/AuthShell.test.tsx
-import { describe, expect, it } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import AuthShell from './AuthShell';
-
-describe('AuthShell', () => {
-  it('renders the title and children', () => {
-    render(
-      <AuthShell title="Welcome back">
-        <div>clerk-form-here</div>
-      </AuthShell>,
-    );
-    expect(screen.getByRole('heading', { name: 'Welcome back' })).toBeInTheDocument();
-    expect(screen.getByText('clerk-form-here')).toBeInTheDocument();
-  });
-
-  it('renders the footer slot when provided', () => {
-    render(
-      <AuthShell title="Sign in" footerSlot={<a href="/sign-up">Create account</a>}>
-        <div />
-      </AuthShell>,
-    );
-    expect(screen.getByRole('link', { name: 'Create account' })).toBeInTheDocument();
-  });
-});
-```
-
-**Step 2: Run test to verify it fails**
-
-Run: `pnpm test components/auth/AuthShell.test.tsx`
-Expected: FAIL — missing module.
+**Step 1 & 2: SKIPPED.**
 
 **Step 3: Write the component**
 
@@ -338,15 +271,12 @@ export default function AuthShell({ title, children, footerSlot }: Props) {
 }
 ```
 
-**Step 4: Run test to verify it passes**
-
-Run: `pnpm test components/auth/AuthShell.test.tsx`
-Expected: PASS, 2/2.
+**Step 4: SKIPPED.**
 
 **Step 5: Commit**
 
 ```bash
-git add components/auth/AuthShell.tsx components/auth/AuthShell.test.tsx
+git add components/auth/AuthShell.tsx
 git commit -m "feat(auth): AuthShell two-panel layout wrapping clerk forms"
 ```
 
