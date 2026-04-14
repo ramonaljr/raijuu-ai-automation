@@ -84,9 +84,14 @@ describe('getEngagementForUser', () => {
   });
 
   it('returns multiple-matches when more than one unclaimed engagement matches', async () => {
-    const lead = await seedLead(multiEmail);
-    await seedEngagement(lead.id);
-    await seedEngagement(lead.id);
+    // Real shape of a multi-match: two demo submissions from the same person
+    // get converted into two separate engagements (one lead each, shared
+    // email). The partial unique index on engagements.lead_id now forbids
+    // two engagements sharing a single lead, so seed two leads here.
+    const leadA = await seedLead(multiEmail);
+    const leadB = await seedLead(multiEmail);
+    await seedEngagement(leadA.id);
+    await seedEngagement(leadB.id);
 
     const result = await getEngagementForUser(`user_${stamp}_d`, multiEmail);
     expect(result.kind).toBe('multiple-matches');
