@@ -43,9 +43,19 @@ export default async function ReportsPage({
   return (
     <div className="space-y-8">
       <PageHeader eyebrow={month} title="Reports" />
-      {monthsForNav.length > 1 && (
-        <MonthSelector months={monthsForNav} selected={month} />
-      )}
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        {monthsForNav.length > 1 ? (
+          <MonthSelector months={monthsForNav} selected={month} />
+        ) : (
+          <div />
+        )}
+        <a
+          href={`/api/reports/export?month=${month}`}
+          className="rounded-full border border-[color:var(--portal-border)] bg-white px-3 py-1 text-xs font-medium text-neutral-700 hover:border-[color:var(--accent)]"
+        >
+          Download CSV
+        </a>
+      </div>
       {outcome ? (
         <div className="space-y-8">
           <div className="grid gap-4 sm:grid-cols-3">
