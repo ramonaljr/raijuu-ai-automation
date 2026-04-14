@@ -4,6 +4,9 @@ import { db } from '@/lib/db';
 import { runs, automations } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
 import { verifyN8nBearer } from '@/lib/n8n/auth';
+import { writeDeadLetter } from '@/lib/n8n/dead-letter';
+
+const DEAD_LETTER_SOURCE = 'n8n-run-callback';
 
 const bodySchema = z.object({
   n8nExecutionId: z.string().min(1).max(120),
@@ -23,10 +26,22 @@ export async function POST(req: Request) {
   try {
     raw = await req.json();
   } catch {
+    await writeDeadLetter({
+      source: DEAD_LETTER_SOURCE,
+      payload: { note: 'body was not valid json' },
+      errorMessage: 'invalid-json',
+    });
     return NextResponse.json({ error: 'invalid-json' }, { status: 400 });
   }
   const parsed = bodySchema.safeParse(raw);
   if (!parsed.success) {
+    await writeDeadLetter({
+      source: DEAD_LETTER_SOURCE,
+      payload: raw,
+      errorMessage: `zod: ${parsed.error.issues
+        .map((i) => `${i.path.join('.')}:${i.message}`)
+        .join('; ')}`,
+    });
     return NextResponse.json(
       { error: 'invalid', issues: parsed.error.issues },
       { status: 400 },
@@ -40,6 +55,11 @@ export async function POST(req: Request) {
     .where(eq(automations.id, data.automationId))
     .limit(1);
   if (!automation) {
+    await writeDeadLetter({
+      source: DEAD_LETTER_SOURCE,
+      payload: raw,
+      errorMessage: `automation-not-found: id=${data.automationId}`,
+    });
     return NextResponse.json({ error: 'automation-not-found' }, { status: 404 });
   }
 
@@ -72,6 +92,11 @@ export async function POST(req: Request) {
       return NextResponse.json({ runId: existing?.id ?? null, idempotent: true });
     }
     console.error('[n8n-callback] unexpected error', err);
+    await writeDeadLetter({
+      source: DEAD_LETTER_SOURCE,
+      payload: raw,
+      errorMessage: `insert-failed: ${message}`,
+    });
     return NextResponse.json({ error: 'server' }, { status: 500 });
   }
 }

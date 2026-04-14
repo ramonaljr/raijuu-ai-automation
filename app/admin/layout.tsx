@@ -23,6 +23,7 @@ export default async function AdminLayout({
           <Link href="/admin/clients">Clients</Link>
           <Link href="/admin/automations">Automations</Link>
           <Link href="/admin/intake">Intake</Link>
+          <Link href="/admin/dead-letter">Dead-letter</Link>
         </nav>
         <UserButton />
       </header>

@@ -41,10 +41,20 @@ export default async function AdminHome() {
             )}% success)`,
       tone: runStats.failures > 0 ? 'warn' : 'neutral',
     },
+    {
+      label: 'Dead-letter (open)',
+      href: '/admin/dead-letter',
+      value: counts.openDeadLetters,
+      sub:
+        counts.openDeadLetters === 0
+          ? 'All webhooks ingested'
+          : 'Failed webhooks need review',
+      tone: counts.openDeadLetters > 0 ? 'warn' : 'neutral',
+    },
   ];
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {tiles.map((t) => (
         <Link
           key={t.label}
