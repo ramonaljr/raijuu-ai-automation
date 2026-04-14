@@ -8,6 +8,9 @@ loadEnv({ path: '.env.local' });
 
 export default defineConfig({
   testDir: './tests/e2e',
+  // Underscore-prefixed specs are local-only harnesses (e.g. screenshot
+  // capture that needs Clerk sign-in tokens). Opt in explicitly by file path.
+  testIgnore: ['**/_*.spec.ts'],
   use: { baseURL: 'http://localhost:3000' },
   webServer: {
     command: 'pnpm dev',

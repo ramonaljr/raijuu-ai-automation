@@ -1,7 +1,7 @@
 import { Mail, Clock, AlertTriangle, Book, Zap, MessageSquare } from 'lucide-react';
 import { PageHeader } from '../_components/PageHeader';
 
-export const dynamic = 'force-static';
+export const dynamic = 'force-dynamic';
 
 const FAQS: Array<{ q: string; a: string }> = [
   {
