@@ -9,7 +9,11 @@ import {
 import { Table, type Column } from '@/app/admin/_components/Table';
 import { EmptyState } from '@/app/admin/_components/EmptyState';
 import { getEngagementDetail } from '@/lib/admin/clients';
-import { listRecentRunsForEngagement } from '@/lib/portal/data';
+import {
+  getCurrentMonthOutcome,
+  listRecentRunsForEngagement,
+} from '@/lib/portal/data';
+import { NarrativeEditor } from './NarrativeEditor';
 
 export const dynamic = 'force-dynamic';
 
@@ -36,7 +40,10 @@ export default async function ClientDetailPage({
   if (!detail) notFound();
 
   const { engagement, lead, intake } = detail;
-  const recentRuns = await listRecentRunsForEngagement(engagement.id);
+  const [recentRuns, currentOutcome] = await Promise.all([
+    listRecentRunsForEngagement(engagement.id),
+    getCurrentMonthOutcome(engagement.id),
+  ]);
 
   const runColumns: Column<RunRow>[] = [
     { header: 'Automation', cell: (r) => r.automationName },
@@ -93,6 +100,19 @@ export default async function ClientDetailPage({
             Not yet submitted. Client needs to complete the onboarding link.
           </p>
         )}
+      </section>
+
+      <section className="border rounded-lg p-4">
+        <h2 className="text-sm font-medium">
+          Monthly narrative — {currentOutcome.month}
+        </h2>
+        <div className="mt-3">
+          <NarrativeEditor
+            engagementId={engagement.id}
+            month={currentOutcome.month}
+            initialValue={currentOutcome.outcome?.narrativeMd ?? ''}
+          />
+        </div>
       </section>
 
       <section>

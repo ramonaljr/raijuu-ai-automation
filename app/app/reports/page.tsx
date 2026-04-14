@@ -21,13 +21,28 @@ export default async function ReportsPage() {
     <div className="space-y-8">
       <PageHeader eyebrow={month} title="Reports" />
       {outcome ? (
-        <div className="grid gap-4 sm:grid-cols-3">
-          <Stat label="Runs this month" value={String(outcome.runsCount)} />
-          <Stat label="Time saved" value={`${outcome.timeSavedMinutes} min`} />
-          <Stat
-            label="Dollars influenced"
-            value={formatMoneyCents(outcome.dollarsInfluencedCents)}
-          />
+        <div className="space-y-8">
+          <div className="grid gap-4 sm:grid-cols-3">
+            <Stat label="Runs this month" value={String(outcome.runsCount)} />
+            <Stat
+              label="Time saved"
+              value={`${outcome.timeSavedMinutes} min`}
+            />
+            <Stat
+              label="Dollars influenced"
+              value={formatMoneyCents(outcome.dollarsInfluencedCents)}
+            />
+          </div>
+          {outcome.narrativeMd && (
+            <div className="rounded-xl border border-[color:var(--portal-border)] bg-white p-6">
+              <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-neutral-500">
+                Notes from Raijuu
+              </p>
+              <p className="mt-3 whitespace-pre-wrap text-sm leading-relaxed text-neutral-800">
+                {outcome.narrativeMd}
+              </p>
+            </div>
+          )}
         </div>
       ) : (
         <div className="rounded-xl border border-dashed border-[color:var(--portal-border)] bg-white p-8">
