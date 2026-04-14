@@ -1,11 +1,12 @@
 import { NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
+import { currentUser } from '@clerk/nextjs/server';
 import { z } from 'zod';
 import { eq } from 'drizzle-orm';
 import { db } from '@/lib/db';
 import { engagements, leads } from '@/lib/db/schema';
 import { buildMagicLinkUrl } from '@/lib/intake/magic-link';
 import { sendMagicLinkEmail } from '@/lib/intake/email';
+import { getRole } from '@/lib/auth/roles';
 
 const bodySchema = z.object({
   leadId: z.number().int().positive(),
@@ -14,13 +15,11 @@ const bodySchema = z.object({
 });
 
 export async function POST(req: Request) {
-  const { userId, sessionClaims } = await auth();
-  if (!userId) {
+  const user = await currentUser();
+  if (!user) {
     return NextResponse.json({ error: 'unauthorized' }, { status: 401 });
   }
-  const role = (sessionClaims?.publicMetadata as { role?: string } | undefined)
-    ?.role;
-  if (role !== 'admin') {
+  if (getRole(user) !== 'admin') {
     return NextResponse.json({ error: 'forbidden' }, { status: 403 });
   }
 

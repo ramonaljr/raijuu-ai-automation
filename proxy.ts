@@ -5,20 +5,9 @@ const isAdminRoute = createRouteMatcher(['/admin(.*)']);
 const isClientRoute = createRouteMatcher(['/app(.*)']);
 
 export default clerkMiddleware(async (auth, req) => {
-  if (isAdminRoute(req)) {
-    const { userId, sessionClaims } = await auth();
+  if (isAdminRoute(req) || isClientRoute(req)) {
+    const { userId } = await auth();
     if (!userId) return NextResponse.redirect(new URL('/sign-in', req.url));
-    const role = (sessionClaims?.publicMetadata as any)?.role;
-    if (role !== 'admin') return new NextResponse('Forbidden', { status: 403 });
-  }
-
-  if (isClientRoute(req)) {
-    const { userId, sessionClaims } = await auth();
-    if (!userId) return NextResponse.redirect(new URL('/sign-in', req.url));
-    const role = (sessionClaims?.publicMetadata as any)?.role;
-    if (role !== 'client' && role !== 'admin') {
-      return new NextResponse('Forbidden', { status: 403 });
-    }
   }
 });
 
