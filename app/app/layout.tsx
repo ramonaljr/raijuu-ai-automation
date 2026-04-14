@@ -17,7 +17,10 @@ export default async function AppLayout({
   if (!email) redirect('/no-engagement');
 
   const result = await getEngagementForUser(user.id, email);
-  if (result.kind === 'no-match' || result.kind === 'multiple-matches') {
+  if (result.kind === 'multiple-matches') {
+    redirect('/pick-engagement');
+  }
+  if (result.kind === 'no-match') {
     redirect('/no-engagement');
   }
 
