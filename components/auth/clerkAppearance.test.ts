@@ -20,4 +20,17 @@ describe('clerkAppearance', () => {
   it('removes the default card chrome since AuthShell provides framing', () => {
     expect(clerkAppearance.elements?.card).toMatch(/shadow-none|border-0|bg-transparent/);
   });
+
+  it('uses the brand primary on the submit button', () => {
+    expect(clerkAppearance.elements?.formButtonPrimary).toContain('bg-[#4d65ff]');
+  });
+
+  it('inherits the Geist font stack via CSS variable', () => {
+    expect(clerkAppearance.variables?.fontFamily).toBe('var(--font-geist-sans)');
+  });
+
+  it('gives interactive elements a visible focus ring on dark bg', () => {
+    expect(clerkAppearance.elements?.formButtonPrimary).toContain('focus-visible:ring-2');
+    expect(clerkAppearance.elements?.socialButtonsBlockButton).toContain('focus-visible:ring-2');
+  });
 });

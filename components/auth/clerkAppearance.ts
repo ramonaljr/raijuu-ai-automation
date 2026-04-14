@@ -14,8 +14,10 @@ export const clerkAppearance = {
     headerTitle: 'hidden',
     headerSubtitle: 'hidden',
     socialButtonsBlockButton:
-      'bg-[#1f1f1f] border border-[#2a2a2a] hover:bg-[#262626] text-[#f9fafb]',
-    formButtonPrimary: 'bg-[#4d65ff] hover:bg-[#6b7fff]',
-    footerActionLink: 'text-[#6b7fff] hover:text-[#93c5fd]',
+      'bg-[#1f1f1f] border border-[#2a2a2a] hover:bg-[#262626] text-[#f9fafb] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4d65ff] focus-visible:ring-offset-2 focus-visible:ring-offset-[#141414]',
+    formButtonPrimary:
+      'bg-[#4d65ff] hover:bg-[#6b7fff] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4d65ff] focus-visible:ring-offset-2 focus-visible:ring-offset-[#141414]',
+    footerActionLink:
+      'text-[#6b7fff] hover:text-[#93c5fd] focus-visible:outline-none focus-visible:underline',
   },
 } as const;
