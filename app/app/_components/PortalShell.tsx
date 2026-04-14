@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import { PortalSidebar } from './PortalSidebar';
+import { PortalMobileBar } from './PortalMobileBar';
 
 export function PortalShell({
   engagementName,
@@ -13,7 +14,12 @@ export function PortalShell({
   children: ReactNode;
 }) {
   return (
-    <div className="flex min-h-screen bg-[color:var(--portal-surface)]">
+    <div className="flex min-h-screen flex-col bg-[color:var(--portal-surface)] md:flex-row">
+      <PortalMobileBar
+        engagementName={engagementName}
+        currentPath={currentPath}
+        userEmail={userEmail}
+      />
       <PortalSidebar
         engagementName={engagementName}
         currentPath={currentPath}
