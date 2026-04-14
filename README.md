@@ -164,3 +164,7 @@ docs/plans/                  Design + implementation plans
 ## Architecture
 
 The dashboard is the software layer of a sales → onboarding → delivery → reporting funnel. n8n is the automation engine (private, never client-facing). See `docs/plans/2026-04-13-dashboard-design.md` for the full design.
+
+### Rehearsal
+
+Before Client #1 touches production, walk through `docs/plans/2026-04-14-phase-5-rehearsal.md` (the "Pre-flight checklist" section at the bottom). It steps you through the full funnel against test data and flags what to watch for.
