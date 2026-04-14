@@ -6,6 +6,7 @@ import {
   listAutomationsForEngagement,
   listRecentRunsForEngagement,
 } from '@/lib/portal/data';
+import { listAutomationHealth } from '@/lib/portal/health';
 import { PageHeader } from './_components/PageHeader';
 import { FocusCard } from './_components/FocusCard';
 import { selectFocusVariant, type FocusRun } from './_components/focus';
@@ -20,11 +21,15 @@ export default async function PortalHome() {
   const engagement = await getEngagementByClerkUserId(user.id);
   if (!engagement) redirect('/no-engagement');
 
-  const [lastRun, automations, recentRuns] = await Promise.all([
+  const [lastRun, automations, recentRuns, health] = await Promise.all([
     getLastRunForEngagement(engagement.id),
     listAutomationsForEngagement(engagement.id),
     listRecentRunsForEngagement(engagement.id),
+    listAutomationHealth(engagement.id),
   ]);
+  const healthByAutomationId = Object.fromEntries(
+    health.map((h) => [h.automationId, h.state]),
+  );
 
   const focusVariant = selectFocusVariant({
     lastRun: lastRun
@@ -48,7 +53,10 @@ export default async function PortalHome() {
       />
       <FocusCard variant={focusVariant} />
       {recentRuns.length > 0 && <RecentActivity runs={recentRuns.slice(0, 3)} />}
-      <AutomationsSection rows={automations} />
+      <AutomationsSection
+        rows={automations}
+        healthByAutomationId={healthByAutomationId}
+      />
     </div>
   );
 }

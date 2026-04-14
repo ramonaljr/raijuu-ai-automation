@@ -2,10 +2,18 @@
 
 import { FadeIn } from '@/components/shared/motion';
 import { StatusPill } from '@/app/admin/_components/StatusPill';
+import { HealthPill } from './HealthPill';
 import { formatDate } from '@/lib/format/time';
 import type { Automation } from '@/lib/db/schema';
+import type { HealthState } from '@/lib/portal/health';
 
-export function AutomationsSection({ rows }: { rows: Automation[] }) {
+export function AutomationsSection({
+  rows,
+  healthByAutomationId,
+}: {
+  rows: Automation[];
+  healthByAutomationId: Record<number, HealthState>;
+}) {
   return (
     <FadeIn direction="up" distance={20} amount={0.1}>
       <section className="space-y-3">
@@ -27,6 +35,7 @@ export function AutomationsSection({ rows }: { rows: Automation[] }) {
                   <Th>Name</Th>
                   <Th>What it does</Th>
                   <Th>Status</Th>
+                  <Th>Health</Th>
                   <Th>Live since</Th>
                 </tr>
               </thead>
@@ -44,6 +53,9 @@ export function AutomationsSection({ rows }: { rows: Automation[] }) {
                     </Td>
                     <Td>
                       <StatusPill status={r.status} />
+                    </Td>
+                    <Td>
+                      <HealthPill state={healthByAutomationId[r.id] ?? 'idle'} />
                     </Td>
                     <Td className="font-mono text-xs text-neutral-500">
                       {formatDate(r.createdAt)}
