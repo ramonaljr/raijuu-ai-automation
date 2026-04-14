@@ -3,11 +3,12 @@ import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import {
   getEngagementByClerkUserId,
+  getLiveMonthSnapshot,
   getOutcomeForMonth,
   listMonthsWithOutcomes,
   currentUtcMonth,
 } from '@/lib/portal/data';
-import { formatMoneyCents } from '@/lib/format/time';
+import { formatMoneyCents, formatRelative } from '@/lib/format/time';
 import { PageHeader } from '../_components/PageHeader';
 
 export const dynamic = 'force-dynamic';
@@ -29,9 +30,13 @@ export default async function ReportsPage({
   const current = currentUtcMonth();
   const selectedMonth = requested ?? current;
 
-  const [{ outcome }, historyMonths] = await Promise.all([
+  const isCurrentMonth = selectedMonth === current;
+  const [{ outcome }, historyMonths, liveSnapshot] = await Promise.all([
     getOutcomeForMonth(engagement.id, selectedMonth),
     listMonthsWithOutcomes(engagement.id),
+    isCurrentMonth
+      ? getLiveMonthSnapshot(engagement.id, selectedMonth)
+      : Promise.resolve(null),
   ]);
 
   // Always surface the current month in the selector, even if there's no row yet.
@@ -64,6 +69,9 @@ export default async function ReportsPage({
           </a>
         </div>
       </div>
+      {liveSnapshot && (
+        <LiveSnapshotCard snapshot={liveSnapshot} hasFinalized={Boolean(outcome)} />
+      )}
       {outcome ? (
         <div className="space-y-8">
           <div className="grid gap-4 sm:grid-cols-3">
@@ -89,13 +97,60 @@ export default async function ReportsPage({
           )}
         </div>
       ) : (
-        <div className="rounded-xl border border-dashed border-[color:var(--portal-border)] bg-white p-8">
-          <p className="text-sm font-medium">No report yet</p>
-          <p className="mt-1 max-w-xl text-sm text-neutral-600">
-            Your first monthly report computes on the 1st of next month. Need a
-            snapshot sooner? Ping Raijuu and we&apos;ll pull it by hand.
-          </p>
-        </div>
+        !liveSnapshot && (
+          <div className="rounded-xl border border-dashed border-[color:var(--portal-border)] bg-white p-8">
+            <p className="text-sm font-medium">No report yet</p>
+            <p className="mt-1 max-w-xl text-sm text-neutral-600">
+              Your first monthly report computes on the 1st of next month. Need a
+              snapshot sooner? Ping Raijuu and we&apos;ll pull it by hand.
+            </p>
+          </div>
+        )
+      )}
+    </div>
+  );
+}
+
+function LiveSnapshotCard({
+  snapshot,
+  hasFinalized,
+}: {
+  snapshot: import('@/lib/portal/data').LiveMonthSnapshot;
+  hasFinalized: boolean;
+}) {
+  const successPct =
+    snapshot.successRate == null
+      ? '—'
+      : `${Math.round(snapshot.successRate * 100)}%`;
+  return (
+    <div className="rounded-xl border border-[color:var(--portal-border)] bg-white p-6">
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-neutral-500">
+          This month so far {hasFinalized ? '' : '(live)'}
+        </p>
+        <p className="text-xs text-neutral-500">
+          {hasFinalized
+            ? 'Live counter — finalized totals below.'
+            : 'Finalized monthly report publishes on the 1st of next month.'}
+        </p>
+      </div>
+      <div className="mt-4 grid gap-4 sm:grid-cols-4">
+        <Stat label="Runs MTD" value={String(snapshot.runsCount)} />
+        <Stat
+          label="Active automations"
+          value={String(snapshot.distinctAutomations)}
+        />
+        <Stat label="Success rate" value={successPct} />
+        <Stat
+          label="Last success"
+          value={formatRelative(snapshot.lastSuccessAt)}
+        />
+      </div>
+      {snapshot.runsCount === 0 && (
+        <p className="mt-4 text-xs text-neutral-500">
+          No runs recorded this month yet. Automations show up here as soon as
+          n8n posts a result.
+        </p>
       )}
     </div>
   );
