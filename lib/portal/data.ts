@@ -43,6 +43,25 @@ export async function listRecentRunsForEngagement(engagementId: number) {
     .limit(30);
 }
 
+export async function getLastRunForEngagement(engagementId: number) {
+  const [row] = await db
+    .select({
+      id: runs.id,
+      automationId: runs.automationId,
+      automationName: automations.name,
+      startedAt: runs.startedAt,
+      finishedAt: runs.finishedAt,
+      status: runs.status,
+      outcomeJson: runs.outcomeJson,
+    })
+    .from(runs)
+    .innerJoin(automations, eq(automations.id, runs.automationId))
+    .where(eq(automations.engagementId, engagementId))
+    .orderBy(desc(runs.startedAt))
+    .limit(1);
+  return row ?? null;
+}
+
 export async function getCurrentMonthOutcome(engagementId: number) {
   const now = new Date();
   const month = `${now.getUTCFullYear()}-${String(now.getUTCMonth() + 1).padStart(2, '0')}`;
