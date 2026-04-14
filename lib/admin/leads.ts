@@ -1,13 +1,25 @@
-import { and, count, desc, isNotNull, isNull, sql } from 'drizzle-orm';
+import { and, asc, count, desc, isNotNull, isNull, sql } from 'drizzle-orm';
 import type { SQL } from 'drizzle-orm';
 import { db } from '@/lib/db';
 import { leads, type Lead } from '@/lib/db/schema';
 
 export type BookedFilter = 'all' | 'yes' | 'no';
 
+export type LeadSortField = 'created' | 'email' | 'industry' | 'booked';
+export type SortDir = 'asc' | 'desc';
+
+export const LEAD_SORT_FIELDS: readonly LeadSortField[] = [
+  'created',
+  'email',
+  'industry',
+  'booked',
+];
+
 export type ListLeadsArgs = {
   q?: string;
   booked?: BookedFilter;
+  sort?: LeadSortField;
+  dir?: SortDir;
   page?: number;
   pageSize?: number;
 };
@@ -35,18 +47,32 @@ function buildWhere(q: string | undefined, booked: BookedFilter): SQL | undefine
   return and(...clauses);
 }
 
+function buildOrderBy(sort: LeadSortField, dir: SortDir): SQL {
+  const column =
+    sort === 'email'
+      ? leads.email
+      : sort === 'industry'
+        ? leads.industry
+        : sort === 'booked'
+          ? leads.bookedAt
+          : leads.createdAt;
+  return dir === 'asc' ? asc(column) : desc(column);
+}
+
 export async function listLeadsFiltered(
   args: ListLeadsArgs = {},
 ): Promise<ListLeadsResult> {
   const pageSize = args.pageSize ?? 20;
   const page = Math.max(1, args.page ?? 1);
   const booked = args.booked ?? 'all';
+  const sort = args.sort ?? 'created';
+  const dir = args.dir ?? 'desc';
   const where = buildWhere(args.q, booked);
 
   const rowsQuery = db
     .select()
     .from(leads)
-    .orderBy(desc(leads.createdAt))
+    .orderBy(buildOrderBy(sort, dir))
     .limit(pageSize)
     .offset((page - 1) * pageSize);
 

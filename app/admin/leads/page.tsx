@@ -1,17 +1,26 @@
 import Link from 'next/link';
 import { Table, type Column } from '@/app/admin/_components/Table';
 import { EmptyState } from '@/app/admin/_components/EmptyState';
+import { Pager } from '@/app/admin/_components/Pager';
+import { SortHeader } from '@/app/admin/_components/SortHeader';
 import {
   formatDate,
   formatRelative,
 } from '@/app/admin/_components/formatters';
 import { ConvertLeadButton } from './ConvertLeadButton';
-import { listLeadsFiltered, type BookedFilter } from '@/lib/admin/leads';
+import {
+  listLeadsFiltered,
+  LEAD_SORT_FIELDS,
+  type BookedFilter,
+  type LeadSortField,
+  type SortDir,
+} from '@/lib/admin/leads';
 import type { Lead } from '@/lib/db/schema';
 
 export const dynamic = 'force-dynamic';
 
 const BOOKED_VALUES = ['all', 'yes', 'no'] as const;
+const DIR_VALUES: readonly SortDir[] = ['asc', 'desc'];
 
 function coerceBooked(v: string | undefined): BookedFilter {
   return (BOOKED_VALUES as readonly string[]).includes(v ?? '')
@@ -19,14 +28,30 @@ function coerceBooked(v: string | undefined): BookedFilter {
     : 'all';
 }
 
+function coerceSort(v: string | undefined): LeadSortField {
+  return (LEAD_SORT_FIELDS as readonly string[]).includes(v ?? '')
+    ? (v as LeadSortField)
+    : 'created';
+}
+
+function coerceDir(v: string | undefined): SortDir {
+  return (DIR_VALUES as readonly string[]).includes(v ?? '')
+    ? (v as SortDir)
+    : 'desc';
+}
+
 function buildQuery(params: {
   q?: string;
   booked?: BookedFilter;
+  sort?: LeadSortField;
+  dir?: SortDir;
   page?: number;
 }): string {
   const p = new URLSearchParams();
   if (params.q) p.set('q', params.q);
   if (params.booked && params.booked !== 'all') p.set('booked', params.booked);
+  if (params.sort && params.sort !== 'created') p.set('sort', params.sort);
+  if (params.dir && params.dir !== 'desc') p.set('dir', params.dir);
   if (params.page && params.page > 1) p.set('page', String(params.page));
   const s = p.toString();
   return s ? `?${s}` : '';
@@ -35,36 +60,75 @@ function buildQuery(params: {
 export default async function LeadsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; booked?: string; page?: string }>;
+  searchParams: Promise<{
+    q?: string;
+    booked?: string;
+    sort?: string;
+    dir?: string;
+    page?: string;
+  }>;
 }) {
-  const { q, booked: bookedRaw, page: pageRaw } = await searchParams;
+  const {
+    q,
+    booked: bookedRaw,
+    sort: sortRaw,
+    dir: dirRaw,
+    page: pageRaw,
+  } = await searchParams;
   const booked = coerceBooked(bookedRaw);
+  const sort = coerceSort(sortRaw);
+  const dir = coerceDir(dirRaw);
   const pageNum = Math.max(1, Number(pageRaw) || 1);
   const trimmedQ = q?.trim() ?? '';
 
   const { rows, total, page, pageSize, totalPages } = await listLeadsFiltered({
     q: trimmedQ,
     booked,
+    sort,
+    dir,
     page: pageNum,
   });
 
+  const hrefForSort = (field: string, nextDir: 'asc' | 'desc') =>
+    `/admin/leads${buildQuery({
+      q: trimmedQ,
+      booked,
+      sort: field as LeadSortField,
+      dir: nextDir,
+      page: 1,
+    })}`;
+
+  const sortHeader = (label: string, field: LeadSortField) => (
+    <SortHeader
+      label={label}
+      field={field}
+      activeField={sort}
+      activeDir={dir}
+      hrefFor={hrefForSort}
+    />
+  );
+
   const columns: Column<Lead>[] = [
-    { header: 'Email', cell: (r) => r.email },
-    { header: 'Industry', cell: (r) => r.industry },
+    { header: sortHeader('Email', 'email'), cell: (r) => r.email },
+    { header: sortHeader('Industry', 'industry'), cell: (r) => r.industry },
     {
       header: 'Situation',
       cell: (r) => r.situationText.slice(0, 80),
       className: 'max-w-sm',
     },
-    { header: 'Booked', cell: (r) => formatDate(r.bookedAt) },
-    { header: 'Created', cell: (r) => formatRelative(r.createdAt) },
-    { header: 'Action', cell: (r) => <ConvertLeadButton leadId={r.id} email={r.email} /> },
+    {
+      header: sortHeader('Booked', 'booked'),
+      cell: (r) => formatDate(r.bookedAt),
+    },
+    {
+      header: sortHeader('Created', 'created'),
+      cell: (r) => formatRelative(r.createdAt),
+    },
+    {
+      header: 'Action',
+      cell: (r) => <ConvertLeadButton leadId={r.id} email={r.email} />,
+    },
   ];
-
-  const start = total === 0 ? 0 : (page - 1) * pageSize + 1;
-  const end = Math.min(total, page * pageSize);
-  const prevHref = `/admin/leads${buildQuery({ q: trimmedQ, booked, page: page - 1 })}`;
-  const nextHref = `/admin/leads${buildQuery({ q: trimmedQ, booked, page: page + 1 })}`;
 
   return (
     <div className="space-y-4">
@@ -97,14 +161,20 @@ export default async function LeadsPage({
             <option value="no">Not booked</option>
           </select>
         </label>
+        {/* Preserve sort across search submission so the user doesn't lose it. */}
+        {sort !== 'created' && <input type="hidden" name="sort" value={sort} />}
+        {dir !== 'desc' && <input type="hidden" name="dir" value={dir} />}
         <button
           type="submit"
           className="rounded bg-black text-white px-3 py-1 text-xs"
         >
           Apply
         </button>
-        {(trimmedQ || booked !== 'all') && (
-          <Link href="/admin/leads" className="text-xs underline text-neutral-600">
+        {(trimmedQ || booked !== 'all' || sort !== 'created' || dir !== 'desc') && (
+          <Link
+            href="/admin/leads"
+            className="text-xs underline text-neutral-600"
+          >
             Reset
           </Link>
         )}
@@ -115,7 +185,11 @@ export default async function LeadsPage({
         rows={rows}
         emptyFallback={
           <EmptyState
-            title={total === 0 && !trimmedQ && booked === 'all' ? 'No leads yet' : 'No leads match'}
+            title={
+              total === 0 && !trimmedQ && booked === 'all'
+                ? 'No leads yet'
+                : 'No leads match'
+            }
             description={
               total === 0 && !trimmedQ && booked === 'all'
                 ? 'Leads appear here as prospects submit the demo.'
@@ -125,32 +199,21 @@ export default async function LeadsPage({
         }
       />
 
-      {total > 0 && (
-        <div className="flex items-center justify-between text-xs text-neutral-600">
-          <span>
-            {start}–{end} of {total}
-          </span>
-          <div className="flex items-center gap-2">
-            {page > 1 ? (
-              <Link href={prevHref} className="rounded border px-2 py-0.5 hover:bg-neutral-50">
-                ← Prev
-              </Link>
-            ) : (
-              <span className="rounded border px-2 py-0.5 opacity-40">← Prev</span>
-            )}
-            <span>
-              Page {page} / {totalPages}
-            </span>
-            {page < totalPages ? (
-              <Link href={nextHref} className="rounded border px-2 py-0.5 hover:bg-neutral-50">
-                Next →
-              </Link>
-            ) : (
-              <span className="rounded border px-2 py-0.5 opacity-40">Next →</span>
-            )}
-          </div>
-        </div>
-      )}
+      <Pager
+        total={total}
+        page={page}
+        pageSize={pageSize}
+        totalPages={totalPages}
+        hrefFor={(p) =>
+          `/admin/leads${buildQuery({
+            q: trimmedQ,
+            booked,
+            sort,
+            dir,
+            page: p,
+          })}`
+        }
+      />
     </div>
   );
 }
