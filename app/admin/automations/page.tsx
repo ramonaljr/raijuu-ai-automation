@@ -2,7 +2,10 @@ import Link from 'next/link';
 import { Table, type Column } from '@/app/admin/_components/Table';
 import { EmptyState } from '@/app/admin/_components/EmptyState';
 import { StatusPill } from '@/app/admin/_components/StatusPill';
-import { formatDate } from '@/app/admin/_components/formatters';
+import {
+  formatDate,
+  formatRelative,
+} from '@/app/admin/_components/formatters';
 import { listAutomationsWithCompany } from '@/lib/admin/automations';
 
 export const dynamic = 'force-dynamic';
@@ -26,6 +29,20 @@ export default async function AutomationsPage() {
         ),
     },
     { header: 'Status', cell: (r) => <StatusPill status={r.status} /> },
+    {
+      header: 'Last run',
+      cell: (r) =>
+        r.lastRunStatus && r.lastRunStartedAt ? (
+          <span className="inline-flex items-center gap-2">
+            <StatusPill status={r.lastRunStatus} />
+            <span className="text-xs text-neutral-500">
+              {formatRelative(r.lastRunStartedAt)}
+            </span>
+          </span>
+        ) : (
+          <span className="text-xs text-neutral-400">never</span>
+        ),
+    },
     { header: 'n8n workflow', cell: (r) => r.n8nWorkflowId ?? '—' },
     { header: 'Created', cell: (r) => formatDate(r.createdAt) },
   ];
