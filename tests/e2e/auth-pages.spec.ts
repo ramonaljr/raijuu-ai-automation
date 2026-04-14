@@ -47,4 +47,16 @@ test.describe('auth pages redesign', () => {
       .filter({ has: page.getByTestId('ticker-row') });
     await expect(ariaHiddenContainer).toHaveCount(1);
   });
+
+  test("Clerk's default footer action is actually hidden in the DOM", async ({ page }) => {
+    for (const route of ['/sign-in', '/sign-up']) {
+      await page.goto(route);
+      await expect(
+        page.getByRole('textbox', { name: /email/i }),
+      ).toBeVisible({ timeout: 10_000 });
+      // Catches a future Clerk upgrade that renames the footerAction slot — our
+      // appearance override would silently no-op and the duplicate link would reappear.
+      await expect(page.locator('.cl-footerAction')).toBeHidden();
+    }
+  });
 });
