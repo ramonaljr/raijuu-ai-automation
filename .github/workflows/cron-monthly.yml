@@ -1,0 +1,31 @@
+name: Monthly outcomes aggregation
+
+on:
+  schedule:
+    # 06:00 UTC on the 1st of every month
+    - cron: '0 6 1 * *'
+  workflow_dispatch: {}
+
+jobs:
+  aggregate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Hit /api/cron/aggregate-monthly
+        env:
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+          APP_PROD_URL: ${{ secrets.APP_PROD_URL }}
+        run: |
+          set -euo pipefail
+          if [ -z "$APP_PROD_URL" ] || [ -z "$CRON_SECRET" ]; then
+            echo "Missing APP_PROD_URL or CRON_SECRET GitHub secret" >&2
+            exit 1
+          fi
+          response=$(curl -sS --max-time 120 -w '\n%{http_code}' \
+            -H "Authorization: Bearer $CRON_SECRET" \
+            "$APP_PROD_URL/api/cron/aggregate-monthly")
+          body=$(printf '%s\n' "$response" | sed '$d')
+          code=$(printf '%s\n' "$response" | tail -n1)
+          echo "body: $body"
+          echo "http: $code"
+          [ "$code" = "200" ]

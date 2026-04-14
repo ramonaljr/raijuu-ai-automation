@@ -58,7 +58,12 @@ The `/demo` gated funnel integrates three external services. **All three are opt
 ### Phase 4 portal + cron env vars
 
 - **`N8N_WEBHOOK_SECRET`** — Shared secret for the `/api/n8n/run-callback` webhook. Set it here AND in your n8n HTTP Request node's `Authorization: Bearer <value>` header. If unset, the webhook rejects everything with 401. The unique index on `runs.n8n_execution_id` makes the insert idempotent — n8n's own retries are safe.
-- **`CRON_SECRET`** — Authorizes `/api/cron/aggregate-monthly`. In production, Vercel auto-injects this when the cron defined in `vercel.json` fires (`0 6 1 * *` — 06:00 UTC on the 1st). Locally you can recompute last month with:
+- **`CRON_SECRET`** — Authorizes `/api/cron/aggregate-monthly`. In production, a GitHub Actions workflow (`.github/workflows/cron-monthly.yml`) fires `0 6 1 * *` (06:00 UTC on the 1st) and curls the endpoint with this secret. The workflow reads `CRON_SECRET` and `APP_PROD_URL` from repo-scoped GitHub Actions secrets. Set them via:
+  ```bash
+  echo "<secret>" | gh secret set CRON_SECRET --app actions
+  echo "https://your-app.example.com" | gh secret set APP_PROD_URL --app actions
+  ```
+  You can also trigger the workflow manually from the GitHub Actions UI (`workflow_dispatch`). Locally, recompute last month with:
   ```bash
   curl -H "Authorization: Bearer $CRON_SECRET" \
     http://localhost:3000/api/cron/aggregate-monthly
@@ -145,7 +150,7 @@ lib/
   demo/                      Demo content + submission helpers (Phase 1)
 tests/e2e/                   Playwright specs
 drizzle.config.ts            Drizzle Kit config
-vercel.json                  Vercel Cron schedule (Phase 4)
+.github/workflows/           CI + cron (monthly outcomes aggregation)
 docs/plans/                  Design + implementation plans
 ```
 
