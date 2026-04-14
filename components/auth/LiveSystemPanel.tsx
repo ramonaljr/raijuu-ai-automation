@@ -19,9 +19,9 @@ export default function LiveSystemPanel() {
         <div className="font-mono text-xs uppercase tracking-widest text-[#6b7280]">
           Raijuu AI Automation
         </div>
-        <h1 className="mt-4 text-5xl font-semibold leading-tight text-white">
+        <div className="mt-4 text-5xl font-semibold leading-tight text-white">
           Raijuu
-        </h1>
+        </div>
         <p className="mt-3 max-w-sm text-lg text-[#9ca3af]">
           Automation that runs itself.
         </p>
