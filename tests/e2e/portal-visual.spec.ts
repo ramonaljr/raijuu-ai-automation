@@ -5,6 +5,10 @@ test.describe('Portal visual — signed out', () => {
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto('/sign-in');
     await expect(page.getByText(/Your automations, live/i)).toBeVisible();
+    // Wait for the Clerk form to hydrate so the left half isn't blank.
+    await expect(
+      page.getByRole('textbox', { name: /email/i }),
+    ).toBeVisible({ timeout: 10000 });
     await expect(page).toHaveScreenshot('sign-in.png', {
       fullPage: true,
       maxDiffPixelRatio: 0.02,
@@ -27,6 +31,9 @@ test.describe('Reduced motion', () => {
     await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.setViewportSize({ width: 1280, height: 800 });
     await page.goto('/sign-in');
+    await expect(
+      page.getByRole('textbox', { name: /email/i }),
+    ).toBeVisible({ timeout: 10000 });
     await expect(page).toHaveScreenshot('sign-in-reduced-motion.png', {
       fullPage: true,
       maxDiffPixelRatio: 0.02,
