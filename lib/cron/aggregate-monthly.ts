@@ -20,6 +20,51 @@ export type AggregateSummary = {
   upserts: number;
 };
 
+export function currentMonthSpec(now: Date = new Date()): MonthSpec {
+  return { year: now.getUTCFullYear(), monthIndex: now.getUTCMonth() };
+}
+
+export async function aggregateMonthForEngagement(
+  engagementId: number,
+  spec: MonthSpec,
+): Promise<AggregateSummary> {
+  const monthStart = new Date(Date.UTC(spec.year, spec.monthIndex, 1));
+  const monthEnd = new Date(Date.UTC(spec.year, spec.monthIndex + 1, 1));
+  const month = monthLabel(spec);
+
+  const [row] = await db
+    .select({
+      runsCount: sql<number>`count(${runs.id})::int`,
+      timeSavedMinutes: sql<number>`coalesce(sum((${runs.outcomeJson}->>'time_saved_minutes')::int), 0)::int`,
+      dollarsInfluencedCents: sql<number>`coalesce(sum((${runs.outcomeJson}->>'dollars_influenced_cents')::int), 0)::int`,
+    })
+    .from(runs)
+    .innerJoin(automations, eq(automations.id, runs.automationId))
+    .where(
+      and(
+        eq(automations.engagementId, engagementId),
+        gte(runs.startedAt, monthStart),
+        lt(runs.startedAt, monthEnd),
+      ),
+    );
+
+  const totals = {
+    runsCount: row?.runsCount ?? 0,
+    timeSavedMinutes: row?.timeSavedMinutes ?? 0,
+    dollarsInfluencedCents: row?.dollarsInfluencedCents ?? 0,
+  };
+
+  await db
+    .insert(outcomesMonthly)
+    .values({ engagementId, month, ...totals })
+    .onConflictDoUpdate({
+      target: [outcomesMonthly.engagementId, outcomesMonthly.month],
+      set: totals,
+    });
+
+  return { month, upserts: 1 };
+}
+
 export async function aggregateMonth(spec: MonthSpec): Promise<AggregateSummary> {
   const monthStart = new Date(Date.UTC(spec.year, spec.monthIndex, 1));
   const monthEnd = new Date(Date.UTC(spec.year, spec.monthIndex + 1, 1));

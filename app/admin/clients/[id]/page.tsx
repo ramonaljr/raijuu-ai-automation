@@ -14,6 +14,7 @@ import {
   listRecentRunsForEngagement,
 } from '@/lib/portal/data';
 import { NarrativeEditor } from './NarrativeEditor';
+import { RecomputeButton } from './RecomputeButton';
 
 export const dynamic = 'force-dynamic';
 
@@ -103,9 +104,12 @@ export default async function ClientDetailPage({
       </section>
 
       <section className="border rounded-lg p-4">
-        <h2 className="text-sm font-medium">
-          Monthly narrative — {currentOutcome.month}
-        </h2>
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h2 className="text-sm font-medium">
+            Monthly narrative — {currentOutcome.month}
+          </h2>
+          <RecomputeButton engagementId={engagement.id} />
+        </div>
         <div className="mt-3">
           <NarrativeEditor
             engagementId={engagement.id}

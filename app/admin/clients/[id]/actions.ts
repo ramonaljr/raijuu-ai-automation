@@ -7,6 +7,10 @@ import { and, eq } from 'drizzle-orm';
 import { db } from '@/lib/db';
 import { engagements, outcomesMonthly } from '@/lib/db/schema';
 import { getRole } from '@/lib/auth/roles';
+import {
+  aggregateMonthForEngagement,
+  currentMonthSpec,
+} from '@/lib/cron/aggregate-monthly';
 
 const saveSchema = z.object({
   engagementId: z.number().int().positive(),
@@ -66,4 +70,39 @@ export async function saveNarrative(
   revalidatePath(`/admin/clients/${engagementId}`);
   revalidatePath('/app/reports');
   return { ok: true };
+}
+
+const recomputeSchema = z.object({
+  engagementId: z.number().int().positive(),
+});
+
+export type RecomputeResult =
+  | { ok: true; month: string }
+  | { ok: false; error: string };
+
+export async function recomputeCurrentMonth(
+  input: unknown,
+): Promise<RecomputeResult> {
+  const user = await currentUser();
+  if (!user) return { ok: false, error: 'not-signed-in' };
+  if (getRole(user) !== 'admin') return { ok: false, error: 'forbidden' };
+
+  const parsed = recomputeSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: 'invalid-payload' };
+
+  const engagementRows = await db
+    .select({ id: engagements.id })
+    .from(engagements)
+    .where(eq(engagements.id, parsed.data.engagementId))
+    .limit(1);
+  if (!engagementRows[0]) return { ok: false, error: 'engagement-not-found' };
+
+  const summary = await aggregateMonthForEngagement(
+    parsed.data.engagementId,
+    currentMonthSpec(),
+  );
+
+  revalidatePath(`/admin/clients/${parsed.data.engagementId}`);
+  revalidatePath('/app/reports');
+  return { ok: true, month: summary.month };
 }
