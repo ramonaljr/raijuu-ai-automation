@@ -8,6 +8,7 @@ import {
 import { StatusPill } from '@/app/admin/_components/StatusPill';
 import { formatRelative } from '@/lib/format/time';
 import { PageHeader } from '../../_components/PageHeader';
+import { OutcomeRenderer, RawOutcomeView } from './_components/OutcomeRenderer';
 
 export const dynamic = 'force-dynamic';
 
@@ -45,10 +46,6 @@ export default async function RunDetailPage({
 
   const run = await getRunForEngagement(engagement.id, runId);
   if (!run) notFound();
-
-  const outcomePretty = run.outcomeJson
-    ? JSON.stringify(run.outcomeJson, null, 2)
-    : null;
 
   return (
     <div className="space-y-8">
@@ -95,15 +92,8 @@ export default async function RunDetailPage({
         <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-neutral-500">
           Outcome
         </p>
-        {outcomePretty ? (
-          <pre className="overflow-auto rounded-xl border border-[color:var(--portal-border)] bg-white p-5 font-mono text-xs leading-relaxed text-neutral-800">
-            {outcomePretty}
-          </pre>
-        ) : (
-          <div className="rounded-xl border border-dashed border-[color:var(--portal-border)] bg-white p-5 text-sm text-neutral-500">
-            No outcome payload was recorded for this run.
-          </div>
-        )}
+        <OutcomeRenderer outcome={run.outcomeJson} />
+        <RawOutcomeView outcome={run.outcomeJson} />
       </section>
     </div>
   );
