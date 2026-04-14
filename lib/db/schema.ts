@@ -1,3 +1,4 @@
+import { sql } from 'drizzle-orm';
 import {
   pgTable,
   serial,
@@ -70,6 +71,12 @@ export const engagements = pgTable(
   },
   (t) => ({
     leadIdIdx: index('engagements_lead_id_idx').on(t.leadId),
+    // Partial unique: at most one engagement per lead. NULL leadId is excluded
+    // so legacy rows without a lead can coexist. Prevents concurrent duplicate
+    // conversions from /api/admin/engagements/create-from-lead.
+    leadIdPartialUniq: uniqueIndex('engagements_lead_id_partial_uniq')
+      .on(t.leadId)
+      .where(sql`${t.leadId} IS NOT NULL`),
     magicLinkTokenUniq: uniqueIndex('engagements_magic_link_token_uniq').on(
       t.magicLinkToken,
     ),
@@ -161,6 +168,25 @@ export const outcomesMonthly = pgTable(
   }),
 );
 
+export const webhookDeadLetter = pgTable(
+  'webhook_dead_letter',
+  {
+    id: serial('id').primaryKey(),
+    source: text('source').notNull(),
+    payload: jsonb('payload').notNull(),
+    errorMessage: text('error_message').notNull(),
+    receivedAt: timestamp('received_at').defaultNow().notNull(),
+    resolvedAt: timestamp('resolved_at'),
+    retryCount: integer('retry_count').default(0).notNull(),
+  },
+  (t) => ({
+    sourceIdx: index('webhook_dead_letter_source_idx').on(t.source),
+    receivedAtIdx: index('webhook_dead_letter_received_at_idx').on(
+      t.receivedAt,
+    ),
+  }),
+);
+
 // Inferred row / insert types for downstream consumers
 export type Lead = typeof leads.$inferSelect;
 export type NewLead = typeof leads.$inferInsert;
@@ -174,3 +200,5 @@ export type Run = typeof runs.$inferSelect;
 export type NewRun = typeof runs.$inferInsert;
 export type OutcomeMonthly = typeof outcomesMonthly.$inferSelect;
 export type NewOutcomeMonthly = typeof outcomesMonthly.$inferInsert;
+export type WebhookDeadLetter = typeof webhookDeadLetter.$inferSelect;
+export type NewWebhookDeadLetter = typeof webhookDeadLetter.$inferInsert;
