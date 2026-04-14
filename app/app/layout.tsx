@@ -1,8 +1,9 @@
 import { currentUser } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
-import { UserButton } from '@clerk/nextjs';
-import Link from 'next/link';
+import { headers } from 'next/headers';
 import { getEngagementForUser } from '@/lib/portal/engagement';
+import { getEngagementByClerkUserId } from '@/lib/portal/data';
+import { PortalShell } from './_components/PortalShell';
 
 export default async function AppLayout({
   children,
@@ -20,17 +21,19 @@ export default async function AppLayout({
     redirect('/no-engagement');
   }
 
+  const engagement = await getEngagementByClerkUserId(user.id);
+  if (!engagement) redirect('/no-engagement');
+
+  const hdrs = await headers();
+  const currentPath = hdrs.get('x-pathname') ?? '/app';
+
   return (
-    <div className="min-h-screen flex flex-col">
-      <header className="border-b px-6 py-3 flex items-center justify-between">
-        <nav className="flex gap-6 text-sm">
-          <Link href="/app">Automations</Link>
-          <Link href="/app/runs">Runs</Link>
-          <Link href="/app/reports">Reports</Link>
-        </nav>
-        <UserButton />
-      </header>
-      <main className="flex-1 p-6">{children}</main>
-    </div>
+    <PortalShell
+      engagementName={engagement.companyName}
+      currentPath={currentPath}
+      userEmail={email}
+    >
+      {children}
+    </PortalShell>
   );
 }

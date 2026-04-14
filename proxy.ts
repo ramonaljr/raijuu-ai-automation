@@ -9,6 +9,10 @@ export default clerkMiddleware(async (auth, req) => {
     const { userId } = await auth();
     if (!userId) return NextResponse.redirect(new URL('/sign-in', req.url));
   }
+
+  const reqHeaders = new Headers(req.headers);
+  reqHeaders.set('x-pathname', req.nextUrl.pathname);
+  return NextResponse.next({ request: { headers: reqHeaders } });
 });
 
 export const config = {
