@@ -1,5 +1,3 @@
-'use client';
-
 const RUNS = [
   { client: 'acme-corp', flow: 'invoice-sync', ms: '2.3s' },
   { client: 'contoso', flow: 'lead-routing', ms: '1.1s' },
@@ -31,7 +29,7 @@ export default function LiveSystemPanel() {
 
       <div className="dot-grid pointer-events-none absolute inset-0 opacity-60" />
 
-      <div className="relative z-10 w-full">
+      <div className="relative z-10 w-full" aria-hidden="true">
         <div className="mb-3 font-mono text-xs uppercase tracking-widest text-[#6b7280]">
           Live runs
         </div>
@@ -40,7 +38,7 @@ export default function LiveSystemPanel() {
             <div
               key={i}
               data-testid="ticker-row"
-              className="flex shrink-0 items-center gap-3 rounded-lg border border-[#1f1f1f] bg-[#141414]/60 px-4 py-2 text-[#d1d5db] backdrop-blur"
+              className="flex shrink-0 items-center gap-3 rounded-lg border border-[#1f1f1f] bg-[#141414]/60 px-4 py-2 text-[#d1d5db]"
             >
               <span className="text-[#4d65ff]">▸</span>
               <span>{r.client}</span>
