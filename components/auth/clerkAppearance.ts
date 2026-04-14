@@ -19,6 +19,6 @@ export const clerkAppearance = {
       'bg-[#4d65ff] hover:bg-[#6b7fff] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#4d65ff] focus-visible:ring-offset-2 focus-visible:ring-offset-[#141414]',
     footerActionLink:
       'text-accent-light hover:text-[#93c5fd] focus-visible:outline-none focus-visible:underline',
-    footerAction: 'hidden',
+    footerAction: '!hidden',
   },
 } as const;

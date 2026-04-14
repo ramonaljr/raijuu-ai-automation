@@ -35,6 +35,6 @@ describe('clerkAppearance', () => {
   });
 
   it('hides Clerk default footer action to avoid duplicate sign-up link', () => {
-    expect(clerkAppearance.elements?.footerAction).toBe('hidden');
+    expect(clerkAppearance.elements?.footerAction).toBe('!hidden');
   });
 });
