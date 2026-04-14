@@ -1,14 +1,16 @@
 import { currentUser } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
-import { Table, type Column } from '@/app/admin/_components/Table';
-import { EmptyState } from '@/app/admin/_components/EmptyState';
-import { StatusPill } from '@/app/admin/_components/StatusPill';
-import { formatDate } from '@/app/admin/_components/formatters';
 import {
   getEngagementByClerkUserId,
+  getLastRunForEngagement,
   listAutomationsForEngagement,
+  listRecentRunsForEngagement,
 } from '@/lib/portal/data';
-import type { Automation } from '@/lib/db/schema';
+import { PageHeader } from './_components/PageHeader';
+import { FocusCard } from './_components/FocusCard';
+import { selectFocusVariant, type FocusRun } from './_components/focus';
+import { RecentActivity } from './_components/RecentActivity';
+import { AutomationsSection } from './_components/AutomationsSection';
 
 export const dynamic = 'force-dynamic';
 
@@ -18,33 +20,35 @@ export default async function PortalHome() {
   const engagement = await getEngagementByClerkUserId(user.id);
   if (!engagement) redirect('/no-engagement');
 
-  const rows = await listAutomationsForEngagement(engagement.id);
+  const [lastRun, automations, recentRuns] = await Promise.all([
+    getLastRunForEngagement(engagement.id),
+    listAutomationsForEngagement(engagement.id),
+    listRecentRunsForEngagement(engagement.id),
+  ]);
 
-  const columns: Column<Automation>[] = [
-    { header: 'Name', cell: (r) => r.name },
-    {
-      header: 'What it does',
-      cell: (r) => r.description ?? '—',
-      className: 'max-w-md',
-    },
-    { header: 'Status', cell: (r) => <StatusPill status={r.status} /> },
-    { header: 'Live since', cell: (r) => formatDate(r.createdAt) },
-  ];
+  const focusVariant = selectFocusVariant({
+    lastRun: lastRun
+      ? ({
+          id: lastRun.id,
+          automationName: lastRun.automationName,
+          status: lastRun.status,
+          startedAt: lastRun.startedAt,
+        } satisfies FocusRun)
+      : null,
+  });
+
+  const firstName = user.firstName ?? 'there';
 
   return (
-    <div className="space-y-4">
-      <h1 className="text-lg font-semibold">{engagement.companyName}</h1>
-      <p className="text-sm text-neutral-600">Your automations</p>
-      <Table
-        columns={columns}
-        rows={rows}
-        emptyFallback={
-          <EmptyState
-            title="No automations yet"
-            description="Raijuu is building your first automations. You'll see them here as soon as they're live."
-          />
-        }
+    <div className="space-y-10">
+      <PageHeader
+        eyebrow={engagement.companyName}
+        title={`Hi ${firstName} — here's today.`}
+        reveal
       />
+      <FocusCard variant={focusVariant} />
+      {recentRuns.length > 0 && <RecentActivity runs={recentRuns.slice(0, 3)} />}
+      <AutomationsSection rows={automations} />
     </div>
   );
 }
