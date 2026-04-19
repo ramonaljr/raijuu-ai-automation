@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Zap } from "lucide-react";
 import { useUser, UserButton } from "@clerk/nextjs";
 import { NAV_ITEMS } from "@/lib/constants";
+import Link from "next/link";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -54,7 +55,7 @@ export default function Navbar() {
         }`}
       >
         {/* Logo */}
-        <a
+        <Link
           href="/"
           className={`flex h-10 w-10 items-center justify-center rounded-full transition-colors ${
             scrolled ? "bg-gray-100" : "bg-white/10"
@@ -64,7 +65,7 @@ export default function Navbar() {
           <Zap
             className={`h-5 w-5 ${scrolled ? "text-foreground" : "text-white"}`}
           />
-        </a>
+        </Link>
 
         {/* Menu toggle */}
         <button
@@ -83,7 +84,7 @@ export default function Navbar() {
 
         {/* Auth entry */}
         {isLoaded && isSignedIn ? (
-          <a
+          <Link
             href="/app"
             className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
               scrolled
@@ -92,9 +93,9 @@ export default function Navbar() {
             }`}
           >
             Portal
-          </a>
+          </Link>
         ) : (
-          <a
+          <Link
             href="/sign-in"
             className={`rounded-full px-4 py-2 text-sm font-medium transition-colors ${
               scrolled
@@ -103,7 +104,7 @@ export default function Navbar() {
             }`}
           >
             Sign in
-          </a>
+          </Link>
         )}
 
         {/* CTA / user */}

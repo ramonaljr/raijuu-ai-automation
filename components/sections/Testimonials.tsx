@@ -1,117 +1,56 @@
 "use client";
 
-import { Play } from "lucide-react";
-import { FadeIn, TextReveal, ScaleIn } from "@/components/shared/motion";
-import SectionBadge from "@/components/ui/SectionBadge";
+import { motion } from "framer-motion";
+import { FadeIn, TextReveal, cinematicSpring } from "@/components/shared/motion";
 import { TESTIMONIALS } from "@/lib/constants";
-
-function TestimonialCard({
-  testimonial,
-}: {
-  testimonial: (typeof TESTIMONIALS)[number];
-}) {
-  return (
-    <div className="rounded-2xl border border-gray-200 bg-white p-6">
-      {/* Quote mark + avatar */}
-      <div className="mb-4 flex items-start justify-between">
-        <div className="h-14 w-14 rounded-full bg-gradient-to-br from-gray-300 to-gray-400" />
-        <span className="text-4xl leading-none text-gray-200">&ldquo;</span>
-      </div>
-
-      {/* Name & role */}
-      <h4 className="font-semibold">{testimonial.name}</h4>
-      <p className="text-sm text-muted">{testimonial.role}</p>
-
-      {/* Quote */}
-      <p className="mt-4 text-sm leading-relaxed text-foreground/80">
-        {testimonial.quote}
-      </p>
-    </div>
-  );
-}
-
-function VideoCard({ title }: { title: string }) {
-  return (
-    <div className="relative overflow-hidden rounded-2xl bg-dark-surface">
-      <div className="aspect-[3/4] bg-gradient-to-br from-gray-700 to-gray-900">
-        <div className="flex h-full flex-col justify-between p-6">
-          <button
-            type="button"
-            aria-label="Play video"
-            className="flex h-12 w-12 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm transition-transform hover:scale-110"
-          >
-            <Play className="h-5 w-5 text-white" />
-          </button>
-          <div>
-            <div className="mb-2 text-xs font-medium text-white/50">
-              Logoipsum
-            </div>
-            <p className="text-lg font-semibold leading-snug text-white">
-              {title}
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
+import { Quote } from "lucide-react";
 
 export default function Testimonials() {
   return (
-    <section id="testimonials-section" className="bg-gray-50 py-24 lg:py-32">
-      <div className="mx-auto max-w-6xl px-4">
-        {/* Header */}
-        <div className="mb-16 flex flex-col items-center text-center">
+    <section id="testimonials-section" className="relative bg-[#0a0a0a] py-32 overflow-hidden border-t border-white/5">
+      <div className="container relative z-10 mx-auto px-4 lg:px-8">
+        
+        <div className="mb-20 flex flex-col items-center text-center">
           <FadeIn>
-            <SectionBadge number="007" label="testimonial" />
+             <div className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 backdrop-blur-md mb-8">
+               <span className="text-xs font-semibold uppercase tracking-widest text-[#cdcdcd]">
+                 Testimonials
+               </span>
+             </div>
           </FadeIn>
           <TextReveal
             as="h2"
             delay={0.1}
-            className="mt-6 text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl"
+            className="text-4xl font-medium tracking-tight text-white md:text-5xl lg:text-6xl"
           >
             What They&apos;re Saying
           </TextReveal>
         </div>
 
-        {/* Masonry 3-column grid */}
-        <div className="columns-1 gap-4 space-y-4 md:columns-2 lg:columns-3">
-          {/* Column 1 pattern: video, testimonial, testimonial */}
-          <ScaleIn initialScale={0.9} className="break-inside-avoid">
-            <VideoCard title="How Puno Automated 80% of Lead Handling" />
-          </ScaleIn>
-
-          <ScaleIn initialScale={0.9} className="break-inside-avoid">
-            <TestimonialCard testimonial={TESTIMONIALS[0]} />
-          </ScaleIn>
-
-          <ScaleIn initialScale={0.9} className="break-inside-avoid">
-            <TestimonialCard testimonial={TESTIMONIALS[3]} />
-          </ScaleIn>
-
-          <ScaleIn initialScale={0.9} className="break-inside-avoid">
-            <TestimonialCard testimonial={TESTIMONIALS[1]} />
-          </ScaleIn>
-
-          <ScaleIn initialScale={0.9} className="break-inside-avoid">
-            <TestimonialCard testimonial={TESTIMONIALS[5]} />
-          </ScaleIn>
-
-          <ScaleIn initialScale={0.9} className="break-inside-avoid">
-            <TestimonialCard testimonial={TESTIMONIALS[4]} />
-          </ScaleIn>
-
-          <ScaleIn initialScale={0.9} className="break-inside-avoid">
-            <VideoCard title="Scaling SaaS Operations with AI Automation" />
-          </ScaleIn>
-
-          <ScaleIn initialScale={0.9} className="break-inside-avoid">
-            <TestimonialCard testimonial={TESTIMONIALS[2]} />
-          </ScaleIn>
-
-          <ScaleIn initialScale={0.9} className="break-inside-avoid">
-            <TestimonialCard testimonial={TESTIMONIALS[6]} />
-          </ScaleIn>
+        <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
+           {TESTIMONIALS.map((t, idx) => (
+             <FadeIn key={idx} delay={(idx % 5) * 0.1} className="break-inside-avoid">
+                 <motion.div 
+                     whileHover={{ y: -4 }}
+                     transition={cinematicSpring}
+                     className="rounded-3xl border border-white/5 bg-[#141414] p-8 shadow-xl"
+                 >
+                    <Quote className="h-8 w-8 text-accent/50 mb-6" />
+                    <p className="text-[#cdcdcd] font-light leading-relaxed mb-8 text-lg">
+                       &quot;{t.quote}&quot;
+                    </p>
+                    <div className="flex items-center gap-4 pt-6 border-t border-white/5">
+                        <div className="h-12 w-12 rounded-full overflow-hidden bg-[#1a1a1a]">
+                            <img src={`https://api.dicebear.com/7.x/notionists/svg?seed=${t.name}`} alt={t.name} className="h-full w-full object-cover" />
+                        </div>
+                        <div>
+                           <h4 className="font-semibold text-white">{t.name}</h4>
+                           <p className="text-xs text-[#b8b8b8]">{t.role}</p>
+                        </div>
+                    </div>
+                 </motion.div>
+             </FadeIn>
+           ))}
         </div>
       </div>
     </section>

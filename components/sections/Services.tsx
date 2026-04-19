@@ -1,27 +1,8 @@
 "use client";
 
-import {
-  FadeIn,
-  TextReveal,
-  StaggerChildren,
-  StaggerItem,
-} from "@/components/shared/motion";
-import {
-  Check,
-  ArrowRight,
-  Zap,
-  Shield,
-  Lock,
-  Key,
-  Database,
-  MessageSquare,
-  Users,
-  Send,
-  CheckCircle,
-  Clock,
-  Mail,
-  Smile,
-} from "lucide-react";
+import { motion } from "framer-motion";
+import { FadeIn, TextReveal, StaggerChildren, StaggerItem, cinematicSpring } from "@/components/shared/motion";
+import { Zap, Shield, Lock, Key, Database, MessageSquare, Users, Send, CheckCircle, Clock, Mail, Smile, ArrowRight } from "lucide-react";
 import SectionBadge from "@/components/ui/SectionBadge";
 import { SECURITY_FEATURES } from "@/lib/constants";
 
@@ -29,263 +10,243 @@ const securityIcons = [Shield, Lock, Key, Database];
 
 export default function Services() {
   return (
-    <section id="service-section" className="bg-white py-24 lg:py-32">
-      <div className="mx-auto max-w-6xl px-4">
+    <section id="service-section" className="relative bg-[#0a0a0a] py-32 overflow-hidden border-t border-white/5">
+      <div className="container relative z-10 mx-auto px-4 lg:px-8">
         {/* Header */}
-        <div className="mb-16 flex flex-col items-center text-center">
+        <div className="mb-20 flex flex-col items-center text-center">
           <FadeIn>
-            <SectionBadge number="003" label="Capabilities" />
+            <div className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 backdrop-blur-md mb-8">
+              <span className="text-xs font-semibold uppercase tracking-widest text-[#cdcdcd]">
+                Capabilities
+              </span>
+            </div>
           </FadeIn>
           <TextReveal
             as="h2"
             delay={0.1}
-            className="mt-6 text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl"
+            className="text-4xl font-medium tracking-tight md:text-5xl lg:text-6xl text-white"
           >
             Our AI-Driven Services
           </TextReveal>
         </div>
 
         {/* Bento grid — 3 columns */}
-        <StaggerChildren
-          className="grid gap-4 md:grid-cols-3"
-          stagger={0.1}
-        >
-          {/* Card 1: AI Workflow Automation — spans 2 rows */}
+        <StaggerChildren className="grid gap-6 md:grid-cols-3" stagger={0.1}>
+          {/* Card 1: AI Workflow Automation */}
           <StaggerItem className="md:row-span-2">
-            <div className="flex h-full flex-col rounded-2xl border border-gray-200 bg-white p-6 transition-all duration-500 hover:shadow-lg">
-              <p className="text-sm leading-relaxed text-foreground">
-                <span className="font-semibold">AI Workflow Automation.</span>{" "}
-                Automate repetitive tasks across departments using intelligent
-                triggers and decision logic.
-              </p>
-
-              <div className="mt-4 space-y-2">
-                {["Workflow mapping", "Real-time system integration.", "Validated output"].map((f) => (
-                  <div key={f} className="flex items-center gap-2 text-sm text-muted">
-                    <Check className="h-4 w-4 text-muted" />
-                    {f}
-                  </div>
-                ))}
+            <motion.div 
+              whileHover={{ y: -5 }}
+              transition={cinematicSpring}
+              className="group relative flex h-full flex-col rounded-3xl border border-white/5 bg-[#141414] p-8 overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-accent/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              
+              <div className="relative z-10">
+                <h3 className="text-2xl font-medium text-white mb-3">AI Workflow <br/>Automation</h3>
+                <p className="text-sm leading-relaxed text-[#b8b8b8]">
+                  Automate repetitive tasks across departments using intelligent triggers and decision logic.
+                </p>
               </div>
 
               {/* Workflow diagram visual */}
-              <div className="mt-auto flex flex-1 flex-col items-center justify-center pt-8">
-                {/* Center icon with rings */}
+              <div className="relative z-10 mt-auto flex flex-1 flex-col items-center justify-center pt-12 pb-4">
                 <div className="relative mb-6">
-                  <div className="absolute -inset-4 rounded-full border-2 border-purple-200/50" />
-                  <div className="absolute -inset-2 rounded-full border-2 border-yellow-200/50" />
-                  <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-100">
-                    <Zap className="h-5 w-5 text-muted" />
+                  <div className="absolute -inset-6 rounded-full border border-white/10 animate-[spin_10s_linear_infinite]" />
+                  <div className="absolute -inset-3 rounded-full border border-white/20 animate-[spin_15s_linear_infinite_reverse]" />
+                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#1a1a1a] border border-white/10 shadow-[0_0_30px_rgba(255,255,255,0.1)]">
+                    <Zap className="h-6 w-6 text-white" />
                   </div>
                 </div>
 
-                {/* Connecting lines */}
-                <div className="h-8 w-px bg-gray-200" />
+                <div className="h-10 w-px bg-gradient-to-b from-white/20 to-transparent" />
 
-                {/* Icon nodes row 1 */}
                 <div className="flex gap-4">
                   {[MessageSquare, Users, Zap].map((Icon, i) => (
-                    <div
-                      key={i}
-                      className="flex h-12 w-12 items-center justify-center rounded-xl bg-dark-surface shadow-md"
-                    >
+                    <div key={i} className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
                       <Icon className="h-5 w-5 text-white/70" />
                     </div>
                   ))}
                 </div>
-
-                {/* Connecting lines */}
-                <div className="my-3 flex gap-12">
-                  <div className="h-6 w-px bg-gray-200" />
-                  <div className="h-6 w-px bg-gray-200" />
-                  <div className="h-6 w-px bg-gray-200" />
-                </div>
-
-                {/* Icon nodes row 2 */}
-                <div className="flex gap-4">
-                  {[Send, CheckCircle, Clock].map((Icon, i) => (
-                    <div
-                      key={i}
-                      className="flex h-12 w-12 items-center justify-center rounded-xl bg-gray-200/80"
-                    >
-                      <Icon className="h-5 w-5 text-muted" />
-                    </div>
-                  ))}
-                </div>
               </div>
-            </div>
+            </motion.div>
           </StaggerItem>
 
           {/* Card 2: AI Chatbots */}
           <StaggerItem>
-            <div className="flex h-full flex-col rounded-2xl border border-gray-200 bg-gray-50 p-6 transition-all duration-500 hover:shadow-lg">
-              <p className="text-sm leading-relaxed text-foreground">
-                <span className="font-semibold">
-                  AI Chatbots & Conversational Agents.
-                </span>{" "}
-                24/7 customer support, lead qualification, booking systems, and
-                AI sales reps.
-              </p>
-              <div className="mt-auto space-y-2 pt-6">
-                <div className="flex items-center gap-2">
-                  <div className="h-6 w-6 rounded-full bg-accent/20 flex items-center justify-center">
-                    <Zap className="h-3 w-3 text-accent" />
-                  </div>
-                  <div className="text-xs text-muted">...</div>
-                </div>
+            <motion.div 
+              whileHover={{ y: -5 }}
+              transition={cinematicSpring}
+              className="group relative flex h-full flex-col rounded-3xl border border-white/5 bg-[#141414] p-8 overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="relative z-10">
+                <h3 className="text-xl font-medium text-white mb-2">AI Chatbots</h3>
+                <p className="text-sm leading-relaxed text-[#b8b8b8]">
+                  24/7 customer support, lead qualification, and booking systems.
+                </p>
+              </div>
+              
+              <div className="relative z-10 mt-auto space-y-3 pt-8">
                 <div className="flex justify-end">
-                  <div className="rounded-lg bg-dark-surface/10 px-3 py-1.5 text-xs text-foreground">
-                    Can you tell me more about pricing?
+                  <div className="rounded-2xl rounded-tr-sm bg-white/10 px-4 py-2.5 text-xs text-white backdrop-blur-md border border-white/5">
+                    How much does it cost?
                   </div>
-                  <div className="ml-2 h-7 w-7 rounded-full bg-gradient-to-br from-gray-300 to-gray-400" />
                 </div>
-                <div className="flex items-start gap-2">
-                  <div className="h-6 w-6 rounded-full bg-accent/20 flex items-center justify-center">
-                    <Zap className="h-3 w-3 text-accent" />
+                <div className="flex items-start gap-3">
+                  <div className="mt-1 h-6 w-6 rounded-full bg-accent flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(77,101,255,0.4)]">
+                    <Zap className="h-3 w-3 text-white" />
                   </div>
-                  <div className="text-xs text-muted">
-                    Good day John, how I can help?
+                  <div className="rounded-2xl rounded-tl-sm bg-[#1a1a1a] px-4 py-2.5 text-xs text-[#cdcdcd] border border-white/5">
+                    Our pricing starts at $49/mo. Would you like to see a demo?
                   </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
           </StaggerItem>
 
           {/* Card 3: AI Data & Reporting */}
           <StaggerItem>
-            <div className="flex h-full flex-col rounded-2xl border border-gray-200 bg-gray-50 p-6 transition-all duration-500 hover:shadow-lg">
-              <p className="text-sm leading-relaxed text-foreground">
-                <span className="font-semibold">
-                  AI Data & Reporting Systems.
-                </span>{" "}
-                Automated dashboards, business intelligence, performance
-                forecasting.
-              </p>
-              <div className="mt-auto rounded-xl bg-white p-3 pt-6">
-                <div className="flex items-end gap-1">
-                  {[35, 55, 40, 70, 50, 80, 65, 75, 60, 85].map((h, i) => (
-                    <div
-                      key={i}
-                      className="flex-1 rounded-t bg-gray-300/80"
-                      style={{ height: `${h}px` }}
-                    />
-                  ))}
-                </div>
-                <div className="mt-2 flex items-center justify-end gap-1 text-xs text-muted">
-                  <span>Total Sales:</span>
-                  <span className="font-semibold">10K</span>
-                </div>
+            <motion.div 
+              whileHover={{ y: -5 }}
+              transition={cinematicSpring}
+              className="group relative flex h-full flex-col rounded-3xl border border-white/5 bg-[#141414] p-8 overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="relative z-10">
+                <h3 className="text-xl font-medium text-white mb-2">Automated Insights</h3>
+                <p className="text-sm leading-relaxed text-[#b8b8b8]">
+                  Automated dashboards and business intelligence forecasting.
+                </p>
               </div>
-            </div>
+              
+              <div className="relative z-10 mt-auto pt-8">
+                 <div className="rounded-2xl bg-[#1a1a1a] p-4 border border-white/5">
+                    <div className="flex items-end gap-1.5 h-24">
+                      {[35, 55, 40, 70, 50, 80, 65, 75, 60, 100].map((h, i) => (
+                        <div key={i} className="flex-1 rounded-t-sm bg-white/20 transition-all duration-500 group-hover:bg-white/40" style={{ height: `${h}%` }} />
+                      ))}
+                    </div>
+                 </div>
+              </div>
+            </motion.div>
           </StaggerItem>
 
           {/* Card 4: CRM & Sales */}
           <StaggerItem>
-            <div className="flex h-full flex-col rounded-2xl border border-gray-200 bg-gray-50 p-6 transition-all duration-500 hover:shadow-lg">
-              <p className="text-sm leading-relaxed text-foreground">
-                <span className="font-semibold">CRM & Sales Automation.</span>{" "}
-                Pipeline automation, AI lead scoring, follow-ups, predictive
-                insights.
-              </p>
-              {/* Lead profile card visual */}
-              <div className="mt-auto flex items-center justify-center pt-6">
-                <div className="relative">
-                  {/* Background cards */}
-                  <div className="absolute -left-4 top-2 h-20 w-16 rounded-lg bg-gray-200/50" />
-                  <div className="absolute -right-4 top-2 h-20 w-16 rounded-lg bg-gray-200/50" />
-                  {/* Main card */}
-                  <div className="relative z-10 rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
+            <motion.div 
+              whileHover={{ y: -5 }}
+              transition={cinematicSpring}
+              className="group relative flex h-full flex-col rounded-3xl border border-white/5 bg-[#141414] p-8 overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="relative z-10">
+                <h3 className="text-xl font-medium text-white mb-2">CRM Automation</h3>
+                <p className="text-sm leading-relaxed text-[#b8b8b8]">
+                  Pipeline automation, AI lead scoring, and automated follow-ups.
+                </p>
+              </div>
+              
+              <div className="relative z-10 mt-auto flex items-center justify-center pt-8">
+                <div className="relative w-full max-w-[200px]">
+                  <div className="absolute -left-2 top-2 h-16 w-16 rounded-xl bg-white/5 border border-white/10" />
+                  <div className="absolute -right-2 top-2 h-16 w-16 rounded-xl bg-white/5 border border-white/10" />
+                  <div className="relative z-10 rounded-2xl border border-white/10 bg-[#1a1a1a] p-5 shadow-2xl backdrop-blur-xl">
                     <div className="flex flex-col items-center">
-                      <div className="h-12 w-12 rounded-full bg-gradient-to-br from-gray-300 to-gray-500" />
-                      <span className="mt-2 text-xs font-semibold">Liam Foster</span>
-                      <span className="mt-1 rounded-full bg-green-100 px-2 py-0.5 text-[10px] text-green-600">
-                        + Excellent
+                      <div className="h-14 w-14 rounded-full bg-gradient-to-br from-white/20 to-white/5" />
+                      <span className="mt-3 text-sm font-medium text-white">Lead Score: 98</span>
+                      <span className="mt-1 rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-medium text-emerald-400 border border-emerald-500/20">
+                        High Intent
                       </span>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
           </StaggerItem>
 
           {/* Card 5: Marketing */}
           <StaggerItem>
-            <div className="flex h-full flex-col rounded-2xl border border-gray-200 bg-gray-50 p-6 transition-all duration-500 hover:shadow-lg">
-              <p className="text-sm leading-relaxed text-foreground">
-                <span className="font-semibold">Marketing Automation.</span>{" "}
-                Email sequences, personalization engines, AI-generated content
-                systems.
-              </p>
-              {/* Marketing visual */}
-              <div className="mt-auto flex items-center justify-center gap-3 pt-6">
-                <div className="h-20 w-20 rounded-full bg-gradient-to-br from-pink-100 to-purple-100" />
-                <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <Mail className="h-4 w-4 text-muted" />
-                    <div className="h-1.5 w-16 rounded-full bg-gray-200" />
+            <motion.div 
+              whileHover={{ y: -5 }}
+              transition={cinematicSpring}
+              className="group relative flex h-full flex-col rounded-3xl border border-white/5 bg-[#141414] p-8 overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="relative z-10">
+                <h3 className="text-xl font-medium text-white mb-2">Marketing Gen-AI</h3>
+                <p className="text-sm leading-relaxed text-[#b8b8b8]">
+                  Personalization engines and AI-generated content workflows.
+                </p>
+              </div>
+              
+              <div className="relative z-10 mt-auto flex items-center gap-4 pt-8">
+                <div className="h-20 w-20 shrink-0 rounded-2xl bg-gradient-to-br from-white/10 to-white/5 border border-white/10 flex items-center justify-center">
+                   <Mail className="h-8 w-8 text-white/50" />
+                </div>
+                <div className="w-full space-y-3">
+                  <div className="h-2 w-full rounded-full bg-white/10 overflow-hidden">
+                    <div className="h-full w-3/4 bg-white/40 group-hover:w-full transition-all duration-1000" />
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Smile className="h-4 w-4 text-muted" />
-                    <div className="h-1.5 w-12 rounded-full bg-gray-200" />
+                  <div className="h-2 w-4/5 rounded-full bg-white/10 overflow-hidden">
+                     <div className="h-full w-1/2 bg-white/30 group-hover:w-5/6 transition-all duration-1000 delay-100" />
+                  </div>
+                  <div className="h-2 w-1/2 rounded-full bg-white/10 overflow-hidden">
+                     <div className="h-full w-1/3 bg-accent/50 group-hover:w-full transition-all duration-1000 delay-200" />
                   </div>
                 </div>
               </div>
-            </div>
+            </motion.div>
           </StaggerItem>
         </StaggerChildren>
 
         {/* CTA + Security row */}
-        <StaggerChildren
-          className="mt-4 grid gap-4 md:grid-cols-2"
-          stagger={0.2}
-        >
-          {/* CTA card — gradient background */}
+        <StaggerChildren className="mt-6 grid gap-6 md:grid-cols-2" stagger={0.2}>
+          {/* CTA card */}
           <StaggerItem>
-            <div className="flex flex-col justify-between overflow-hidden rounded-2xl bg-gradient-to-br from-pink-200 via-purple-200 to-yellow-100 p-6 transition-all duration-500 hover:shadow-xl">
-              <div className="flex items-center gap-3">
-                <div className="h-12 w-12 rounded-full bg-gradient-to-br from-gray-700 to-gray-900 ring-4 ring-white/50" />
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/60">
-                  <Zap className="h-4 w-4 text-foreground" />
+            <motion.div 
+              whileHover={{ scale: 1.01 }}
+              transition={cinematicSpring}
+              className="relative flex flex-col justify-between overflow-hidden rounded-3xl bg-white p-10 transition-all shadow-2xl h-full"
+            >
+              <div className="relative z-10">
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#0a0a0a] shadow-lg">
+                  <Zap className="h-6 w-6 text-white" />
                 </div>
-              </div>
-              <div className="mt-6">
-                <h4 className="text-lg font-semibold text-foreground">
+                <h4 className="mt-8 text-3xl font-medium tracking-tight text-[#0a0a0a]">
                   Not sure what to automate first?
                 </h4>
-                <p className="mt-2 text-sm text-foreground/70">
-                  Book a free 30-minute AI strategy session. We&apos;ll analyze
-                  your current workflows and identify the highest-ROI automation
-                  opportunities for your business.
+                <p className="mt-4 text-base text-[#0a0a0a]/70 font-light leading-relaxed">
+                  Book a free AI strategy session. We&apos;ll analyze your workflows and find the highest-ROI automation opportunities.
                 </p>
+                <a
+                  href="#CTA-Form"
+                  className="group mt-8 inline-flex items-center gap-3 rounded-full bg-[#0a0a0a] px-8 py-4 text-sm font-semibold text-white transition-all hover:bg-[#1a1a1a]"
+                >
+                  Schedule a Session
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </a>
               </div>
-              <a
-                href="#CTA-Form"
-                className="group mt-6 inline-flex items-center gap-2 rounded-full bg-foreground px-6 py-3 text-sm font-medium text-background transition-all duration-500 hover:bg-gray-800 active:scale-[0.97]"
-              >
-                Schedule a Session
-                <ArrowRight className="h-4 w-4 transition-transform duration-500 group-hover:translate-x-1" />
-              </a>
-            </div>
+            </motion.div>
           </StaggerItem>
 
-          {/* Security card — glassmorphic icon tiles */}
+          {/* Security card */}
           <StaggerItem>
-            <div className="rounded-2xl border border-gray-200 bg-white p-6 transition-all duration-500 hover:shadow-lg">
-              <h4 className="mb-6 text-lg font-semibold">
-                Your Data. Protected. Always.
-              </h4>
-              <div className="grid grid-cols-4 gap-3">
+            <div className="flex flex-col rounded-3xl border border-white/5 bg-[#141414] p-10 h-full justify-between">
+              <div>
+                <h4 className="text-2xl font-medium tracking-tight text-white">
+                  Enterprise-Grade Security.
+                </h4>
+                <p className="mt-2 text-[#b8b8b8] font-light">Your data is processed locally where possible and encrypted completely.</p>
+              </div>
+              <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
                 {SECURITY_FEATURES.map((feature, idx) => {
                   const Icon = securityIcons[idx];
                   return (
-                    <div
-                      key={feature}
-                      className="flex flex-col items-center gap-2 text-center"
-                    >
-                      <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-gray-100 to-gray-200 shadow-inner transition-transform duration-500 hover:scale-105">
-                        <Icon className="h-6 w-6 text-foreground/60" />
+                    <div key={feature} className="flex flex-col items-center gap-3 text-center">
+                      <div className="flex h-16 w-full items-center justify-center rounded-2xl bg-[#1a1a1a] border border-white/5 transition-colors hover:bg-white/5 hover:border-white/20">
+                        <Icon className="h-6 w-6 text-white/50" />
                       </div>
-                      <span className="text-[11px] leading-tight text-muted">
+                      <span className="text-[12px] font-medium text-[#b8b8b8]">
                         {feature}
                       </span>
                     </div>

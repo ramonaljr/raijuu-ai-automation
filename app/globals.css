@@ -17,8 +17,23 @@
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-background: #0a0a0a;
+  --color-foreground: #ffffff;
+  --color-accent: #4d65ff;
+  --color-accent-light: #6b7fff;
+  --color-dark-bg: #1a1a1a;
+  --color-dark-surface: #1f1f1f;
+  --color-dark-border: #333333;
+  --color-muted: #b8b8b8;
+  --color-card-bg: #141414;
+  --color-card-border: #1f1f1f;
+  /* Conicorn specific variables extracted from webflow */
+  --color-white-01: #fff;
+  --color-grey-01: #1a1a1a;
+  --color-grey-05: #b8b8b8;
+  --color-grey-06: #cdcdcd;
+  --color-primary: #fff;
+  --color-body-dark: #1a1a1a;
   --color-accent: var(--accent);
   --color-accent-light: var(--accent-light);
   --color-dark-bg: var(--dark-bg);
