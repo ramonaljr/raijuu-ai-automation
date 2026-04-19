@@ -3,7 +3,6 @@
 import { motion } from "framer-motion";
 import { FadeIn, TextReveal, cinematicSpring } from "@/components/shared/motion";
 import { ArrowUpRight } from "lucide-react";
-import SectionBadge from "@/components/ui/SectionBadge";
 import { CASE_STUDIES } from "@/lib/constants";
 import Link from "next/link";
 

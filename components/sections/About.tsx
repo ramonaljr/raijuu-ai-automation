@@ -2,7 +2,6 @@
 
 import { motion } from "framer-motion";
 import { FadeIn, TextReveal, StaggerChildren, StaggerItem, cinematicSpring } from "@/components/shared/motion";
-import SectionBadge from "@/components/ui/SectionBadge";
 
 const FEATURES = [
   {

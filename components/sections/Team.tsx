@@ -42,13 +42,17 @@ export default function Team() {
                           className="w-full h-full object-cover mix-blend-luminosity group-hover:mix-blend-normal transition-all duration-500 group-hover:scale-105 opacity-80"
                        />
 
-                       {/* Social overlay */}
-                       <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end justify-center pb-6">
+                       {/* Decorative social overlay — pre-launch placeholder; not
+                           interactive, so hidden from assistive tech. */}
+                       <div
+                          aria-hidden="true"
+                          className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#0a0a0a] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end justify-center pb-6"
+                       >
                            <div className="flex gap-4">
-                              <div className="h-10 w-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center hover:bg-white hover:text-[#0a0a0a] text-white cursor-pointer transition-colors">
+                              <div className="h-10 w-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white transition-colors">
                                  <Send className="h-4 w-4" />
                               </div>
-                              <div className="h-10 w-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center hover:bg-white hover:text-[#0a0a0a] text-white cursor-pointer transition-colors">
+                              <div className="h-10 w-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white transition-colors">
                                  <Mail className="h-4 w-4" />
                               </div>
                            </div>

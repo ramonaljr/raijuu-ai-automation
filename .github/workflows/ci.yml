@@ -36,10 +36,12 @@ jobs:
         run: pnpm lint
 
       - name: Unit tests
-        run: pnpm test
+        # Uses test:ci which excludes integration tests that require a real
+        # Postgres connection. Those tests (aggregate-monthly, portal/engagement,
+        # n8n run-callback) should be moved to a dedicated integration job
+        # once a Neon CI branch or a Postgres service is wired up.
+        run: pnpm test:ci
         env:
-          # vitest reads DATABASE_URL; schema.test.ts only exercises the schema
-          # module, so a placeholder is fine — no real connection is made.
           DATABASE_URL: postgres://placeholder:placeholder@localhost/placeholder
 
       - name: Build

@@ -39,9 +39,10 @@ export default function Integrations() {
                {[...row, ...row, ...row].map((app, i) => (
                  <div
                    key={`${app}-${i}`}
-                   className="flex h-20 w-48 shrink-0 items-center justify-center gap-3 rounded-2xl border border-white/10 bg-[#141414] px-6 py-4 shadow-xl transition-all hover:bg-white/5 hover:scale-105 cursor-pointer backdrop-blur-sm"
+                   aria-hidden={i >= row.length ? 'true' : undefined}
+                   className="flex h-20 w-48 shrink-0 items-center justify-center gap-3 rounded-2xl border border-white/10 bg-[#141414] px-6 py-4 shadow-xl transition-all hover:bg-white/5 hover:scale-105 backdrop-blur-sm"
                  >
-                   <span className="text-lg font-semibold text-[#cdcdcd] grayscale group-hover:grayscale-0 transition-all">{app}</span>
+                   <span className="text-lg font-semibold text-[#cdcdcd] grayscale transition-all">{app}</span>
                  </div>
                ))}
             </motion.div>

@@ -25,7 +25,6 @@ export function substituteTemplate(
 ): string {
   const safeSituation = situation
     .slice(0, 120)
-    // eslint-disable-next-line no-control-regex
     .replace(/[\u0000-\u001F\u007F]/g, '');
   return body
     .replaceAll('{{situationDetail}}', safeSituation)

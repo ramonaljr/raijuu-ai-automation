@@ -1,9 +1,36 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { submitIntake, type SubmitIntakeResult } from './actions';
 import { KNOWN_TOOLS } from '@/lib/intake/schema';
+
+// Persist form + step across refresh / browser back. Keyed by engagementId so
+// two engagements on the same browser don't overwrite each other. Session-
+// (not local-) scoped so a shared browser doesn't leak answers to a later tab.
+const STORAGE_KEY_PREFIX = 'raijuu-intake-v1:';
+
+type EditStep = 1 | 2 | 3 | 4 | 5;
+
+type PersistedState = {
+  step: EditStep;
+  form: FormState;
+};
+
+function loadPersisted(engagementId: number): PersistedState | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = sessionStorage.getItem(STORAGE_KEY_PREFIX + engagementId);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as PersistedState;
+    // Guard against stale data with transient step states (submitting/error/done)
+    // written before the validation below was added.
+    if (![1, 2, 3, 4, 5].includes(parsed.step as number)) return null;
+    return parsed;
+  } catch {
+    return null;
+  }
+}
 
 type Step = 1 | 2 | 3 | 4 | 5 | 'submitting' | 'done' | 'error';
 
@@ -43,18 +70,40 @@ export function IntakeFlow({
   token: string;
   companyName: string;
 }) {
-  const [step, setStep] = useState<Step>(1);
+  const persisted = loadPersisted(engagementId);
+  const [step, setStep] = useState<Step>(persisted?.step ?? 1);
   const [result, setResult] = useState<SubmitIntakeResult | null>(null);
-  const [form, setForm] = useState<FormState>({
-    companyName,
-    role: '',
-    tools: [],
-    customTools: '',
-    credentialsVaultUrl: '',
-    goals: ['', '', ''],
-    successMetric: '',
-    constraints: '',
-  });
+  const [form, setForm] = useState<FormState>(
+    persisted?.form ?? {
+      companyName,
+      role: '',
+      tools: [],
+      customTools: '',
+      credentialsVaultUrl: '',
+      goals: ['', '', ''],
+      successMetric: '',
+      constraints: '',
+    },
+  );
+
+  // Save on every change while the user is still editing. Clear once the
+  // flow reaches a terminal state — and never persist transient states like
+  // 'submitting' / 'error', which would restore into a broken UI on reload.
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const key = STORAGE_KEY_PREFIX + engagementId;
+    if (step === 'done') {
+      sessionStorage.removeItem(key);
+      return;
+    }
+    const isEditStep = step === 1 || step === 2 || step === 3 || step === 4 || step === 5;
+    if (!isEditStep) return;
+    try {
+      sessionStorage.setItem(key, JSON.stringify({ step, form }));
+    } catch {
+      // Quota errors are fine to swallow — persistence is best-effort UX.
+    }
+  }, [engagementId, step, form]);
 
   function update<K extends keyof FormState>(k: K, v: FormState[K]) {
     setForm((f) => ({ ...f, [k]: v }));

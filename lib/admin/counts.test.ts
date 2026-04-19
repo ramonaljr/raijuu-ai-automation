@@ -17,10 +17,10 @@ describe('getOverviewCounts', () => {
     // `from` returns the chain so `.from(...).where(...)` can resolve; for
     // calls without `.where`, awaiting the chain goes through its thenable
     // via `from` resolving directly.
-    (chain.from as any).mockImplementation(function (this: any) {
+    (chain.from as ReturnType<typeof vi.fn>).mockImplementation(function () {
       return Object.assign(Promise.resolve([{ value: 0 }]), chain);
     });
-    (db.select as any).mockReturnValue(chain);
+    (db.select as ReturnType<typeof vi.fn>).mockReturnValue(chain);
     const result = await getOverviewCounts();
     expect(result).toEqual({
       leads: 0,

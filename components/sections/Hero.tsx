@@ -106,9 +106,13 @@ export default function Hero() {
                  <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent opacity-80" />
                  
                  <div className="absolute inset-0 flex items-center justify-center">
-                   <div className="w-20 h-20 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 flex items-center justify-center cursor-pointer hover:bg-white text-white hover:text-[#0a0a0a] hover:scale-110 transition-all duration-300">
+                   <button
+                      type="button"
+                      aria-label="Play product walkthrough"
+                      className="w-20 h-20 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 flex items-center justify-center cursor-pointer hover:bg-white text-white hover:text-[#0a0a0a] hover:scale-110 transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0a]"
+                   >
                       <Play className="h-8 w-8 ml-1 fill-current" />
-                   </div>
+                   </button>
                  </div>
              </div>
           </div>

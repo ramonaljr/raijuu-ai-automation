@@ -3,7 +3,6 @@
 import { motion } from "framer-motion";
 import { FadeIn, TextReveal, StaggerChildren, StaggerItem, cinematicSpring } from "@/components/shared/motion";
 import { Zap, Shield, Lock, Key, Database, MessageSquare, Users, Send, CheckCircle, Clock, Mail, Smile, ArrowRight } from "lucide-react";
-import SectionBadge from "@/components/ui/SectionBadge";
 import { SECURITY_FEATURES } from "@/lib/constants";
 
 const securityIcons = [Shield, Lock, Key, Database];

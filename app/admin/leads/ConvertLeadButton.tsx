@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useEffect, useId, useRef, useState, useTransition } from 'react';
 
 type Result =
   | { ok: true; engagementId: number; emailSent: boolean; url?: string }
@@ -19,6 +19,21 @@ export function ConvertLeadButton({
   const [fee, setFee] = useState('');
   const [result, setResult] = useState<Result | null>(null);
   const [isPending, startTransition] = useTransition();
+  const panelId = useId();
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const firstInputRef = useRef<HTMLInputElement>(null);
+
+  // Auto-focus the first input when the panel opens; return focus to the
+  // trigger when it closes. Keeps keyboard users oriented.
+  useEffect(() => {
+    if (open) firstInputRef.current?.focus();
+    else triggerRef.current?.focus();
+  }, [open]);
+
+  function close() {
+    setOpen(false);
+    setResult(null);
+  }
 
   function submit() {
     startTransition(async () => {
@@ -60,9 +75,12 @@ export function ConvertLeadButton({
   if (!open) {
     return (
       <button
+        ref={triggerRef}
         type="button"
         onClick={() => setOpen(true)}
-        className="text-xs rounded border px-2 py-1 hover:bg-neutral-50"
+        aria-expanded="false"
+        aria-controls={panelId}
+        className="text-xs rounded border px-2 py-1 hover:bg-neutral-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-black"
       >
         Convert to client
       </button>
@@ -70,9 +88,18 @@ export function ConvertLeadButton({
   }
 
   return (
-    <div className="rounded border p-2 space-y-2 bg-neutral-50 text-xs min-w-[260px]">
+    <div
+      id={panelId}
+      role="group"
+      aria-label={`Convert ${email} to a client engagement`}
+      onKeyDown={(e) => {
+        if (e.key === 'Escape') close();
+      }}
+      className="rounded border p-2 space-y-2 bg-neutral-50 text-xs min-w-[260px]"
+    >
       <p className="text-neutral-600">Converting {email}</p>
       <input
+        ref={firstInputRef}
         aria-label="Company name"
         placeholder="Company name"
         value={companyName}
@@ -98,10 +125,7 @@ export function ConvertLeadButton({
         </button>
         <button
           type="button"
-          onClick={() => {
-            setOpen(false);
-            setResult(null);
-          }}
+          onClick={close}
           className="rounded border px-2 py-1"
         >
           Cancel

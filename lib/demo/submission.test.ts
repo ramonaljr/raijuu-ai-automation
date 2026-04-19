@@ -45,10 +45,18 @@ describe('substituteTemplate', () => {
       substituteTemplate('You said: {{situationDetail}}.', 'too many leads', 'SaaS'),
     ).toBe('You said: too many leads.');
   });
-  it('escapes HTML in situation', () => {
+  it('passes HTML characters through unmodified (React escapes at render time)', () => {
+    // substituteTemplate returns a plain string; callers render it as React
+    // text so React's auto-escaping handles XSS. We verify the raw output is
+    // untouched and rely on the DemoResult render path for safety.
     expect(
       substituteTemplate('Said: {{situationDetail}}', '<script>x</script>', 'SaaS'),
-    ).toContain('&lt;script&gt;');
+    ).toBe('Said: <script>x</script>');
+  });
+  it('strips control characters defensively', () => {
+    expect(
+      substituteTemplate('{{situationDetail}}', 'hi\u0000there\u001f', 'SaaS'),
+    ).toBe('hithere');
   });
   it('truncates long situations to 120 chars', () => {
     const long = 'x'.repeat(200);
