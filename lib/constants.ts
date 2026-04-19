@@ -3,12 +3,12 @@ export const NAV_ITEMS = [
   { label: "Values", href: "#values-section" },
   { label: "Services", href: "#service-section" },
   { label: "Process", href: "#process-section" },
-  { label: "Projects", href: "#project-section" },
+  { label: "Projects", href: "#projects-section" },
   { label: "Integrations", href: "#integrations-section" },
   { label: "Testimonials", href: "#testimonials-section" },
   { label: "Pricing", href: "#pricing-section" },
   { label: "Team", href: "#team-section" },
-  { label: "FAQs", href: "#FAQ-section" },
+  { label: "FAQs", href: "#faq-section" },
 ] as const;
 
 export const STATS = [

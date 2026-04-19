@@ -117,8 +117,8 @@ export default function Navbar() {
             <UserButton />
           </div>
         ) : (
-          <a
-            href="#CTA-Form"
+          <Link
+            href="/demo"
             className={`rounded-full px-5 py-2 text-sm font-medium transition-all duration-500 active:scale-[0.97] ${
               scrolled
                 ? "bg-foreground text-background hover:bg-gray-800"
@@ -126,7 +126,7 @@ export default function Navbar() {
             }`}
           >
             Work with Us
-          </a>
+          </Link>
         )}
       </nav>
 
