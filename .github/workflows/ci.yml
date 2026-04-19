@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        run: pnpm tsc --noEmit
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Unit tests
+        run: pnpm test
+        env:
+          # vitest reads DATABASE_URL; schema.test.ts only exercises the schema
+          # module, so a placeholder is fine — no real connection is made.
+          DATABASE_URL: postgres://placeholder:placeholder@localhost/placeholder
+
+      - name: Build
+        run: pnpm next build
+        env:
+          # next build imports lib/db which requires DATABASE_URL. Placeholder
+          # is safe — no runtime connection happens during build.
+          DATABASE_URL: postgres://placeholder:placeholder@localhost/placeholder
+          # Skip Sentry source-map upload in CI (needs secrets we don't expose
+          # on PR builds from forks). Sentry init is a no-op without DSN.
+          SENTRY_DSN: ''

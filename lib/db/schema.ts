@@ -80,6 +80,13 @@ export const engagements = pgTable(
     magicLinkTokenUniq: uniqueIndex('engagements_magic_link_token_uniq').on(
       t.magicLinkToken,
     ),
+    // Partial unique: at most one engagement per Clerk user. NULL excluded so
+    // unclaimed engagements coexist before a client first signs in.
+    // Without this, getEngagementByClerkUserId().limit(1) silently picks
+    // the first of multiple matches.
+    clerkUserIdPartialUniq: uniqueIndex('engagements_clerk_user_id_partial_uniq')
+      .on(t.clerkUserId)
+      .where(sql`${t.clerkUserId} IS NOT NULL`),
   }),
 );
 

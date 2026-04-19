@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { ScaleIn } from '@/components/shared/motion';
 import { StatusPill } from '@/app/admin/_components/StatusPill';
 import { formatRelative } from '@/lib/format/time';
+import { SUPPORT_EMAIL } from '@/lib/config/support';
 import type { FocusRun, FocusVariant } from './focus';
 
 export function FocusCard({ variant }: { variant: FocusVariant }) {
@@ -34,7 +35,7 @@ function DraftWelcome() {
         anything sooner, your engineer is one email away.
       </p>
       <a
-        href="mailto:ramonvallejerajr@gmail.com"
+        href={`mailto:${SUPPORT_EMAIL}`}
         className="inline-flex items-center text-sm font-medium text-[color:var(--accent)] hover:underline"
       >
         Contact your engineer →

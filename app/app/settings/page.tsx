@@ -6,6 +6,7 @@ import { formatDate } from '@/lib/format/time';
 import { StatusPill } from '@/app/admin/_components/StatusPill';
 import { PageHeader } from '../_components/PageHeader';
 import { readPreferences } from './preferences';
+import { SUPPORT_EMAIL } from '@/lib/config/support';
 import { NotificationsForm } from './NotificationsForm';
 
 export const dynamic = 'force-dynamic';
@@ -56,10 +57,10 @@ export default async function SettingsPage() {
           label="Your engineer"
           value={
             <a
-              href="mailto:ramonvallejerajr@gmail.com"
+              href={`mailto:${SUPPORT_EMAIL}`}
               className="text-[color:var(--accent)] hover:underline"
             >
-              ramonvallejerajr@gmail.com
+              {SUPPORT_EMAIL}
             </a>
           }
         />

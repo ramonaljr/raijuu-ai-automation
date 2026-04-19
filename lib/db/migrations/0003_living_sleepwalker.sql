@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX "engagements_clerk_user_id_partial_uniq" ON "engagements" USING btree ("clerk_user_id") WHERE "engagements"."clerk_user_id" IS NOT NULL;

@@ -1,3 +1,5 @@
+import { SUPPORT_EMAIL } from '@/lib/config/support';
+
 export default function NoEngagementPage() {
   return (
     <div className="rounded-2xl border border-[color:var(--portal-border)] bg-white p-10 text-center shadow-[0_1px_2px_rgba(10,10,10,0.04)]">
@@ -14,7 +16,7 @@ export default function NoEngagementPage() {
       </p>
       <div className="mt-6">
         <a
-          href="mailto:ramonvallejerajr@gmail.com"
+          href={`mailto:${SUPPORT_EMAIL}`}
           className="inline-flex rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background hover:bg-neutral-800"
         >
           Email Raijuu

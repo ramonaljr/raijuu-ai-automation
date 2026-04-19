@@ -1,5 +1,6 @@
 import { Mail, Clock, AlertTriangle, Book, Zap, MessageSquare } from 'lucide-react';
 import { PageHeader } from '../_components/PageHeader';
+import { SUPPORT_EMAIL } from '@/lib/config/support';
 
 export const dynamic = 'force-dynamic';
 
@@ -43,8 +44,8 @@ export default function HelpPage() {
         <ContactCard
           icon={<Mail className="h-4 w-4" />}
           title="Your engineer"
-          value="ramonvallejerajr@gmail.com"
-          href="mailto:ramonvallejerajr@gmail.com"
+          value={SUPPORT_EMAIL}
+          href={`mailto:${SUPPORT_EMAIL}`}
           footer="Response within 4 business hours · urgent items ping Raijuu on-call"
         />
         <ContactCard
@@ -103,12 +104,12 @@ export default function HelpPage() {
         </SectionLabel>
         <div className="grid gap-3 sm:grid-cols-2">
           <ResourceLink
-            href="mailto:ramonvallejerajr@gmail.com?subject=Automation%20request"
+            href={`mailto:${SUPPORT_EMAIL}?subject=Automation%20request`}
             title="Request a new automation"
             description="Email template — goals, tools, edge cases"
           />
           <ResourceLink
-            href="mailto:ramonvallejerajr@gmail.com?subject=Credential%20rotation"
+            href={`mailto:${SUPPORT_EMAIL}?subject=Credential%20rotation`}
             title="Rotate credentials"
             description="We coordinate the vault swap; zero downtime"
           />
