@@ -23,8 +23,13 @@ export default function Pricing() {
             delay={0.1}
             className="text-4xl font-medium tracking-tight text-white md:text-5xl lg:text-6xl"
           >
-            Built for Growth at Every Stage
+            Pick where you&apos;re stuck.
           </TextReveal>
+          <FadeIn delay={0.2}>
+            <p className="mt-6 max-w-2xl text-lg text-[#b8b8b8] font-light leading-relaxed">
+              One bundled system instead of a fragmented SaaS stack. Plans below are monthly starting prices — exact scope and terms confirmed on the fit call.
+            </p>
+          </FadeIn>
         </div>
 
         <div className="grid gap-8 lg:grid-cols-3 max-w-6xl mx-auto">

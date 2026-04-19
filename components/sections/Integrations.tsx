@@ -23,7 +23,7 @@ export default function Integrations() {
             delay={0.1}
             className="text-4xl font-medium tracking-tight text-white md:text-5xl lg:text-6xl max-w-4xl mx-auto"
           >
-            Connects with your entire technology ecosystem
+            Plugs into the tools you already pay for.
           </TextReveal>
       </div>
 

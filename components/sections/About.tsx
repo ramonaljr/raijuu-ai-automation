@@ -6,23 +6,27 @@ import SectionBadge from "@/components/ui/SectionBadge";
 
 const FEATURES = [
   {
-    title: "AI-Driven Efficiency",
-    description: "Our proprietary AI engines analyze your workflows and automate repetitive tasks with zero human intervention.",
+    title: "Your team stops doing robot work",
+    description:
+      "Repetitive tasks — follow-ups, data entry, status updates — run themselves 24/7. Your team spends the reclaimed hours on the work only humans can do.",
     icon: "https://cdn.prod.website-files.com/69abbb96278770785e4b2dc1/69ad5e0ecfc53553c40c5a76_Cap%20Data%201.svg",
   },
   {
-    title: "Seamless Integration",
-    description: "Connect instantly with your favorite tools. We native support over 50+ enterprise platforms out of the box.",
+    title: "Works with what you already use",
+    description:
+      "HubSpot, Gmail, Slack, Stripe, your CRM. We plug in — no rip-and-replace, no new tools for your team to learn.",
     icon: "https://cdn.prod.website-files.com/69abbb96278770785e4b2dc1/69ad5e0ed569da6b4b8271fd_Cap%20Data%202.svg",
   },
   {
-    title: "Bank-Grade Security",
-    description: "Your data is encrypted at rest and in transit. Complying with SOC2, GDPR, and HIPAA standards.",
+    title: "Your data stays yours",
+    description:
+      "Encrypted in transit and at rest. Role-based access, data minimization, and region-aware processing by default — built into how we design, not bolted on.",
     icon: "https://cdn.prod.website-files.com/69abbb96278770785e4b2dc1/69ad5e0e8ca936a8b0b6d20e_Cap%20Data%203.svg",
   },
   {
-    title: "Real-Time Analytics",
-    description: "Monitor performance through dynamic dashboards. Understand exactly where time and money are being saved.",
+    title: "You see the ROI every Monday",
+    description:
+      "A live dashboard shows hours saved, leads booked, and revenue influenced. If an automation stops earning its keep, we&apos;ll be the first to tell you.",
     icon: "https://cdn.prod.website-files.com/69abbb96278770785e4b2dc1/69ad5e0e174e21ee2776436c_Cap%20Data%204.svg",
   },
 ];
@@ -52,17 +56,17 @@ export default function About() {
               delay={0.1}
               className="text-4xl font-medium leading-[1.1] tracking-tight text-white md:text-5xl lg:text-6xl"
             >
-              Built to scale your operations effortlessly.
+              One system that runs the work your team hates.
             </TextReveal>
           </div>
-          
+
           <div className="max-w-md flex-1">
              <TextReveal
                as="p"
                delay={0.2}
                className="text-lg text-[#b8b8b8] font-light leading-relaxed"
              >
-               We combine cutting-edge artificial intelligence with deep operational expertise to build systems that don&apos;t just augment your team—they multiply your entire company&apos;s output.
+               Landing page, chatbot, ads, CRM, follow-ups, reporting — connected, automated, and cheaper than the fragmented stack you&apos;re paying for today.
              </TextReveal>
           </div>
         </div>

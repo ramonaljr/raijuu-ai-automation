@@ -14,9 +14,15 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Raijuu AI Automation | Intelligent Automation for Modern Teams",
+  title: "Raijuu — AI automation that gives your team back hours every week",
   description:
-    "We build AI-powered automation systems that eliminate manual work, reduce costs, and multiply your business performance.",
+    "One connected system: landing pages, chatbots, ads, CRM follow-ups, and workflow automations. Plans from $299/month.",
+  openGraph: {
+    title: "Raijuu — AI automation that gives your team back hours every week",
+    description:
+      "Landing pages that convert. Chatbots that qualify. Ads that book meetings. Workflows that close deals. From $299/month.",
+    type: "website",
+  },
 };
 
 export default function RootLayout({

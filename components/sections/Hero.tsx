@@ -34,10 +34,10 @@ export default function Hero() {
             className="mb-8 inline-flex items-center gap-3 rounded-full border border-white/10 bg-[#141414]/80 pr-4 pl-1 py-1 backdrop-blur-md"
           >
             <div className="flex h-8 items-center rounded-full bg-white px-3 text-[11px] font-bold uppercase tracking-wider text-[#0a0a0a]">
-              New Feature
+              Case Study
             </div>
             <span className="text-sm font-medium text-white/80">
-              Meet our latest AI Engine
+              ScaleLabs lifted enrollment 35% in 90 days
             </span>
             <ArrowRight className="h-4 w-4 text-white/50" />
           </motion.div>
@@ -48,9 +48,9 @@ export default function Hero() {
             transition={{ ...cinematicSpring, delay: d + 0.2 }}
             className="mb-6 max-w-5xl text-5xl font-medium leading-[1.05] tracking-[-0.04em] text-white md:text-7xl lg:text-[6rem]"
           >
-            Intelligent Automation
+            Give your team back
             <br />
-            <span className="text-white/40">for Modern Teams</span>
+            <span className="text-white/40">30 hours a week.</span>
           </motion.h1>
 
           <motion.p
@@ -59,8 +59,9 @@ export default function Hero() {
             transition={{ ...cinematicSpring, delay: d + 0.4 }}
             className="mb-10 max-w-2xl text-lg lg:text-xl text-white/50 leading-relaxed font-light"
           >
-            We build out-of-the-box AI workflows that eliminate manual work,
-            reduce operational costs, and instantly multiply your business performance.
+            Landing pages that convert. Chatbots that qualify. Ads that book meetings.
+            Workflows that close deals. Pick where you&apos;re stuck — we&apos;ll handle the rest.
+            From $299/month.
           </motion.p>
 
           <motion.div
@@ -73,16 +74,19 @@ export default function Hero() {
               href="/demo"
               className="inline-flex h-14 items-center justify-center gap-2 rounded-full bg-white px-8 text-base font-semibold text-[#0a0a0a] transition-all hover:scale-105 active:scale-95 shadow-[0_0_40px_rgba(255,255,255,0.15)] hover:shadow-[0_0_60px_rgba(255,255,255,0.25)]"
             >
-              Get Started Free
+              Book a 15-min fit call
               <ArrowRight className="h-5 w-5" />
             </Link>
-            
-            <button className="group inline-flex h-14 items-center justify-center gap-3 rounded-full border border-white/10 bg-[#141414] px-8 text-base font-medium text-white backdrop-blur-md transition-all hover:bg-white/10 hover:border-white/20">
+
+            <Link
+              href="#pricing-section"
+              className="group inline-flex h-14 items-center justify-center gap-3 rounded-full border border-white/10 bg-[#141414] px-8 text-base font-medium text-white backdrop-blur-md transition-all hover:bg-white/10 hover:border-white/20"
+            >
               <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 text-white group-hover:bg-white group-hover:text-[#0a0a0a] transition-colors">
                 <Play className="h-3 w-3 fill-current" />
               </div>
-              Watch Video
-            </button>
+              See what $299 replaces
+            </Link>
           </motion.div>
         </div>
 
@@ -118,7 +122,7 @@ export default function Hero() {
           className="mt-32 pt-10"
         >
           <p className="text-center text-sm font-medium uppercase tracking-[0.2em] text-white/30 mb-8">
-            Trusted by innovative teams worldwide
+            Serving teams across
           </p>
           <div className="hero-mask overflow-hidden">
             <div className="flex animate-marquee whitespace-nowrap items-center">

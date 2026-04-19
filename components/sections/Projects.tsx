@@ -27,8 +27,8 @@ export default function Projects() {
               delay={0.1}
               className="text-4xl font-medium tracking-tight text-white md:text-5xl lg:text-7xl"
             >
-              Real Results.
-              <br /> Real automated scale.
+              Hours saved.
+              <br /> Revenue added. <span className="text-white/40">Both.</span>
             </TextReveal>
           </div>
           

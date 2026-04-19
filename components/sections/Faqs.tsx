@@ -10,8 +10,22 @@ import Link from "next/link";
 export default function Faqs() {
   const [openIdx, setOpenIdx] = useState<number | null>(0);
 
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: FAQS.map((f) => ({
+      "@type": "Question",
+      name: f.question,
+      acceptedAnswer: { "@type": "Answer", text: f.answer },
+    })),
+  };
+
   return (
     <section id="faq-section" className="relative bg-[#0a0a0a] py-32 overflow-hidden border-t border-white/5">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
       <div className="container relative z-10 mx-auto px-4 lg:px-8">
         
         <div className="mb-20 flex flex-col items-center text-center">
@@ -27,7 +41,7 @@ export default function Faqs() {
             delay={0.1}
             className="text-4xl font-medium tracking-tight text-white md:text-5xl lg:text-6xl"
           >
-            Common Questions
+            The questions every buyer asks us.
           </TextReveal>
         </div>
 
@@ -91,17 +105,17 @@ export default function Faqs() {
                   
                   <div className="relative z-10 max-w-4xl mx-auto">
                      <h2 className="text-4xl md:text-5xl lg:text-7xl font-bold tracking-tight text-white mb-8">
-                       Your competitors are automating. <span className="text-white/40">Are you?</span>
+                       One automation. Two weeks. <span className="text-white/40">See if it pays back.</span>
                      </h2>
                      <p className="text-lg text-[#b8b8b8] font-light mb-12 max-w-2xl mx-auto">
-                       Stop losing time to manual tasks. Let&apos;s build intelligent automated systems that completely transform your daily operations.
+                       15-minute fit call. We walk your workflows, find the one with the fastest payback, and tell you if automation is even the right answer. No deck. No pitch.
                      </p>
-                     
+
                      <Link
                        href="/demo"
                        className="group inline-flex h-16 items-center justify-center gap-2 rounded-full bg-white px-10 text-lg font-semibold text-[#0a0a0a] transition-all hover:scale-105 active:scale-95 shadow-[0_0_40px_rgba(255,255,255,0.1)] hover:shadow-[0_0_60px_rgba(255,255,255,0.2)]"
                      >
-                       Start Automating Now
+                       Book my fit call
                        <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
                      </Link>
                   </div>

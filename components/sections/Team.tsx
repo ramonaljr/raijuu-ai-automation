@@ -23,7 +23,7 @@ export default function Team() {
             delay={0.1}
             className="text-4xl font-medium tracking-tight text-white md:text-5xl lg:text-6xl"
           >
-            Meet the Minds
+            Small team. <span className="text-white/40">Same faces, 90 days in.</span>
           </TextReveal>
         </div>
 
@@ -35,13 +35,11 @@ export default function Team() {
                      transition={cinematicSpring}
                      className="group flex flex-col rounded-3xl border border-white/5 bg-[#141414] p-4 h-full"
                  >
-                    <div className="relative aspect-square w-full overflow-hidden rounded-[2rem] bg-[#1a1a1a] mb-6">
-                       <img 
-                          src={`https://api.dicebear.com/7.x/notionists/svg?seed=${member.name}`} 
-                          alt={member.name} 
-                          className="w-full h-full object-cover mix-blend-luminosity group-hover:mix-blend-normal transition-all duration-500 group-hover:scale-105 opacity-80"
-                       />
-                       
+                    <div className="relative aspect-square w-full overflow-hidden rounded-[2rem] bg-[#1a1a1a] mb-6 flex items-center justify-center">
+                       <span className="text-5xl font-medium uppercase tracking-wider text-white/40 transition-colors group-hover:text-white/70">
+                          {member.name.split(" ").map(p => p[0]).slice(0, 2).join("")}
+                       </span>
+
                        {/* Social overlay */}
                        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end justify-center pb-6">
                            <div className="flex gap-4">

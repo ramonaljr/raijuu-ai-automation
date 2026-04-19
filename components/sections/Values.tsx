@@ -32,13 +32,12 @@ export default function Values() {
             delay={0.1}
             className="mt-6 text-4xl font-bold tracking-tight md:text-5xl lg:text-6xl"
           >
-            Why Choose Us?
+            Three promises we&apos;ll hold ourselves to.
           </TextReveal>
 
           <FadeIn delay={0.2}>
             <p className="mt-4 max-w-xl text-lg text-muted">
-              We build AI-powered automation systems that eliminate manual work,
-              reduce costs, and multiply your business performance.
+              The operating principles we wrote into our team agreement — and how we decide what to build for you.
             </p>
           </FadeIn>
         </div>

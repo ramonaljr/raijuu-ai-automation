@@ -34,11 +34,11 @@ export default function Process() {
             delay={0.1}
             className="text-4xl font-medium tracking-tight md:text-5xl lg:text-6xl text-white"
           >
-            A proven path to scale
+            From call to live, without the 90-day discovery phase.
           </TextReveal>
           <FadeIn delay={0.2}>
             <p className="mt-6 max-w-2xl text-lg text-[#b8b8b8] font-light leading-relaxed">
-              We transform complex workflows into scalable AI-powered systems — efficiently and strategically. No guesswork.
+              One team, five steps. A Friday demo every week so launch day is never a surprise.
             </p>
           </FadeIn>
         </div>

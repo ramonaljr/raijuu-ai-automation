@@ -23,7 +23,7 @@ export default function Testimonials() {
             delay={0.1}
             className="text-4xl font-medium tracking-tight text-white md:text-5xl lg:text-6xl"
           >
-            What They&apos;re Saying
+            In the words of the people writing the checks.
           </TextReveal>
         </div>
 
@@ -40,8 +40,8 @@ export default function Testimonials() {
                        &quot;{t.quote}&quot;
                     </p>
                     <div className="flex items-center gap-4 pt-6 border-t border-white/5">
-                        <div className="h-12 w-12 rounded-full overflow-hidden bg-[#1a1a1a]">
-                            <img src={`https://api.dicebear.com/7.x/notionists/svg?seed=${t.name}`} alt={t.name} className="h-full w-full object-cover" />
+                        <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white/10 text-sm font-semibold uppercase tracking-wider text-white">
+                            {t.name.split(" ").map(p => p[0]).slice(0, 2).join("")}
                         </div>
                         <div>
                            <h4 className="font-semibold text-white">{t.name}</h4>

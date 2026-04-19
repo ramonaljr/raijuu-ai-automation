@@ -26,7 +26,7 @@ export default function Services() {
             delay={0.1}
             className="text-4xl font-medium tracking-tight md:text-5xl lg:text-6xl text-white"
           >
-            Our AI-Driven Services
+            Pick where you&apos;re stuck. <span className="text-white/40">We handle the rest.</span>
           </TextReveal>
         </div>
 
@@ -42,9 +42,9 @@ export default function Services() {
               <div className="absolute inset-0 bg-gradient-to-br from-accent/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               
               <div className="relative z-10">
-                <h3 className="text-2xl font-medium text-white mb-3">AI Workflow <br/>Automation</h3>
+                <h3 className="text-2xl font-medium text-white mb-3">Stop copy-pasting <br/>between tools</h3>
                 <p className="text-sm leading-relaxed text-[#b8b8b8]">
-                  Automate repetitive tasks across departments using intelligent triggers and decision logic.
+                  We wire your CRM, calendar, inbox, and docs together so work flows without a human in the middle.
                 </p>
               </div>
 
@@ -80,9 +80,9 @@ export default function Services() {
             >
               <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <div className="relative z-10">
-                <h3 className="text-xl font-medium text-white mb-2">AI Chatbots</h3>
+                <h3 className="text-xl font-medium text-white mb-2">Never lose a lead at night again</h3>
                 <p className="text-sm leading-relaxed text-[#b8b8b8]">
-                  24/7 customer support, lead qualification, and booking systems.
+                  A 24/7 AI chat that qualifies, books, and only wakes a human when it matters.
                 </p>
               </div>
               
@@ -113,9 +113,9 @@ export default function Services() {
             >
               <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <div className="relative z-10">
-                <h3 className="text-xl font-medium text-white mb-2">Automated Insights</h3>
+                <h3 className="text-xl font-medium text-white mb-2">Know the number before Monday</h3>
                 <p className="text-sm leading-relaxed text-[#b8b8b8]">
-                  Automated dashboards and business intelligence forecasting.
+                  Dashboards that refresh on their own — in plain English, not spreadsheets.
                 </p>
               </div>
               
@@ -140,9 +140,9 @@ export default function Services() {
             >
               <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <div className="relative z-10">
-                <h3 className="text-xl font-medium text-white mb-2">CRM Automation</h3>
+                <h3 className="text-xl font-medium text-white mb-2">Your reps sell. The system does admin.</h3>
                 <p className="text-sm leading-relaxed text-[#b8b8b8]">
-                  Pipeline automation, AI lead scoring, and automated follow-ups.
+                  Lead scoring, follow-ups, pipeline hygiene — automatic.
                 </p>
               </div>
               
@@ -173,9 +173,9 @@ export default function Services() {
             >
               <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <div className="relative z-10">
-                <h3 className="text-xl font-medium text-white mb-2">Marketing Gen-AI</h3>
+                <h3 className="text-xl font-medium text-white mb-2">Personalization that isn&apos;t creepy</h3>
                 <p className="text-sm leading-relaxed text-[#b8b8b8]">
-                  Personalization engines and AI-generated content workflows.
+                  Emails and sequences that match the buyer&apos;s moment — not spray-and-pray.
                 </p>
               </div>
               
@@ -213,16 +213,16 @@ export default function Services() {
                   <Zap className="h-6 w-6 text-white" />
                 </div>
                 <h4 className="mt-8 text-3xl font-medium tracking-tight text-[#0a0a0a]">
-                  Not sure what to automate first?
+                  Not sure where you&apos;re stuck?
                 </h4>
                 <p className="mt-4 text-base text-[#0a0a0a]/70 font-light leading-relaxed">
-                  Book a free AI strategy session. We&apos;ll analyze your workflows and find the highest-ROI automation opportunities.
+                  Book a free 15-minute fit call. We&apos;ll listen to where your team is losing hours, tell you which tier fits, and show you the one automation we&apos;d build first.
                 </p>
                 <a
-                  href="#CTA-Form"
+                  href="/demo"
                   className="group mt-8 inline-flex items-center gap-3 rounded-full bg-[#0a0a0a] px-8 py-4 text-sm font-semibold text-white transition-all hover:bg-[#1a1a1a]"
                 >
-                  Schedule a Session
+                  Book my fit call
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </a>
               </div>
@@ -234,9 +234,9 @@ export default function Services() {
             <div className="flex flex-col rounded-3xl border border-white/5 bg-[#141414] p-10 h-full justify-between">
               <div>
                 <h4 className="text-2xl font-medium tracking-tight text-white">
-                  Enterprise-Grade Security.
+                  Your data stays yours.
                 </h4>
-                <p className="mt-2 text-[#b8b8b8] font-light">Your data is processed locally where possible and encrypted completely.</p>
+                <p className="mt-2 text-[#b8b8b8] font-light">Processed in-region where possible, encrypted end-to-end, and designed with security as a default — not an afterthought.</p>
               </div>
               <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
                 {SECURITY_FEATURES.map((feature, idx) => {
