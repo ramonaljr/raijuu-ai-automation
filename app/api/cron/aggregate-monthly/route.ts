@@ -1,14 +1,7 @@
 import { NextResponse } from 'next/server';
+import * as Sentry from '@sentry/nextjs';
 import { aggregateMonth, previousMonth } from '@/lib/cron/aggregate-monthly';
-
-function timingSafeEqual(a: string, b: string): boolean {
-  if (a.length !== b.length) return false;
-  let mismatch = 0;
-  for (let i = 0; i < a.length; i++) {
-    mismatch |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  }
-  return mismatch === 0;
-}
+import { timingSafeEqual } from '@/lib/auth/timing';
 
 function verifyCronBearer(authHeader: string | null): boolean {
   const expected = process.env.CRON_SECRET;
@@ -28,6 +21,7 @@ export async function GET(req: Request) {
     return NextResponse.json({ ok: true, ...summary });
   } catch (err) {
     console.error('[cron] aggregate-monthly failed', err);
+    Sentry.captureException(err, { tags: { route: 'cron/aggregate-monthly' } });
     return NextResponse.json({ error: 'server' }, { status: 500 });
   }
 }

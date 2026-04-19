@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import * as Sentry from '@sentry/nextjs';
 import { currentUser } from '@clerk/nextjs/server';
 import { z } from 'zod';
 import { eq } from 'drizzle-orm';
@@ -87,6 +88,10 @@ export async function POST(req: Request) {
       '[intake] send failed; engagement created but link not delivered',
       err,
     );
+    Sentry.captureException(err, {
+      tags: { route: 'admin/engagements/create-from-lead' },
+      extra: { engagementId: engagement.id, leadId: lead.id },
+    });
     return NextResponse.json(
       { engagementId: engagement.id, emailSent: false, url },
       { status: 207 },

@@ -65,12 +65,9 @@ export function DemoResult({
                 {card.metric}
               </span>
             </div>
-            <p
-              className="text-sm leading-relaxed text-white/60"
-              dangerouslySetInnerHTML={{
-                __html: substituteTemplate(card.body, situationText, content.displayName),
-              }}
-            />
+            <p className="text-sm leading-relaxed text-white/60">
+              {substituteTemplate(card.body, situationText, content.displayName)}
+            </p>
           </motion.div>
         ))}
       </div>

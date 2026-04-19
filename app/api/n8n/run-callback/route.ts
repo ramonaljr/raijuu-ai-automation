@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import * as Sentry from '@sentry/nextjs';
 import { z } from 'zod';
 import { db } from '@/lib/db';
 import { runs, automations } from '@/lib/db/schema';
@@ -92,6 +93,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ runId: existing?.id ?? null, idempotent: true });
     }
     console.error('[n8n-callback] unexpected error', err);
+    Sentry.captureException(err, {
+      tags: { route: 'n8n-run-callback' },
+      extra: { automationId: data.automationId, n8nExecutionId: data.n8nExecutionId },
+    });
     await writeDeadLetter({
       source: DEAD_LETTER_SOURCE,
       payload: raw,

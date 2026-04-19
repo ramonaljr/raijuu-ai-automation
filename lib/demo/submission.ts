@@ -10,14 +10,14 @@ export const demoSubmissionSchema = z.object({
 
 export type DemoSubmission = z.infer<typeof demoSubmissionSchema>;
 
-const HTML_ESCAPES: Record<string, string> = {
-  '<': '&lt;',
-  '>': '&gt;',
-  '&': '&amp;',
-  '"': '&quot;',
-  "'": '&#39;',
-};
-
+/**
+ * Substitute {{situationDetail}} and {{industry}} in a template. Returns a
+ * plain string intended to be rendered as React text (no dangerouslySetInnerHTML).
+ * React escapes text nodes on its own, so we don't HTML-encode here.
+ *
+ * We still defensively clip length and strip control characters to prevent
+ * weird rendering from pasted input.
+ */
 export function substituteTemplate(
   body: string,
   situation: string,
@@ -25,7 +25,8 @@ export function substituteTemplate(
 ): string {
   const safeSituation = situation
     .slice(0, 120)
-    .replace(/[<>&"']/g, (c) => HTML_ESCAPES[c]!);
+    // eslint-disable-next-line no-control-regex
+    .replace(/[\u0000-\u001F\u007F]/g, '');
   return body
     .replaceAll('{{situationDetail}}', safeSituation)
     .replaceAll('{{industry}}', industryDisplay);
