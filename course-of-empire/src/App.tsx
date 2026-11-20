@@ -33,6 +33,7 @@ const PORTFOLIO_PROJECTS = [
     category: 'Sales & Revenue',
     industry: 'B2B SaaS · RevOps',
     title: 'Autonomous Deal Desk & Lead Router',
+    image: 'assets/frames/02.webp',
     nodes: ['Demo Request', 'Enrich + Score', 'HubSpot + Slack'] as [string, string, string],
     summary: 'Enriches every inbound lead, generates an AE discovery brief, and routes qualified accounts in under 40 seconds.',
     impact: '+42% speed-to-lead conversion (placeholder)',
@@ -42,7 +43,7 @@ const PORTFOLIO_PROJECTS = [
     category: 'Finance & Ops',
     industry: 'Wholesale · Finance',
     title: 'AP/AR Invoice & PO Reconciliation',
-    industry2: '',
+    image: 'assets/frames/04.webp',
     nodes: ['Vendor PDF', 'Vision + 3-Way Match', 'NetSuite / Xero'] as [string, string, string],
     summary: 'Extracts invoice line items, matches against purchase orders, and flags pricing variances before approval.',
     impact: '32 hrs/wk finance ops saved (placeholder)',
@@ -52,6 +53,7 @@ const PORTFOLIO_PROJECTS = [
     category: 'Customer Support',
     industry: 'E-Commerce · CX',
     title: 'Omnichannel Tier-1 Support Agent',
+    image: 'assets/frames/06.webp',
     nodes: ['Zendesk Ticket', 'Order + Policy RAG', 'Auto-Resolve'] as [string, string, string],
     summary: 'Handles order tracking, returns, and policy questions autonomously; escalates edge cases with drafted replies.',
     impact: '68% tickets auto-resolved (placeholder)',
@@ -61,6 +63,7 @@ const PORTFOLIO_PROJECTS = [
     category: 'Customer Support',
     industry: 'B2B Services · Delivery',
     title: 'Zero-Touch Client Onboarding',
+    image: 'assets/frames/08.webp',
     nodes: ['Signed Deal', 'Provision Stack', 'Kickoff + Tasks'] as [string, string, string],
     summary: 'Triggers on contract signature to provision Drive folders, Slack Connect channels, billing, and sprint milestones.',
     impact: '4 hrs → 90 sec per client (placeholder)',
@@ -70,6 +73,7 @@ const PORTFOLIO_PROJECTS = [
     category: 'HR & Onboarding',
     industry: 'Tech Recruiting · People Ops',
     title: 'AI Candidate Triage & Scheduler',
+    image: 'assets/frames/10.webp',
     nodes: ['ATS Inbound', 'Rubric Scoring', 'Cal + Panel Brief'] as [string, string, string],
     summary: 'Evaluates resumes against structured hiring rubrics, sends screening links, and coordinates multi-interviewer panels.',
     impact: '75% less coordinator admin (placeholder)',
@@ -79,6 +83,7 @@ const PORTFOLIO_PROJECTS = [
     category: 'Finance & Ops',
     industry: 'Multi-Site · Executive Ops',
     title: 'Monday Morning KPI & Anomaly Brief',
+    image: 'assets/frames/12.webp',
     nodes: ['6 Data Sources', 'SQL + Synthesis', '8AM Slack Brief'] as [string, string, string],
     summary: 'Unifies Stripe, CRM, and ad spend into a plain-English executive digest with automated anomaly alerts.',
     impact: 'Zero manual weekly reporting (placeholder)',
@@ -196,6 +201,13 @@ export default function App() {
 
   const jumpTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleSitePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    const el = siteRef.current;
+    if (!el) return;
+    el.style.setProperty('--mx', `${e.clientX}px`);
+    el.style.setProperty('--my', `${e.clientY}px`);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -356,6 +368,7 @@ export default function App() {
         aria-modal="true"
         aria-label="Raijuu AI Automation Agency Website"
         hidden={!siteOpen}
+        onPointerMove={handleSitePointerMove}
       >
         {/* Sticky Website Navbar */}
         <header className="site__nav">
@@ -383,20 +396,36 @@ export default function App() {
         {/* 1. Editorial Hero */}
         <section className="site__hero">
           <div className="site__wrap">
-            <p className="site__eyebrow caps" data-reveal>Raijuu — AI Automation Agency</p>
-            <h1 className="site__h1 display" data-reveal>
-              We Replace Manual<br />Operations With<br />Autonomous Systems.
-            </h1>
-            <p className="site__heroLead" data-reveal>
-              We partner with operations-heavy teams to eliminate brittle spreadsheets, slow lead handoffs, and repetitive support work—shipping production AI agents and workflows in 14 days.
-            </p>
-            <div className="site__heroActions" data-reveal>
-              <button type="button" className="btn-frame display" onClick={() => jumpTo('site-book')}>
-                Book Free 30-Min Audit
-              </button>
-              <button type="button" className="site__ghost caps" onClick={() => jumpTo('site-systems')}>
-                Explore Core Systems ↓
-              </button>
+            <div className="site__heroGrid">
+              <div className="site__heroCopy">
+                <p className="site__eyebrow caps" data-reveal>Raijuu — AI Automation Agency</p>
+                <h1 className="site__h1 display" data-reveal>
+                  We Replace Manual<br />Operations With<br />Autonomous Systems.
+                </h1>
+                <p className="site__heroLead" data-reveal>
+                  We partner with operations-heavy teams to eliminate brittle spreadsheets, slow lead handoffs, and repetitive support work—shipping production AI agents and workflows in 14 days.
+                </p>
+                <div className="site__heroActions" data-reveal>
+                  <button type="button" className="btn-frame display" onClick={() => jumpTo('site-book')}>
+                    Book Free 30-Min Audit
+                  </button>
+                  <button type="button" className="site__ghost caps" onClick={() => jumpTo('site-systems')}>
+                    Explore Core Systems ↓
+                  </button>
+                </div>
+              </div>
+
+              <figure className="site__heroFrame" data-reveal>
+                <div className="site__heroImgWrap">
+                  <img src="assets/frames/03.webp" alt="Autonomous Operations Architecture" />
+                  <span className="site__heroBadge caps">
+                    <i aria-hidden="true"></i> Autonomous Ops · 24/7
+                  </span>
+                </div>
+                <figcaption className="caps site__muted">
+                  From manual complexity to quiet, compounding precision.
+                </figcaption>
+              </figure>
             </div>
 
             <div className="site__stats" data-reveal>
@@ -507,16 +536,19 @@ export default function App() {
             <div className="site__portGrid">
               {filteredProjects.map((proj) => (
                 <article key={proj.title} className="site__portCard">
-                  <div className="site__portTop">
-                    <span className="caps site__muted">{proj.industry}</span>
+                  <div className="site__portMedia">
+                    <img src={proj.image} alt={proj.title} loading="lazy" />
                     <span className="caps site__portBadge">{proj.category}</span>
                   </div>
-                  <h3 className="site__portTitle display">{proj.title}</h3>
-                  <WorkflowDiagram nodes={proj.nodes} />
-                  <p className="site__cardBody">{proj.summary}</p>
-                  <div className="site__portFoot">
-                    <strong className="caps">{proj.impact}</strong>
-                    <span className="caps site__muted">{proj.stack}</span>
+                  <div className="site__portBody">
+                    <span className="caps site__muted">{proj.industry}</span>
+                    <h3 className="site__portTitle display">{proj.title}</h3>
+                    <WorkflowDiagram nodes={proj.nodes} />
+                    <p className="site__cardBody">{proj.summary}</p>
+                    <div className="site__portFoot">
+                      <strong className="caps">{proj.impact}</strong>
+                      <span className="caps site__muted">{proj.stack}</span>
+                    </div>
                   </div>
                 </article>
               ))}
