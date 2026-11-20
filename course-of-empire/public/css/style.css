@@ -659,10 +659,38 @@ body.is-locked .cursor svg { opacity: 1; }
   background: rgba(15, 11, 8, 0.6);
 }
 
+/* Business Workflows Project Portfolio */
+.site__portHead { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 40px; }
+.site__portHead .site__secHead { margin-bottom: 0; }
+.site__filters { display: flex; flex-wrap: wrap; gap: 8px; }
+.site__filter {
+  border: 1px solid var(--paper-25); padding: 8px 14px; font-size: 11px;
+  color: var(--paper-70); background: rgba(15, 11, 8, 0.6);
+  transition: border-color 200ms, background 200ms, color 200ms;
+}
+.site__filter:hover { border-color: var(--paper-60); color: var(--paper); }
+.site__filter.is-active { border-color: var(--paper); background: var(--paper); color: var(--ink); font-weight: 500; }
+
+.site__portGrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.site__portCard {
+  border: 1px solid var(--paper-25); padding: 24px; background: rgba(15, 11, 8, 0.72);
+  display: flex; flex-direction: column; gap: 14px;
+  transition: border-color 300ms var(--ease), transform 400ms var(--ease);
+}
+.site__portCard:hover { border-color: var(--paper-60); transform: translateY(-3px); }
+.site__portTop { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.site__portBadge { border: 1px solid var(--paper-25); padding: 4px 8px; font-size: 9px; color: var(--paper-70); white-space: nowrap; }
+.site__portTitle { font-size: 24px; line-height: 0.96; letter-spacing: -0.02em; margin: 0; }
+.site__portFoot {
+  padding-top: 12px; border-top: 1px solid var(--paper-25);
+  display: flex; flex-direction: column; gap: 5px;
+}
+.site__portFoot strong { font-size: 11px; color: var(--paper); font-weight: 500; }
+
 @media (max-width: 960px) {
   .site__links { display: none; }
   .site__stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .site__grid4, .site__grid3, .site__caseRow, .site__bookGrid, .site__roiGrid, .site__founderGrid { grid-template-columns: 1fr; }
+  .site__grid4, .site__grid3, .site__portGrid, .site__caseRow, .site__bookGrid, .site__roiGrid, .site__founderGrid { grid-template-columns: 1fr; }
   .site__roiResult { border-left: 0; border-top: 1px solid var(--paper-25); padding-left: 0; padding-top: 28px; }
 }
 @media (max-width: 600px) {

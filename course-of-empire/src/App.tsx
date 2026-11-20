@@ -26,6 +26,66 @@ const BOTTLENECKS = [
   'Custom Internal Copilot',
 ];
 
+const PORTFOLIO_CATEGORIES = ['All', 'Sales & Revenue', 'Finance & Ops', 'Customer Support', 'HR & Onboarding'] as const;
+
+const PORTFOLIO_PROJECTS = [
+  {
+    category: 'Sales & Revenue',
+    industry: 'B2B SaaS · RevOps',
+    title: 'Autonomous Deal Desk & Lead Router',
+    nodes: ['Demo Request', 'Enrich + Score', 'HubSpot + Slack'] as [string, string, string],
+    summary: 'Enriches every inbound lead, generates an AE discovery brief, and routes qualified accounts in under 40 seconds.',
+    impact: '+42% speed-to-lead conversion (placeholder)',
+    stack: 'n8n · Clay · OpenAI · HubSpot',
+  },
+  {
+    category: 'Finance & Ops',
+    industry: 'Wholesale · Finance',
+    title: 'AP/AR Invoice & PO Reconciliation',
+    industry2: '',
+    nodes: ['Vendor PDF', 'Vision + 3-Way Match', 'NetSuite / Xero'] as [string, string, string],
+    summary: 'Extracts invoice line items, matches against purchase orders, and flags pricing variances before approval.',
+    impact: '32 hrs/wk finance ops saved (placeholder)',
+    stack: 'n8n · Gemini Vision · Postgres · Xero',
+  },
+  {
+    category: 'Customer Support',
+    industry: 'E-Commerce · CX',
+    title: 'Omnichannel Tier-1 Support Agent',
+    nodes: ['Zendesk Ticket', 'Order + Policy RAG', 'Auto-Resolve'] as [string, string, string],
+    summary: 'Handles order tracking, returns, and policy questions autonomously; escalates edge cases with drafted replies.',
+    impact: '68% tickets auto-resolved (placeholder)',
+    stack: 'Anthropic · Zendesk · Shopify · Make',
+  },
+  {
+    category: 'Customer Support',
+    industry: 'B2B Services · Delivery',
+    title: 'Zero-Touch Client Onboarding',
+    nodes: ['Signed Deal', 'Provision Stack', 'Kickoff + Tasks'] as [string, string, string],
+    summary: 'Triggers on contract signature to provision Drive folders, Slack Connect channels, billing, and sprint milestones.',
+    impact: '4 hrs → 90 sec per client (placeholder)',
+    stack: 'Stripe · DocuSign · Slack · Notion',
+  },
+  {
+    category: 'HR & Onboarding',
+    industry: 'Tech Recruiting · People Ops',
+    title: 'AI Candidate Triage & Scheduler',
+    nodes: ['ATS Inbound', 'Rubric Scoring', 'Cal + Panel Brief'] as [string, string, string],
+    summary: 'Evaluates resumes against structured hiring rubrics, sends screening links, and coordinates multi-interviewer panels.',
+    impact: '75% less coordinator admin (placeholder)',
+    stack: 'Greenhouse · OpenAI · Cal.com · Slack',
+  },
+  {
+    category: 'Finance & Ops',
+    industry: 'Multi-Site · Executive Ops',
+    title: 'Monday Morning KPI & Anomaly Brief',
+    nodes: ['6 Data Sources', 'SQL + Synthesis', '8AM Slack Brief'] as [string, string, string],
+    summary: 'Unifies Stripe, CRM, and ad spend into a plain-English executive digest with automated anomaly alerts.',
+    impact: 'Zero manual weekly reporting (placeholder)',
+    stack: 'Supabase · Postgres · OpenAI · Slack',
+  },
+];
+
 function WorkflowDiagram({ nodes }: { nodes: [string, string, string] }) {
   return (
     <div className="site__diagram" aria-hidden="true">
@@ -48,6 +108,7 @@ export default function App() {
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState('');
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [portfolioFilter, setPortfolioFilter] = useState<string>('All');
 
   // Interactive ROI Calculator state
   const [teamSize, setTeamSize] = useState(12);
@@ -63,6 +124,10 @@ export default function App() {
 
   const siteRef = useRef<HTMLDivElement>(null);
   const lastFocusRef = useRef<HTMLElement | null>(null);
+
+  const filteredProjects = portfolioFilter === 'All'
+    ? PORTFOLIO_PROJECTS
+    : PORTFOLIO_PROJECTS.filter((p) => p.category === portfolioFilter);
 
   const hoursReclaimedPerWeek = Math.round(teamSize * manualHours * 0.65);
   const annualHoursSaved = hoursReclaimedPerWeek * 50;
@@ -299,6 +364,7 @@ export default function App() {
           </button>
           <nav className="site__links" aria-label="Agency sections">
             <button type="button" className="caps" onClick={() => jumpTo('site-systems')}>Systems</button>
+            <button type="button" className="caps" onClick={() => jumpTo('site-portfolio')}>Portfolio</button>
             <button type="button" className="caps" onClick={() => jumpTo('site-cases')}>Outcomes</button>
             <button type="button" className="caps" onClick={() => jumpTo('site-roi')}>ROI</button>
             <button type="button" className="caps" onClick={() => jumpTo('site-pricing')}>Pricing</button>
@@ -414,8 +480,52 @@ export default function App() {
           </div>
         </section>
 
+        {/* 3.5. Business Workflows Project Portfolio */}
+        <section className="site__section site__section--alt" id="site-portfolio">
+          <div className="site__wrap">
+            <div className="site__portHead" data-reveal>
+              <div className="site__secHead">
+                <p className="site__eyebrow caps">02 — Project Portfolio (Placeholders)</p>
+                <h2 className="site__h2 display">Production Business<br />Workflows Shipped</h2>
+              </div>
+              <div className="site__filters" role="tablist" aria-label="Filter projects by business function">
+                {PORTFOLIO_CATEGORIES.map((cat) => (
+                  <button
+                    key={cat}
+                    type="button"
+                    role="tab"
+                    aria-selected={portfolioFilter === cat}
+                    className={`site__filter caps${portfolioFilter === cat ? ' is-active' : ''}`}
+                    onClick={() => setPortfolioFilter(cat)}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="site__portGrid">
+              {filteredProjects.map((proj) => (
+                <article key={proj.title} className="site__portCard">
+                  <div className="site__portTop">
+                    <span className="caps site__muted">{proj.industry}</span>
+                    <span className="caps site__portBadge">{proj.category}</span>
+                  </div>
+                  <h3 className="site__portTitle display">{proj.title}</h3>
+                  <WorkflowDiagram nodes={proj.nodes} />
+                  <p className="site__cardBody">{proj.summary}</p>
+                  <div className="site__portFoot">
+                    <strong className="caps">{proj.impact}</strong>
+                    <span className="caps site__muted">{proj.stack}</span>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* 4. Case Studies / Selected Outcomes */}
-        <section className="site__section site__section--alt" id="site-cases">
+        <section className="site__section" id="site-cases">
           <div className="site__wrap">
             <div className="site__secHead" data-reveal>
               <p className="site__eyebrow caps">02 — Selected Outcomes (Placeholders)</p>
