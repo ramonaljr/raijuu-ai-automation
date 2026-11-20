@@ -309,13 +309,18 @@ img { display: block; }
 .header__cta:hover { opacity: 0.65; border-bottom-color: var(--paper); }
 
 .btn-book-finale {
-  position: absolute; left: 50%; top: calc(50% + calc(var(--u) * 56)); transform: translateX(-50%);
-  color: var(--paper-70); border-bottom: 1px solid var(--paper-40); padding-bottom: calc(var(--u) * 4);
-  white-space: nowrap; opacity: 0; visibility: hidden; pointer-events: none;
-  transition: opacity var(--fade) var(--ease), visibility 0s linear var(--fade), color 200ms, border-color 200ms;
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  opacity: 0; visibility: hidden; pointer-events: none;
+  transition: opacity var(--fade) var(--ease), visibility 0s linear var(--fade), background 300ms, color 300ms, border-color 300ms;
 }
-#againBtn.is-on + .btn-book-finale { opacity: 1; visibility: visible; pointer-events: auto; transition-delay: 150ms, 0s, 0s, 0s; }
-.btn-book-finale:hover { color: var(--paper); border-bottom-color: var(--paper); }
+#againBtn.is-on + .btn-book-finale { opacity: 1; visibility: visible; pointer-events: auto; transition-delay: 0s; }
+#againBtn.finale-replay {
+  top: calc(50% + calc(var(--u) * 62));
+  border: 0; padding: 0; font-family: "Geist", system-ui, sans-serif; font-weight: 300;
+  font-size: max(calc(var(--u) * 12), 10px); letter-spacing: 0;
+  color: var(--paper-70); border-bottom: 1px solid var(--paper-40); padding-bottom: calc(var(--u) * 3);
+}
+#againBtn.finale-replay:hover { background: none; color: var(--paper); border-color: var(--paper); }
 
 .overlay__cta {
   position: absolute; right: var(--pad); bottom: calc(var(--u) * 64);
@@ -561,20 +566,98 @@ body.is-locked .cursor svg { opacity: 1; }
 .site__footerInner { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; }
 .site__footerBrand { font-size: 18px; }
 
+/* Scroll-triggered choreography */
+[data-reveal] {
+  opacity: 0; transform: translateY(18px);
+  transition: opacity 750ms var(--ease), transform 900ms var(--ease);
+}
+[data-reveal].is-in { opacity: 1; transform: none; }
+.site__grid4 [data-reveal]:nth-child(2),
+.site__grid3 [data-reveal]:nth-child(2) { transition-delay: 90ms; }
+.site__grid4 [data-reveal]:nth-child(3),
+.site__grid3 [data-reveal]:nth-child(3) { transition-delay: 180ms; }
+.site__grid4 [data-reveal]:nth-child(4) { transition-delay: 270ms; }
+
+/* SVG-style Workflow Node Diagram */
+.site__diagram {
+  display: flex; align-items: center; gap: 8px; padding: 12px 14px;
+  border: 1px solid var(--paper-25); background: rgba(251, 248, 238, 0.03);
+}
+.site__node {
+  font-size: 10px; padding: 5px 9px; border: 1px solid var(--paper-40); color: var(--paper-70); white-space: nowrap;
+}
+.site__node--ai { border-color: var(--paper); color: var(--ink); background: var(--paper); font-weight: 500; }
+.site__wire { flex: 1; height: 1px; background: var(--paper-25); position: relative; overflow: hidden; min-width: 16px; }
+.site__wire i {
+  position: absolute; top: 0; left: -40%; width: 40%; height: 100%;
+  background: linear-gradient(90deg, transparent, var(--paper), transparent);
+  animation: wirePulse 2.4s var(--ease) infinite;
+}
+@keyframes wirePulse { from { left: -40%; } to { left: 110%; } }
+
+/* Interactive ROI Calculator */
+.site__roiGrid {
+  display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 40px; align-items: stretch;
+  border: 1px solid var(--paper-25); padding: 36px; background: rgba(251, 248, 238, 0.02);
+}
+.site__roiControls { display: flex; flex-direction: column; gap: 28px; justify-content: center; }
+.site__slider { display: flex; flex-direction: column; gap: 12px; cursor: pointer; }
+.site__sliderTop { display: flex; justify-content: space-between; align-items: baseline; }
+.site__sliderTop span { color: var(--paper-70); }
+.site__sliderTop strong { font-size: 26px; font-weight: 400; color: var(--paper); }
+.site__slider input[type="range"] {
+  -webkit-appearance: none; appearance: none; width: 100%; height: 2px; background: var(--paper-25); outline: none;
+}
+.site__slider input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none; width: 16px; height: 16px; border-radius: 50%;
+  background: var(--paper); border: 2px solid var(--ink); cursor: pointer; transition: transform 200ms;
+}
+.site__slider input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+.site__roiResult {
+  border-left: 1px solid var(--paper-25); padding-left: 40px;
+  display: flex; flex-direction: column; justify-content: space-between; gap: 24px;
+}
+.site__roiNums { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.site__roiNums > div { display: flex; flex-direction: column; gap: 6px; }
+.site__roiBig { font-size: clamp(32px, 3.6vw, 48px); line-height: 0.9; letter-spacing: -0.03em; color: var(--paper); }
+.site__roiResult .btn-frame { width: 100%; font-size: 20px; padding: 18px 24px; }
+
+/* 30-Min Audit Agenda & Bottleneck Pills */
+.site__agenda {
+  margin: 24px 0; padding: 20px; border: 1px solid var(--paper-25); background: rgba(251, 248, 238, 0.02);
+  display: flex; flex-direction: column; gap: 12px;
+}
+.site__agenda ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.site__agenda li { font-weight: 300; font-size: 14px; color: var(--paper-70); }
+.site__agenda strong { font-weight: 500; color: var(--paper); margin-right: 6px; }
+
+.site__pills { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.site__pill {
+  border: 1px solid var(--paper-25); padding: 10px 12px; font-size: 11px; text-align: left;
+  color: var(--paper-70); background: rgba(251, 248, 238, 0.02);
+  transition: border-color 200ms, background 200ms, color 200ms;
+}
+.site__pill:hover { border-color: var(--paper-60); color: var(--paper); }
+.site__pill.is-active { border-color: var(--paper); background: var(--paper); color: var(--ink); font-weight: 500; }
+
 @media (max-width: 960px) {
   .site__links { display: none; }
   .site__stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .site__grid4, .site__grid3, .site__caseRow, .site__bookGrid { grid-template-columns: 1fr; }
+  .site__grid4, .site__grid3, .site__caseRow, .site__bookGrid, .site__roiGrid { grid-template-columns: 1fr; }
+  .site__roiResult { border-left: 0; border-top: 1px solid var(--paper-25); padding-left: 0; padding-top: 28px; }
 }
 @media (max-width: 600px) {
   .site__wrap { padding: 0 18px; }
   .site__nav { padding: 16px 18px; }
   .site__brand { font-size: 16px; }
-  .site__stats { grid-template-columns: 1fr; }
+  .site__stats, .site__roiNums, .site__pills { grid-template-columns: 1fr; }
   .site__hero, .site__section { padding: 64px 0; }
+  .site__diagram { flex-wrap: wrap; }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  [data-reveal] { opacity: 1 !important; transform: none !important; transition: none !important; }
+  .site__wire i { animation: none !important; }
   .site, .site__card, .agency,
   .agency__eyebrow,
   .agency__title,

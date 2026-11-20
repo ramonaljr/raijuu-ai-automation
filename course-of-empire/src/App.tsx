@@ -19,6 +19,25 @@ const FAQS = [
   },
 ];
 
+const BOTTLENECKS = [
+  'Lead Qualification & CRM',
+  'Support & Ticket Triage',
+  'Ops, Invoicing & Docs',
+  'Custom Internal Copilot',
+];
+
+function WorkflowDiagram({ nodes }: { nodes: [string, string, string] }) {
+  return (
+    <div className="site__diagram" aria-hidden="true">
+      <span className="site__node caps">{nodes[0]}</span>
+      <span className="site__wire"><i></i></span>
+      <span className="site__node site__node--ai caps">{nodes[1]}</span>
+      <span className="site__wire"><i></i></span>
+      <span className="site__node caps">{nodes[2]}</span>
+    </div>
+  );
+}
+
 // The page markup of the original hero3d.html, paired with the full Raijuu AI Automation agency website.
 // The engine (public/js/hero3d.js) finds the stage/preloader/overlay elements by id and class,
 // fills the scene texts in and drives them.
@@ -29,14 +48,25 @@ export default function App() {
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState('');
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+
+  // Interactive ROI Calculator state
+  const [teamSize, setTeamSize] = useState(12);
+  const [manualHours, setManualHours] = useState(6);
+  const [hourlyCost, setHourlyCost] = useState(65);
+
+  // Booking form state
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [company, setCompany] = useState('');
-  const [bottleneck, setBottleneck] = useState('Lead Qualification & CRM');
+  const [bottleneck, setBottleneck] = useState(BOTTLENECKS[0]);
   const [notes, setNotes] = useState('');
 
   const siteRef = useRef<HTMLDivElement>(null);
   const lastFocusRef = useRef<HTMLElement | null>(null);
+
+  const hoursReclaimedPerWeek = Math.round(teamSize * manualHours * 0.65);
+  const annualHoursSaved = hoursReclaimedPerWeek * 50;
+  const annualSavings = annualHoursSaved * hourlyCost;
 
   const openSite = (scrollToId?: string) => {
     lastFocusRef.current = document.activeElement as HTMLElement | null;
@@ -75,7 +105,28 @@ export default function App() {
       if (e.key === 'Escape') closeSite();
     };
     document.addEventListener('keydown', onKeyDown);
-    return () => document.removeEventListener('keydown', onKeyDown);
+
+    // Scroll-triggered reveal choreography inside #agencySite
+    const rootEl = siteRef.current;
+    if (!rootEl) return () => document.removeEventListener('keydown', onKeyDown);
+    const targets = [...rootEl.querySelectorAll<HTMLElement>('[data-reveal]')];
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-in');
+            observer.unobserve(entry.target);
+          }
+        }
+      },
+      { root: rootEl, threshold: 0.12 },
+    );
+    for (const t of targets) observer.observe(t);
+
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+      observer.disconnect();
+    };
   }, [siteOpen]);
 
   const jumpTo = (id: string) => {
@@ -93,7 +144,15 @@ export default function App() {
         const res = await fetch(webhook, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, email, company, bottleneck, notes, source: 'raijuu-landing' }),
+          body: JSON.stringify({
+            name,
+            email,
+            company,
+            bottleneck,
+            notes,
+            estimatedAnnualSavings: annualSavings,
+            source: 'raijuu-landing',
+          }),
         });
         if (!res.ok) throw new Error('Submission failed');
       }
@@ -166,9 +225,10 @@ export default function App() {
         <div className="bodies" id="bodies"></div>
         <div className="centers" id="centers"></div>
 
-        <button className="btn-frame btn-frame--center display" id="againBtn" type="button">Watch again</button>
-        <button className="btn-book-finale caps" type="button" onClick={() => openSite('site-book')}>
-          Or explore services &amp; book your audit →
+        {/* Finale: Watch again (controlled by hero3d.js) + Primary Agency CTA */}
+        <button className="btn-frame btn-frame--center display finale-replay" id="againBtn" type="button">Watch again</button>
+        <button className="btn-frame display btn-book-finale" type="button" onClick={() => openSite('site-book')}>
+          Explore Systems &amp; Book Audit
         </button>
 
         {/* Chapter rail (bottom left) */}
@@ -240,7 +300,7 @@ export default function App() {
           <nav className="site__links" aria-label="Agency sections">
             <button type="button" className="caps" onClick={() => jumpTo('site-systems')}>Systems</button>
             <button type="button" className="caps" onClick={() => jumpTo('site-cases')}>Outcomes</button>
-            <button type="button" className="caps" onClick={() => jumpTo('site-process')}>Process</button>
+            <button type="button" className="caps" onClick={() => jumpTo('site-roi')}>ROI</button>
             <button type="button" className="caps" onClick={() => jumpTo('site-pricing')}>Pricing</button>
             <button type="button" className="caps" onClick={() => jumpTo('site-faq')}>FAQ</button>
           </nav>
@@ -257,14 +317,14 @@ export default function App() {
         {/* 1. Editorial Hero */}
         <section className="site__hero">
           <div className="site__wrap">
-            <p className="site__eyebrow caps">Raijuu — AI Automation Agency</p>
-            <h1 className="site__h1 display">
+            <p className="site__eyebrow caps" data-reveal>Raijuu — AI Automation Agency</p>
+            <h1 className="site__h1 display" data-reveal>
               We Replace Manual<br />Operations With<br />Autonomous Systems.
             </h1>
-            <p className="site__heroLead">
+            <p className="site__heroLead" data-reveal>
               We partner with operations-heavy teams to eliminate brittle spreadsheets, slow lead handoffs, and repetitive support work—shipping production AI agents and workflows in 14 days.
             </p>
-            <div className="site__heroActions">
+            <div className="site__heroActions" data-reveal>
               <button type="button" className="btn-frame display" onClick={() => jumpTo('site-book')}>
                 Book Free 30-Min Audit
               </button>
@@ -273,7 +333,7 @@ export default function App() {
               </button>
             </div>
 
-            <div className="site__stats">
+            <div className="site__stats" data-reveal>
               <div className="site__stat">
                 <span className="site__statNum display">38 hrs/wk</span>
                 <span className="site__statCap caps">Avg. team time reclaimed (placeholder)</span>
@@ -306,41 +366,45 @@ export default function App() {
           </div>
         </section>
 
-        {/* 3. Core Systems & Deliverables */}
+        {/* 3. Core Systems & Deliverables (with SVG Workflow Node Diagrams) */}
         <section className="site__section" id="site-systems">
           <div className="site__wrap">
-            <div className="site__secHead">
+            <div className="site__secHead" data-reveal>
               <p className="site__eyebrow caps">01 — Core Systems &amp; Deliverables</p>
               <h2 className="site__h2 display">Built for Real<br />Operational Leverage</h2>
             </div>
             <div className="site__grid4">
-              <article className="site__card">
+              <article className="site__card" data-reveal>
                 <span className="site__cardNum caps">System 01</span>
                 <h3 className="site__cardTitle display">AI Lead &amp; CRM Engine</h3>
+                <WorkflowDiagram nodes={['Webhook', 'Enrich + Score', 'CRM + Slack']} />
                 <p className="site__cardBody">
                   Inbound enrichment, instant qualification, personalized routing, and calendar booking in under 60 seconds—synced directly to HubSpot or Salesforce.
                 </p>
                 <span className="site__cardMeta caps">HubSpot · Clay · Slack · OpenAI</span>
               </article>
-              <article className="site__card">
+              <article className="site__card" data-reveal>
                 <span className="site__cardNum caps">System 02</span>
                 <h3 className="site__cardTitle display">Support &amp; Ticket Triage</h3>
+                <WorkflowDiagram nodes={['Ticket In', 'RAG + Intent', 'Auto-Resolve']} />
                 <p className="site__cardBody">
                   Autonomous L1 resolution, context-aware agent drafts, sentiment detection, and instant SLA escalation across Intercom, Zendesk, and email.
                 </p>
                 <span className="site__cardMeta caps">Zendesk · Intercom · Anthropic</span>
               </article>
-              <article className="site__card">
+              <article className="site__card" data-reveal>
                 <span className="site__cardNum caps">System 03</span>
                 <h3 className="site__cardTitle display">Ops &amp; Document Pipelines</h3>
+                <WorkflowDiagram nodes={['PDF / Invoice', 'Vision Extract', 'ERP Sync']} />
                 <p className="site__cardBody">
                   Automated PDF/invoice extraction, ERP reconciliation, vendor onboarding, and executive KPI digests delivered to Slack every Monday morning.
                 </p>
                 <span className="site__cardMeta caps">n8n · Postgres · OCR · Stripe</span>
               </article>
-              <article className="site__card">
+              <article className="site__card" data-reveal>
                 <span className="site__cardNum caps">System 04</span>
                 <h3 className="site__cardTitle display">Custom Internal Copilots</h3>
+                <WorkflowDiagram nodes={['Slack Ask', 'Vector Search', 'Action Exec']} />
                 <p className="site__cardBody">
                   Private RAG knowledge bases over your Notion, Drive, and SOPs—paired with Slack/Teams action agents that execute real tasks safely.
                 </p>
@@ -353,12 +417,12 @@ export default function App() {
         {/* 4. Case Studies / Selected Outcomes */}
         <section className="site__section site__section--alt" id="site-cases">
           <div className="site__wrap">
-            <div className="site__secHead">
+            <div className="site__secHead" data-reveal>
               <p className="site__eyebrow caps">02 — Selected Outcomes (Placeholders)</p>
               <h2 className="site__h2 display">From Bottlenecks<br />to Compounding ROI</h2>
             </div>
             <div className="site__cases">
-              <article className="site__caseRow">
+              <article className="site__caseRow" data-reveal>
                 <div className="site__caseMeta">
                   <span className="caps">B2B SaaS · 45-Person Team</span>
                   <strong className="display">4 hrs → 38 sec</strong>
@@ -370,7 +434,7 @@ export default function App() {
                   </p>
                 </div>
               </article>
-              <article className="site__caseRow">
+              <article className="site__caseRow" data-reveal>
                 <div className="site__caseMeta">
                   <span className="caps">Logistics &amp; Ops · Multi-Warehouse</span>
                   <strong className="display">32 hrs/wk Saved</strong>
@@ -382,7 +446,7 @@ export default function App() {
                   </p>
                 </div>
               </article>
-              <article className="site__caseRow">
+              <article className="site__caseRow" data-reveal>
                 <div className="site__caseMeta">
                   <span className="caps">Digital Agency · 20-Person Team</span>
                   <strong className="display">68% Auto-Resolved</strong>
@@ -398,25 +462,76 @@ export default function App() {
           </div>
         </section>
 
-        {/* 5. How We Work */}
-        <section className="site__section" id="site-process">
+        {/* 5. Interactive ROI Calculator */}
+        <section className="site__section" id="site-roi">
           <div className="site__wrap">
-            <div className="site__secHead">
-              <p className="site__eyebrow caps">03 — How We Work</p>
+            <div className="site__secHead" data-reveal>
+              <p className="site__eyebrow caps">03 — Interactive ROI Estimator</p>
+              <h2 className="site__h2 display">Calculate Your<br />Manual-Ops Tax</h2>
+            </div>
+            <div className="site__roiGrid" data-reveal>
+              <div className="site__roiControls">
+                <label className="site__slider">
+                  <div className="site__sliderTop">
+                    <span className="caps">Operations / Team Size</span>
+                    <strong className="display">{teamSize} people</strong>
+                  </div>
+                  <input type="range" min={3} max={100} value={teamSize} onChange={(e) => setTeamSize(Number(e.target.value))} />
+                </label>
+                <label className="site__slider">
+                  <div className="site__sliderTop">
+                    <span className="caps">Manual Repetitive Work / Person</span>
+                    <strong className="display">{manualHours} hrs/wk</strong>
+                  </div>
+                  <input type="range" min={2} max={25} value={manualHours} onChange={(e) => setManualHours(Number(e.target.value))} />
+                </label>
+                <label className="site__slider">
+                  <div className="site__sliderTop">
+                    <span className="caps">Blended Hourly Cost</span>
+                    <strong className="display">${hourlyCost}/hr</strong>
+                  </div>
+                  <input type="range" min={25} max={150} step={5} value={hourlyCost} onChange={(e) => setHourlyCost(Number(e.target.value))} />
+                </label>
+              </div>
+              <div className="site__roiResult">
+                <p className="caps site__muted">Estimated 65% Automation Capture</p>
+                <div className="site__roiNums">
+                  <div>
+                    <span className="site__roiBig display">${annualSavings.toLocaleString()}</span>
+                    <span className="caps site__muted">Annual Cost Reclaimed</span>
+                  </div>
+                  <div>
+                    <span className="site__roiBig display">{annualHoursSaved.toLocaleString()} hrs</span>
+                    <span className="caps site__muted">Hours Returned / Year</span>
+                  </div>
+                </div>
+                <button type="button" className="btn-frame display" onClick={() => jumpTo('site-book')}>
+                  Claim This ROI — Book Audit
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 6. How We Work */}
+        <section className="site__section site__section--alt" id="site-process">
+          <div className="site__wrap">
+            <div className="site__secHead" data-reveal>
+              <p className="site__eyebrow caps">04 — How We Work</p>
               <h2 className="site__h2 display">Three Steps to<br />Quiet Precision</h2>
             </div>
             <div className="site__grid3">
-              <div className="site__step">
+              <div className="site__step" data-reveal>
                 <span className="site__stepNum display">01</span>
                 <h3 className="caps">Workflow Audit · 30 Min</h3>
                 <p>We map your current tools, shadow your highest-friction manual loops, and deliver a clear ROI roadmap of your top 3 automation targets.</p>
               </div>
-              <div className="site__step">
+              <div className="site__step" data-reveal>
                 <span className="site__stepNum display">02</span>
                 <h3 className="caps">Sprint Build · 14 Days</h3>
                 <p>We architect, test, and deploy your custom AI agents and n8n/Make pipelines directly into your stack—with full error handling and documentation.</p>
               </div>
-              <div className="site__step">
+              <div className="site__step" data-reveal>
                 <span className="site__stepNum display">03</span>
                 <h3 className="caps">Autonomous Scale · 24/7</h3>
                 <p>Your team reclaims dozens of hours every week while we monitor uptime, tune prompts as models evolve, and ship new workflows on demand.</p>
@@ -425,15 +540,15 @@ export default function App() {
           </div>
         </section>
 
-        {/* 6. Engagement Models / Pricing */}
-        <section className="site__section site__section--alt" id="site-pricing">
+        {/* 7. Engagement Models / Pricing */}
+        <section className="site__section" id="site-pricing">
           <div className="site__wrap">
-            <div className="site__secHead">
-              <p className="site__eyebrow caps">04 — Engagement Models (Placeholders)</p>
+            <div className="site__secHead" data-reveal>
+              <p className="site__eyebrow caps">05 — Engagement Models (Placeholders)</p>
               <h2 className="site__h2 display">Simple, Outcome-Driven<br />Partnerships</h2>
             </div>
             <div className="site__grid3">
-              <div className="site__tier">
+              <div className="site__tier" data-reveal>
                 <span className="caps">01 · Sprint Build</span>
                 <h3 className="display">14-Day Sprint</h3>
                 <p className="site__tierDesc">Best for teams targeting one high-impact bottleneck first.</p>
@@ -447,7 +562,7 @@ export default function App() {
                   Start with Audit
                 </button>
               </div>
-              <div className="site__tier site__tier--featured">
+              <div className="site__tier site__tier--featured" data-reveal>
                 <span className="caps">02 · Most Popular</span>
                 <h3 className="display">AI Partner</h3>
                 <p className="site__tierDesc">Ongoing automation engineering embedded with your ops team.</p>
@@ -461,7 +576,7 @@ export default function App() {
                   Book Discovery
                 </button>
               </div>
-              <div className="site__tier">
+              <div className="site__tier" data-reveal>
                 <span className="caps">03 · Enterprise</span>
                 <h3 className="display">Private VPC</h3>
                 <p className="site__tierDesc">For regulated teams needing self-hosted AI infrastructure.</p>
@@ -479,11 +594,11 @@ export default function App() {
           </div>
         </section>
 
-        {/* 7. FAQ */}
-        <section className="site__section" id="site-faq">
-          <div className="site__wrap site__faqWrap">
+        {/* 8. FAQ */}
+        <section className="site__section site__section--alt" id="site-faq">
+          <div className="site__wrap site__faqWrap" data-reveal>
             <div className="site__secHead">
-              <p className="site__eyebrow caps">05 — Common Questions</p>
+              <p className="site__eyebrow caps">06 — Common Questions</p>
               <h2 className="site__h2 display">Clarity Before<br />We Build</h2>
             </div>
             <div className="agency__faq">
@@ -508,15 +623,25 @@ export default function App() {
           </div>
         </section>
 
-        {/* 8. Dedicated Conversion / Booking Section */}
-        <section className="site__section site__section--alt" id="site-book">
-          <div className="site__wrap site__bookGrid">
+        {/* 9. Dedicated Conversion / Booking Section */}
+        <section className="site__section" id="site-book">
+          <div className="site__wrap site__bookGrid" data-reveal>
             <div className="site__bookInfo">
-              <p className="site__eyebrow caps">06 — Start Here</p>
+              <p className="site__eyebrow caps">07 — Start Here</p>
               <h2 className="site__h2 display">Book Your Free<br />Workflow Audit</h2>
               <p className="site__heroLead">
-                Tell us where your team is losing hours. Within 24 hours we&apos;ll send calendar times for a 30-minute audit—and you leave with an actionable automation blueprint either way.
+                Within 24 hours we&apos;ll send calendar times for a focused 30-minute session—and you leave with an actionable automation blueprint either way.
               </p>
+
+              <div className="site__agenda">
+                <p className="caps site__muted">30-Min Call Agenda</p>
+                <ul>
+                  <li><strong>00–10m</strong> — Map your current stack &amp; manual handoffs</li>
+                  <li><strong>10–20m</strong> — Identify top 3 highest-ROI automation targets</li>
+                  <li><strong>20–30m</strong> — Live architecture &amp; 14-day sprint timeline</li>
+                </ul>
+              </div>
+
               <div className="site__bookMeta">
                 <p className="caps">Direct Email: <a href="mailto:hello@raijuu.ai">hello@raijuu.ai</a></p>
                 <p className="caps">Calendar: <a href="https://cal.com" target="_blank" rel="noreferrer">Schedule directly on Cal.com →</a></p>
@@ -539,6 +664,21 @@ export default function App() {
               ) : (
                 <form className="agency__form" onSubmit={handleSubmit}>
                   <p className="agency__subhead caps">Request Free 30-Min Audit</p>
+                  <div className="agency__field">
+                    <span className="caps">Select Biggest Bottleneck</span>
+                    <div className="site__pills">
+                      {BOTTLENECKS.map((item) => (
+                        <button
+                          key={item}
+                          type="button"
+                          className={`site__pill caps${bottleneck === item ? ' is-active' : ''}`}
+                          onClick={() => setBottleneck(item)}
+                        >
+                          {item}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                   <label className="agency__field">
                     <span className="caps">Your Name *</span>
                     <input
@@ -569,15 +709,6 @@ export default function App() {
                     />
                   </label>
                   <label className="agency__field">
-                    <span className="caps">Biggest Bottleneck</span>
-                    <select value={bottleneck} onChange={(e) => setBottleneck(e.target.value)}>
-                      <option value="Lead Qualification & CRM">Lead Qualification &amp; CRM Routing</option>
-                      <option value="Support & Ticket Triage">Customer Support &amp; Ticket Triage</option>
-                      <option value="Ops, Invoicing & Data Entry">Ops, Invoicing &amp; Document Pipelines</option>
-                      <option value="Custom Internal AI Copilot">Custom Internal AI Copilot</option>
-                    </select>
-                  </label>
-                  <label className="agency__field">
                     <span className="caps">Workflow Notes (Optional)</span>
                     <textarea
                       rows={3}
@@ -598,7 +729,7 @@ export default function App() {
           </div>
         </section>
 
-        {/* 9. Footer */}
+        {/* 10. Footer */}
         <footer className="site__footer">
           <div className="site__wrap site__footerInner">
             <span className="display site__footerBrand">Raijuu AI Automation</span>
