@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 // fills the scene texts in and drives them.
 export default function App() {
   const [agencyOpen, setAgencyOpen] = useState(false);
+  const [agencyOn, setAgencyOn] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -22,12 +23,14 @@ export default function App() {
     setAgencyOpen(true);
     document.body.classList.add('is-locked');
     document.getElementById('stage')?.classList.add('is-veiled');
+    requestAnimationFrame(() => setAgencyOn(true));
   };
 
   const closeAgency = () => {
-    setAgencyOpen(false);
+    setAgencyOn(false);
     document.body.classList.remove('is-locked');
     document.getElementById('stage')?.classList.remove('is-veiled');
+    setTimeout(() => setAgencyOpen(false), 500);
   };
 
   useEffect(() => {
@@ -166,7 +169,7 @@ export default function App() {
 
       {/* Agency & Workflow Audit Booking Overlay */}
       <div
-        className={`overlay agency${agencyOpen ? ' is-on' : ''}`}
+        className={`overlay agency${agencyOn ? ' is-on' : ''}`}
         id="agencyOverlay"
         role="dialog"
         aria-modal="true"
