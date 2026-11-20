@@ -463,9 +463,22 @@ body.is-locked .cursor svg { opacity: 1; }
 /* ---- Full Multi-Section Raijuu Website (.site) ---- */
 .site {
   position: fixed; inset: 0; z-index: 35; overflow-y: auto; overflow-x: hidden;
-  background: var(--ink); color: var(--paper);
+  /* Translucent smoked-glass over the live 3D museum hall + warm architectural lamplight */
+  background:
+    radial-gradient(ellipse 85% 55% at 50% -5%, rgba(255, 220, 176, 0.12), transparent 68%),
+    radial-gradient(ellipse 55% 45% at 88% 28%, rgba(194, 164, 104, 0.08), transparent 65%),
+    radial-gradient(ellipse 60% 50% at 12% 72%, rgba(255, 210, 155, 0.06), transparent 65%),
+    repeating-linear-gradient(90deg, rgba(251, 248, 238, 0.025) 0 1px, transparent 1px 240px),
+    rgba(15, 11, 8, 0.76);
+  backdrop-filter: blur(7px) saturate(1.1);
+  color: var(--paper);
   opacity: 0; transition: opacity 500ms var(--ease);
 }
+.site::before {
+  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background: radial-gradient(circle at 50% 45%, transparent 35%, rgba(15, 11, 8, 0.65) 100%);
+}
+.site > * { position: relative; z-index: 1; }
 .site[hidden] { display: none; }
 .site.is-on { opacity: 1; }
 .site__wrap { width: min(100%, 1200px); margin: 0 auto; padding: 0 32px; }
@@ -512,17 +525,17 @@ body.is-locked .cursor svg { opacity: 1; }
 .site__stackItem { border: 1px solid var(--paper-25); padding: 6px 12px; font-size: 11px; color: var(--paper-70); }
 
 .site__section { padding: 96px 0; border-bottom: 1px solid var(--paper-25); }
-.site__section--alt { background: rgba(251, 248, 238, 0.02); }
+.site__section--alt { background: rgba(15, 11, 8, 0.42); backdrop-filter: blur(4px); }
 .site__secHead { margin-bottom: 48px; }
 .site__h2 { font-size: clamp(36px, 4.2vw, 58px); line-height: 0.88; letter-spacing: -0.04em; margin: 0; }
 
 .site__grid4 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
 .site__card {
-  border: 1px solid var(--paper-25); padding: 32px; background: rgba(15, 11, 8, 0.7);
+  border: 1px solid var(--paper-25); padding: 32px; background: rgba(15, 11, 8, 0.58); backdrop-filter: blur(10px);
   display: flex; flex-direction: column; gap: 14px;
-  transition: border-color 300ms var(--ease), transform 450ms var(--ease);
+  transition: border-color 300ms var(--ease), transform 450ms var(--ease), background 300ms var(--ease);
 }
-.site__card:hover { border-color: var(--paper-60); transform: translateY(-3px); }
+.site__card:hover { border-color: var(--paper-60); background: rgba(251, 248, 238, 0.04); transform: translateY(-3px); }
 .site__cardNum { color: var(--paper-50); }
 .site__cardTitle { font-size: 30px; line-height: 0.95; letter-spacing: -0.03em; margin: 0; }
 .site__cardBody { font-weight: 300; font-size: 15px; line-height: 1.5; color: var(--paper-70); flex: 1; }
