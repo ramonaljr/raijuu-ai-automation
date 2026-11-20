@@ -20,10 +20,10 @@ const FAQS = [
 ];
 
 const BOTTLENECKS = [
-  'Lead Qualification & CRM',
-  'Support & Ticket Triage',
-  'Ops, Invoicing & Docs',
-  'Custom Internal Copilot',
+  'n8n AI Agents & Workflows',
+  'End-to-End Business Ops',
+  'Claude / OpenAI Docs & RAG',
+  'AI Phone & Customer Chat',
 ];
 
 const PORTFOLIO_CATEGORIES = ['All', 'Sales & Revenue', 'Finance & Ops', 'Customer Support', 'HR & Onboarding'] as const;
@@ -245,7 +245,7 @@ export default function App() {
       }
       setSubmitted(true);
     } catch {
-      setSubmitError('Could not send request right now. Please email hello@raijuu.ai directly.');
+      setSubmitError('Could not send request right now. Please email ramonvallejerajr@gmail.com directly.');
     } finally {
       setSubmitting(false);
     }
@@ -480,40 +480,40 @@ export default function App() {
             </div>
             <div className="site__grid4">
               <article className="site__card" data-reveal>
-                <span className="site__cardNum caps">System 01</span>
-                <h3 className="site__cardTitle display">AI Lead &amp; CRM Engine</h3>
-                <WorkflowDiagram nodes={['Webhook', 'Enrich + Score', 'CRM + Slack']} />
+                <span className="site__cardNum caps">System 01 · 1–3 Weeks</span>
+                <h3 className="site__cardTitle display">n8n AI Agents &amp; Workflows</h3>
+                <WorkflowDiagram nodes={['Webhook', 'Enrich + Rules', 'CRM + Slack']} />
                 <p className="site__cardBody">
-                  Inbound enrichment, instant qualification, personalized routing, and calendar booking in under 60 seconds—synced directly to HubSpot or Salesforce.
+                  Custom n8n AI agents and multi-step orchestrations that connect your tools, qualify inbound leads, and keep software synced without manual handoffs.
                 </p>
-                <span className="site__cardMeta caps">HubSpot · Clay · Slack · OpenAI</span>
+                <span className="site__cardMeta caps">n8n · HubSpot · Slack · OpenAI</span>
               </article>
               <article className="site__card" data-reveal>
-                <span className="site__cardNum caps">System 02</span>
-                <h3 className="site__cardTitle display">Support &amp; Ticket Triage</h3>
-                <WorkflowDiagram nodes={['Ticket In', 'RAG + Intent', 'Auto-Resolve']} />
+                <span className="site__cardNum caps">System 02 · 2–3 Weeks</span>
+                <h3 className="site__cardTitle display">AI Phone &amp; Customer Chat</h3>
+                <WorkflowDiagram nodes={['Call / Chat', 'Policy RAG', 'Book / Escalate']} />
                 <p className="site__cardBody">
-                  Autonomous L1 resolution, context-aware agent drafts, sentiment detection, and instant SLA escalation across Intercom, Zendesk, and email.
+                  24/7 AI phone receptionists and customer chat agents that answer questions, qualify callers, book calendar slots, and escalate edge cases with full context.
                 </p>
-                <span className="site__cardMeta caps">Zendesk · Intercom · Anthropic</span>
+                <span className="site__cardMeta caps">Voice AI · Anthropic · Zendesk · Cal</span>
               </article>
               <article className="site__card" data-reveal>
-                <span className="site__cardNum caps">System 03</span>
-                <h3 className="site__cardTitle display">Ops &amp; Document Pipelines</h3>
-                <WorkflowDiagram nodes={['PDF / Invoice', 'Vision Extract', 'ERP Sync']} />
+                <span className="site__cardNum caps">System 03 · 2–4 Weeks</span>
+                <h3 className="site__cardTitle display">End-to-End Business Ops</h3>
+                <WorkflowDiagram nodes={['PDF / Order', 'Exact Rules', 'ERP + Alerts']} />
                 <p className="site__cardBody">
-                  Automated PDF/invoice extraction, ERP reconciliation, vendor onboarding, and executive KPI digests delivered to Slack every Monday morning.
+                  Deterministic business process automation for invoicing, approvals, and reporting—combining exact rule-based math with AI for messy documents.
                 </p>
                 <span className="site__cardMeta caps">n8n · Postgres · OCR · Stripe</span>
               </article>
               <article className="site__card" data-reveal>
-                <span className="site__cardNum caps">System 04</span>
-                <h3 className="site__cardTitle display">Custom Internal Copilots</h3>
-                <WorkflowDiagram nodes={['Slack Ask', 'Vector Search', 'Action Exec']} />
+                <span className="site__cardNum caps">System 04 · 1–3 Weeks</span>
+                <h3 className="site__cardTitle display">Claude &amp; OpenAI Knowledge</h3>
+                <WorkflowDiagram nodes={['Ask / Doc', 'Vector Index', 'Cited Action']} />
                 <p className="site__cardBody">
-                  Private RAG knowledge bases over your Notion, Drive, and SOPs—paired with Slack/Teams action agents that execute real tasks safely.
+                  Private company knowledge bases and document pipelines over your Notion, Drive, and SOPs—with human-in-the-loop review and zero data retention.
                 </p>
-                <span className="site__cardMeta caps">Supabase · Gemini · Slack</span>
+                <span className="site__cardMeta caps">Claude · OpenAI · Supabase · Slack</span>
               </article>
             </div>
           </div>
@@ -675,18 +675,18 @@ export default function App() {
             <div className="site__grid3">
               <div className="site__step" data-reveal>
                 <span className="site__stepNum display">01</span>
-                <h3 className="caps">Workflow Audit · 30 Min</h3>
-                <p>We map your current tools, shadow your highest-friction manual loops, and deliver a clear ROI roadmap of your top 3 automation targets.</p>
+                <h3 className="caps">Map Before Building</h3>
+                <p>We capture your exact business rules, edge cases, and exceptions before writing a single workflow node—so automation fits how your team actually operates.</p>
               </div>
               <div className="site__step" data-reveal>
                 <span className="site__stepNum display">02</span>
-                <h3 className="caps">Sprint Build · 14 Days</h3>
-                <p>We architect, test, and deploy your custom AI agents and n8n/Make pipelines directly into your stack—with full error handling and documentation.</p>
+                <h3 className="caps">Exact Rules + AI</h3>
+                <p>We use deterministic code for calculations and approvals, and reserve Claude &amp; OpenAI for unstructured, messy inputs—never letting an LLM guess your math.</p>
               </div>
               <div className="site__step" data-reveal>
                 <span className="site__stepNum display">03</span>
-                <h3 className="caps">Autonomous Scale · 24/7</h3>
-                <p>Your team reclaims dozens of hours every week while we monitor uptime, tune prompts as models evolve, and ship new workflows on demand.</p>
+                <h3 className="caps">Error Visibility</h3>
+                <p>Every pipeline ships with structured alerts, human-in-the-loop review steps, and clear recovery instructions from day one.</p>
               </div>
             </div>
           </div>
@@ -752,20 +752,20 @@ export default function App() {
             <div className="site__founderLeft">
               <div className="site__monogram display" aria-hidden="true">RV</div>
               <div>
-                <p className="site__eyebrow caps">Founder &amp; Lead Architect</p>
+                <p className="site__eyebrow caps">Founder &amp; AI Automation Engineer</p>
                 <h2 className="site__founderName display">Ramon Vallejera Jr</h2>
-                <p className="caps site__muted">Raijuu AI Automation</p>
+                <p className="caps site__muted">Philippines · Remote Worldwide</p>
               </div>
             </div>
             <div className="site__founderRight">
               <blockquote className="site__quote">
-                &ldquo;Most agencies hand you a fragile prompt and disappear. We engineer production-grade automation—with error recovery, observability, and 100% client ownership—so your operations run quietly while your team ships.&rdquo;
+                &ldquo;Map the rules before building. Keep calculations deterministic, use AI only where data is messy, and build error visibility into every step—so your operations run quietly while your team ships.&rdquo;
               </blockquote>
               <div className="site__trustPills">
-                <span className="caps">✓ Direct Founder-Led Builds</span>
+                <span className="caps">✓ Direct Engineer-Led Builds</span>
                 <span className="caps">✓ NDA-Ready &amp; Zero-Retention LLMs</span>
                 <span className="caps">✓ 100% Repo &amp; Workflow Ownership</span>
-                <span className="caps">✓ 24/7 Error Alerting Built-In</span>
+                <a className="site__trustLink caps" href="https://ramonvallejera.com/" target="_blank" rel="noreferrer">Portfolio: ramonvallejera.com ↗</a>
               </div>
             </div>
           </div>
@@ -820,8 +820,8 @@ export default function App() {
               </div>
 
               <div className="site__bookMeta">
-                <p className="caps">Direct Email: <a href="mailto:hello@raijuu.ai">hello@raijuu.ai</a></p>
-                <p className="caps">Calendar: <a href="https://cal.com" target="_blank" rel="noreferrer">Schedule directly on Cal.com →</a></p>
+                <p className="caps">Direct Email: <a href="mailto:ramonvallejerajr@gmail.com">ramonvallejerajr@gmail.com</a></p>
+                <p className="caps">Portfolio: <a href="https://ramonvallejera.com/" target="_blank" rel="noreferrer">ramonvallejera.com ↗</a></p>
                 <p className="caps site__muted">NDA-ready · Zero spam · 100% ownership</p>
               </div>
             </div>

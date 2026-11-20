@@ -712,10 +712,13 @@ body.is-locked .cursor svg { opacity: 1; }
   color: var(--paper); border-left: 2px solid var(--paper-40); padding-left: 24px;
 }
 .site__trustPills { display: flex; flex-wrap: wrap; gap: 10px; }
-.site__trustPills span {
+.site__trustPills span,
+.site__trustLink {
   border: 1px solid var(--paper-25); padding: 7px 12px; font-size: 10px; color: var(--paper-70);
   background: rgba(15, 11, 8, 0.6);
 }
+.site__trustLink { border-color: var(--gold-40); color: var(--paper); transition: border-color 200ms, background 200ms; }
+.site__trustLink:hover { border-color: var(--gold); background: rgba(194, 164, 104, 0.12); }
 
 /* Business Workflows Project Portfolio */
 .site__portHead { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 40px; }
