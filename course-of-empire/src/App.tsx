@@ -82,9 +82,14 @@ export default function App() {
         <div className="fade fade--bottom" aria-hidden="true"></div>
 
         <header className="header">
-          <button className="header__about header__cta caps" type="button" onClick={openAgency}>
-            Book Audit
-          </button>
+          <div className="header__left">
+            <button className="header__about header__cta caps" type="button" onClick={openAgency}>
+              Services &amp; Proof
+            </button>
+            <button className="header__about header__cta caps" type="button" onClick={openAgency}>
+              Book Audit
+            </button>
+          </div>
           <a className="header__logo display" href="#top" id="logo" aria-label="Raijuu AI Automation — back to start">Raijuu<br />AI Automation</a>
           <button className="sound caps" type="button" data-sound-toggle aria-pressed="true">
             <span className="sound__bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span>
@@ -185,21 +190,43 @@ export default function App() {
 
             <div className="agency__metrics">
               <div className="agency__metric">
-                <span className="agency__num display">38 hrs</span>
-                <span className="agency__cap caps">Avg. weekly team time saved (placeholder)</span>
+                <span className="agency__num display">38 hrs/wk</span>
+                <span className="agency__cap caps">Reclaimed for B2B SaaS ops (placeholder)</span>
               </div>
               <div className="agency__metric">
                 <span className="agency__num display">&lt; 60s</span>
-                <span className="agency__cap caps">Autonomous lead response (placeholder)</span>
+                <span className="agency__cap caps">Lead response · +42% pipeline (placeholder)</span>
               </div>
               <div className="agency__metric">
-                <span className="agency__num display">14 days</span>
-                <span className="agency__cap caps">Audit to production launch (placeholder)</span>
+                <span className="agency__num display">$140k/yr</span>
+                <span className="agency__cap caps">Manual-ops cost avoided (placeholder)</span>
               </div>
             </div>
 
             <div className="agency__steps">
-              <p className="agency__subhead caps">How we work</p>
+              <p className="agency__subhead caps">Core Systems &amp; Deliverables</p>
+              <div className="agency__deliverables">
+                <div className="agency__deliv">
+                  <strong>AI Lead &amp; CRM Engine</strong>
+                  <span>Inbound enrichment, instant qualification, and routing under 60s.</span>
+                </div>
+                <div className="agency__deliv">
+                  <strong>Support &amp; Ticket Triage</strong>
+                  <span>Autonomous L1 resolution, context-aware drafts, and SLA escalation.</span>
+                </div>
+                <div className="agency__deliv">
+                  <strong>Ops &amp; Document Pipelines</strong>
+                  <span>Invoice extraction, ERP sync, and automated weekly reporting.</span>
+                </div>
+                <div className="agency__deliv">
+                  <strong>Custom Internal Copilots</strong>
+                  <span>Private RAG knowledge bases &amp; Slack/Teams action agents.</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="agency__steps">
+              <p className="agency__subhead caps">How We Work</p>
               <ul className="agency__list">
                 <li><strong>01 / Audit (30 min)</strong> — We map your current stack and identify the top 3 highest-ROI automation targets.</li>
                 <li><strong>02 / Build (14 days)</strong> — Custom AI agents, n8n/Make workflows, and CRM/ERP integrations shipped with full observability.</li>
@@ -207,9 +234,15 @@ export default function App() {
               </ul>
             </div>
 
-            <p className="agency__stack caps">
-              Stack: n8n · Make · OpenAI · Anthropic · Gemini · HubSpot · Slack · Postgres
-            </p>
+            <div className="agency__stackWrap">
+              <p className="agency__subhead caps">Tech Stack</p>
+              <div className="agency__tags">
+                {['n8n', 'Make', 'OpenAI', 'Anthropic', 'Gemini', 'HubSpot', 'Salesforce', 'Slack', 'Postgres', 'Supabase'].map((t) => (
+                  <span key={t} className="agency__tag caps">{t}</span>
+                ))}
+              </div>
+            </div>
+
             <p className="agency__direct caps">
               Direct: <a href="mailto:hello@raijuu.ai">hello@raijuu.ai</a>
             </p>

@@ -304,6 +304,7 @@ img { display: block; }
 }
 
 /* ---- Raijuu Agency Conversion Layer ---- */
+.header__left { display: flex; align-items: center; gap: calc(var(--u) * 20); }
 .header__cta { cursor: pointer; transition: opacity 200ms; border-bottom: 1px solid var(--paper-40); padding-bottom: calc(var(--u) * 3); }
 .header__cta:hover { opacity: 0.65; border-bottom-color: var(--paper); }
 
@@ -344,7 +345,19 @@ img { display: block; }
 .agency__list { list-style: none; margin: 0 0 calc(var(--u) * 24); padding: 0; display: flex; flex-direction: column; gap: calc(var(--u) * 10); }
 .agency__list li { font-weight: 300; font-size: max(calc(var(--u) * 13), 12px); line-height: 1.4; color: var(--paper-70); }
 .agency__list strong { font-weight: 500; color: var(--paper); }
-.agency__stack { color: var(--paper-50); line-height: 1.4; margin-bottom: calc(var(--u) * 10); }
+.agency__deliverables { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: calc(var(--u) * 12); margin-bottom: calc(var(--u) * 24); }
+.agency__deliv {
+  border: 1px solid var(--paper-25); padding: calc(var(--u) * 12);
+  display: flex; flex-direction: column; gap: calc(var(--u) * 5); background: rgba(251, 248, 238, 0.02);
+}
+.agency__deliv strong { font-weight: 500; font-size: max(calc(var(--u) * 13), 12px); color: var(--paper); }
+.agency__deliv span { font-weight: 300; font-size: max(calc(var(--u) * 12), 11px); line-height: 1.35; color: var(--paper-70); }
+.agency__stackWrap { margin-bottom: calc(var(--u) * 18); }
+.agency__tags { display: flex; flex-wrap: wrap; gap: calc(var(--u) * 6); }
+.agency__tag {
+  border: 1px solid var(--paper-25); padding: calc(var(--u) * 5) calc(var(--u) * 9);
+  font-size: max(calc(var(--u) * 10), 9px); color: var(--paper-70);
+}
 .agency__direct { color: var(--paper-70); }
 .agency__direct a { border-bottom: 1px solid var(--paper-40); padding-bottom: 2px; }
 .agency__direct a:hover { border-bottom-color: var(--paper); }
@@ -372,10 +385,11 @@ img { display: block; }
 .agency__thanksTitle { font-size: calc(var(--u) * 36); line-height: 0.9; }
 
 @media (max-width: 900px) {
+  .header__left { gap: 12px; }
   .overlay__cta { position: static; align-self: flex-start; margin-top: 8px; }
   .agency { display: block; padding: 72px 16px 48px; }
   .agency__grid { grid-template-columns: 1fr; gap: 32px; }
   .agency__title { font-size: 38px; }
-  .agency__metrics { grid-template-columns: 1fr; gap: 14px; }
+  .agency__metrics, .agency__deliverables { grid-template-columns: 1fr; gap: 12px; }
   .agency__formWrap { padding: 20px; }
 }
