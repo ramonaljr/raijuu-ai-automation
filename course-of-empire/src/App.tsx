@@ -1,21 +1,46 @@
 import { useEffect, useRef, useState } from 'react';
 
+const FAQS = [
+  {
+    q: 'How fast do we see ROI?',
+    a: 'Most clients reclaim 15–40 hours/week within the first 14 days. We prioritize high-frequency bottlenecks—lead routing, ticket triage, and ops reporting—first.',
+  },
+  {
+    q: 'Do we own the workflows, prompts, and code?',
+    a: 'Yes, 100%. Everything is deployed into your own n8n, cloud, and repository accounts with full documentation and zero vendor lock-in.',
+  },
+  {
+    q: 'How do you handle data security and privacy?',
+    a: 'We sign NDAs upfront, use zero-data-retention enterprise LLM endpoints, and can self-host pipelines inside your private VPC.',
+  },
+  {
+    q: 'What happens when an API or model updates?',
+    a: 'Every production pipeline includes automated error alerts, fallback retries, and optional 24/7 monitoring under our Partner retainer.',
+  },
+];
+
 // The page markup of the original hero3d.html, with Raijuu agency conversion overlays.
 // The engine (public/js/hero3d.js) finds the stage/preloader/overlay elements by id and class,
 // fills the scene texts in and drives them.
 export default function App() {
   const [agencyOpen, setAgencyOpen] = useState(false);
   const [agencyOn, setAgencyOn] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [submitError, setSubmitError] = useState('');
+  const [openFaq, setOpenFaq] = useState<number | null>(0);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [company, setCompany] = useState('');
   const [bottleneck, setBottleneck] = useState('Lead Qualification & CRM');
   const [notes, setNotes] = useState('');
+
+  const agencyRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
+  const lastFocusRef = useRef<HTMLElement | null>(null);
 
   const openAgency = () => {
-    // Close the phase overlay if it is currently open
+    lastFocusRef.current = document.activeElement as HTMLElement | null;
     const phaseOv = document.getElementById('overlay');
     if (phaseOv && !phaseOv.hidden) {
       document.getElementById('ovClose')?.click();
@@ -30,27 +55,67 @@ export default function App() {
     setAgencyOn(false);
     document.body.classList.remove('is-locked');
     document.getElementById('stage')?.classList.remove('is-veiled');
-    setTimeout(() => setAgencyOpen(false), 500);
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    setTimeout(() => {
+      setAgencyOpen(false);
+      lastFocusRef.current?.focus({ preventScroll: true });
+    }, reduced ? 0 : 500);
   };
 
   useEffect(() => {
     if (!agencyOpen) return;
     closeRef.current?.focus({ preventScroll: true });
+
     const onKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') closeAgency();
+      if (e.key === 'Escape') {
+        closeAgency();
+        return;
+      }
+      if (e.key === 'Tab' && agencyRef.current) {
+        const focusables = [...agencyRef.current.querySelectorAll<HTMLElement>('button, a[href], input, select, textarea')];
+        if (!focusables.length) return;
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
     };
+
     document.addEventListener('keydown', onKeyDown);
     return () => document.removeEventListener('keydown', onKeyDown);
   }, [agencyOpen]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name.trim() || !email.trim()) return;
-    setSubmitted(true);
+    if (!name.trim() || !email.trim() || submitting) return;
+    setSubmitting(true);
+    setSubmitError('');
+    try {
+      const webhook = import.meta.env.VITE_AUDIT_WEBHOOK_URL as string | undefined;
+      if (webhook) {
+        const res = await fetch(webhook, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, company, bottleneck, notes, source: 'raijuu-landing' }),
+        });
+        if (!res.ok) throw new Error('Submission failed');
+      }
+      setSubmitted(true);
+    } catch {
+      setSubmitError('Could not send request right now. Please email hello@raijuu.ai directly.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const resetForm = () => {
     setSubmitted(false);
+    setSubmitError('');
     setName('');
     setEmail('');
     setCompany('');
@@ -72,6 +137,9 @@ export default function App() {
             <span data-sound-label>Sound [on]</span>
           </button>
         </div>
+        <button className="preloader__skip caps" type="button" onClick={openAgency}>
+          Skip to Services &amp; Audit →
+        </button>
         <p className="preloader__count caps" id="preCount">000</p>
         <p className="preloader__status caps" id="preStatus">Rising</p>
         <p className="preloader__hint caps" id="preHint" hidden>Best on a large screen. Scroll slowly.</p>
@@ -85,14 +153,9 @@ export default function App() {
         <div className="fade fade--bottom" aria-hidden="true"></div>
 
         <header className="header">
-          <div className="header__left">
-            <button className="header__about header__cta caps" type="button" onClick={openAgency}>
-              Services &amp; Proof
-            </button>
-            <button className="header__about header__cta caps" type="button" onClick={openAgency}>
-              Book Audit
-            </button>
-          </div>
+          <button className="header__about header__cta caps" type="button" onClick={openAgency}>
+            Services &amp; Audit
+          </button>
           <a className="header__logo display" href="#top" id="logo" aria-label="Raijuu AI Automation — back to start">Raijuu<br />AI Automation</a>
           <button className="sound caps" type="button" data-sound-toggle aria-pressed="true">
             <span className="sound__bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span>
@@ -169,6 +232,7 @@ export default function App() {
 
       {/* Agency & Workflow Audit Booking Overlay */}
       <div
+        ref={agencyRef}
         className={`overlay agency${agencyOn ? ' is-on' : ''}`}
         id="agencyOverlay"
         role="dialog"
@@ -191,6 +255,7 @@ export default function App() {
               We partner with operations-heavy teams to replace brittle manual loops with resilient AI agents and end-to-end pipelines.
             </p>
 
+            {/* Proof & ROI */}
             <div className="agency__metrics">
               <div className="agency__metric">
                 <span className="agency__num display">38 hrs/wk</span>
@@ -206,6 +271,7 @@ export default function App() {
               </div>
             </div>
 
+            {/* Core Systems & Deliverables */}
             <div className="agency__steps">
               <p className="agency__subhead caps">Core Systems &amp; Deliverables</p>
               <div className="agency__deliverables">
@@ -228,6 +294,44 @@ export default function App() {
               </div>
             </div>
 
+            {/* Case Studies (Placeholders) */}
+            <div className="agency__steps">
+              <p className="agency__subhead caps">Selected Outcomes (Placeholders)</p>
+              <div className="agency__cases">
+                <div className="agency__case">
+                  <span className="caps agency__caseTag">B2B SaaS · 45-Person Team</span>
+                  <p>Automated inbound lead scoring &amp; HubSpot enrichment—cut response time from 4 hours to 38 seconds.</p>
+                </div>
+                <div className="agency__case">
+                  <span className="caps agency__caseTag">Logistics &amp; Ops · Multi-Warehouse</span>
+                  <p>Replaced manual PDF invoice &amp; manifest entry with 99.4% accurate OCR + ERP sync, saving 32 hrs/week.</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Engagement Tiers */}
+            <div className="agency__steps">
+              <p className="agency__subhead caps">Engagement Models (Placeholders)</p>
+              <div className="agency__tiers">
+                <div className="agency__tier">
+                  <span className="caps">01 · Sprint Build</span>
+                  <strong>Fixed-Scope · 14 Days</strong>
+                  <span>One end-to-end production workflow, handed over with full docs.</span>
+                </div>
+                <div className="agency__tier">
+                  <span className="caps">02 · AI Partner</span>
+                  <strong>Monthly Retainer</strong>
+                  <span>Continuous new automations, prompt tuning, and 24/7 monitoring.</span>
+                </div>
+                <div className="agency__tier">
+                  <span className="caps">03 · Enterprise VPC</span>
+                  <strong>Custom Architecture</strong>
+                  <span>Private self-hosted agents, SSO, and strict compliance controls.</span>
+                </div>
+              </div>
+            </div>
+
+            {/* How We Work */}
             <div className="agency__steps">
               <p className="agency__subhead caps">How We Work</p>
               <ul className="agency__list">
@@ -237,6 +341,7 @@ export default function App() {
               </ul>
             </div>
 
+            {/* Tech Stack */}
             <div className="agency__stackWrap">
               <p className="agency__subhead caps">Tech Stack</p>
               <div className="agency__tags">
@@ -313,9 +418,10 @@ export default function App() {
                     onChange={(e) => setNotes(e.target.value)}
                   />
                 </label>
+                {submitError && <p className="agency__error">{submitError}</p>}
                 <div className="agency__actions">
-                  <button className="btn-frame display agency__submit" type="submit">
-                    Request Audit
+                  <button className="btn-frame display agency__submit" type="submit" disabled={submitting}>
+                    {submitting ? 'Sending...' : 'Request Audit'}
                   </button>
                   <a
                     className="agency__cal caps"
@@ -326,8 +432,31 @@ export default function App() {
                     Or pick a time on Cal.com →
                   </a>
                 </div>
+                <p className="agency__privacy caps">NDA-ready · Zero spam · Reply within 24h</p>
               </form>
             )}
+
+            {/* FAQ Accordion */}
+            <div className="agency__faq">
+              <p className="agency__subhead caps">Common Questions</p>
+              {FAQS.map((item, idx) => {
+                const isOpen = openFaq === idx;
+                return (
+                  <div key={item.q} className={`agency__faqItem${isOpen ? ' is-open' : ''}`}>
+                    <button
+                      type="button"
+                      className="agency__faqQ"
+                      aria-expanded={isOpen}
+                      onClick={() => setOpenFaq(isOpen ? null : idx)}
+                    >
+                      <span>{item.q}</span>
+                      <span className="agency__faqIcon" aria-hidden="true">{isOpen ? '−' : '+'}</span>
+                    </button>
+                    {isOpen && <p className="agency__faqA">{item.a}</p>}
+                  </div>
+                );
+              })}
+            </div>
           </section>
         </div>
       </div>
