@@ -594,8 +594,33 @@ export default function App() {
           </div>
         </section>
 
+        {/* 7.5. Founder & Human Trust Signals */}
+        <section className="site__section site__section--alt" id="site-trust">
+          <div className="site__wrap site__founderGrid" data-reveal>
+            <div className="site__founderLeft">
+              <div className="site__monogram display" aria-hidden="true">RV</div>
+              <div>
+                <p className="site__eyebrow caps">Founder &amp; Lead Architect</p>
+                <h2 className="site__founderName display">Ramon Vallejera Jr</h2>
+                <p className="caps site__muted">Raijuu AI Automation</p>
+              </div>
+            </div>
+            <div className="site__founderRight">
+              <blockquote className="site__quote">
+                &ldquo;Most agencies hand you a fragile prompt and disappear. We engineer production-grade automation—with error recovery, observability, and 100% client ownership—so your operations run quietly while your team ships.&rdquo;
+              </blockquote>
+              <div className="site__trustPills">
+                <span className="caps">✓ Direct Founder-Led Builds</span>
+                <span className="caps">✓ NDA-Ready &amp; Zero-Retention LLMs</span>
+                <span className="caps">✓ 100% Repo &amp; Workflow Ownership</span>
+                <span className="caps">✓ 24/7 Error Alerting Built-In</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* 8. FAQ */}
-        <section className="site__section site__section--alt" id="site-faq">
+        <section className="site__section" id="site-faq">
           <div className="site__wrap site__faqWrap" data-reveal>
             <div className="site__secHead">
               <p className="site__eyebrow caps">06 — Common Questions</p>
@@ -624,7 +649,7 @@ export default function App() {
         </section>
 
         {/* 9. Dedicated Conversion / Booking Section */}
-        <section className="site__section" id="site-book">
+        <section className="site__section site__section--alt" id="site-book">
           <div className="site__wrap site__bookGrid" data-reveal>
             <div className="site__bookInfo">
               <p className="site__eyebrow caps">07 — Start Here</p>
