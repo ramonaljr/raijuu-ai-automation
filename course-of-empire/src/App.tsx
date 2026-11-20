@@ -176,20 +176,30 @@ export default function App() {
     };
     document.addEventListener('keydown', onKeyDown);
 
-    // Scroll-triggered reveal choreography inside #agencySite
+    // Bidirectional 3D Intro & Outro choreography inside #agencySite
     const rootEl = siteRef.current;
     if (!rootEl) return () => document.removeEventListener('keydown', onKeyDown);
     const targets = [...rootEl.querySelectorAll<HTMLElement>('[data-reveal]')];
     const observer = new IntersectionObserver(
       (entries) => {
         for (const entry of entries) {
+          const el = entry.target as HTMLElement;
           if (entry.isIntersecting) {
-            entry.target.classList.add('is-in');
-            observer.unobserve(entry.target);
+            el.classList.add('is-in');
+            el.classList.remove('is-out-top', 'is-out-bottom');
+          } else {
+            el.classList.remove('is-in');
+            if (entry.boundingClientRect.top < 0) {
+              el.classList.add('is-out-top');
+              el.classList.remove('is-out-bottom');
+            } else {
+              el.classList.add('is-out-bottom');
+              el.classList.remove('is-out-top');
+            }
           }
         }
       },
-      { root: rootEl, threshold: 0.12 },
+      { root: rootEl, threshold: 0.08 },
     );
     for (const t of targets) observer.observe(t);
 
@@ -197,7 +207,7 @@ export default function App() {
       document.removeEventListener('keydown', onKeyDown);
       observer.disconnect();
     };
-  }, [siteOpen]);
+  }, [siteOpen, portfolioFilter]);
 
   const jumpTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
@@ -451,7 +461,7 @@ export default function App() {
 
         {/* 2. Tech Stack Strip */}
         <section className="site__stackBar">
-          <div className="site__wrap site__stackInner">
+          <div className="site__wrap site__stackInner" data-reveal>
             <span className="caps site__stackLabel">Production Stack</span>
             <div className="site__stackList">
               {['n8n', 'Make', 'OpenAI', 'Anthropic', 'Gemini', 'HubSpot', 'Salesforce', 'Slack', 'Postgres', 'Supabase'].map((t) => (
@@ -535,7 +545,7 @@ export default function App() {
 
             <div className="site__portGrid">
               {filteredProjects.map((proj) => (
-                <article key={proj.title} className="site__portCard">
+                <article key={proj.title} className="site__portCard" data-reveal>
                   <div className="site__portMedia">
                     <img src={proj.image} alt={proj.title} loading="lazy" />
                     <span className="caps site__portBadge">{proj.category}</span>
@@ -898,7 +908,7 @@ export default function App() {
 
         {/* 10. Footer */}
         <footer className="site__footer">
-          <div className="site__wrap site__footerInner">
+          <div className="site__wrap site__footerInner" data-reveal>
             <span className="display site__footerBrand">Raijuu AI Automation</span>
             <span className="caps site__muted">© 2026 Raijuu · Autonomous Systems Agency</span>
             <button type="button" className="caps site__back" onClick={closeSite}>
