@@ -358,7 +358,10 @@ img { display: block; }
 .agency.is-on .agency__steps { opacity: 1; transform: none; transition-delay: 300ms; }
 .agency.is-on .agency__stackWrap { opacity: 1; transform: none; transition-delay: 360ms; }
 .agency.is-on .agency__direct { opacity: 1; transform: none; transition-delay: 400ms; }
-.agency.is-on .agency__formWrap { opacity: 1; transform: none; transition-delay: 200ms; }
+.agency.is-on .agency__formWrap,
+.site.is-on .agency__formWrap,
+.site.is-on .agency__eyebrow,
+.site.is-on .agency__lead { opacity: 1; transform: none; transition-delay: 200ms; }
 body.is-locked .cursor .cursor__touch { opacity: 0; }
 body.is-locked .cursor svg { opacity: 1; }
 .agency__eyebrow { color: var(--paper-60); margin-bottom: calc(var(--u) * 16); }
