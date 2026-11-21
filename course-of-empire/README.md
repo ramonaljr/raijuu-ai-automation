@@ -9,7 +9,7 @@ npm run build
 npm run lint
 ```
 
-The original cinema intro is the default arrival, including its loading choreography and Enter button. Its engine starts after React mounts the stage. The redesigned agency is accessible through the skip link and Agency & Services. Opening the agency preserves the cinema position and pauses its rendering and sound. The cinema uses the existing public assets and vendored Three.js modules.
+The original cinema intro is the default arrival, including its loading choreography and Enter button. Its engine starts after React mounts the stage. The redesigned agency is accessible through the skip link and Agency & Services. Opening the agency preserves the cinema position and pauses its rendering and sound. Its last rendered canvas stays beneath the agency as an inert atmospheric backdrop; cinema controls and captions are hidden. Agency typography, frames, and colors share the cinema’s Cormorant/Geist, warm-black, ivory, and antique-gold system. The cinema uses the existing public assets and vendored Three.js modules.
 
 ## Contact requests
 

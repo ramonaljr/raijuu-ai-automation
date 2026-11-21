@@ -38,14 +38,16 @@ export default function App() {
       startCinema();
       document.dispatchEvent(new CustomEvent('cinema-visibility', { detail: true }));
       const entered = document.getElementById('preloader')?.classList.contains('is-done');
-      document.querySelector<HTMLButtonElement>(entered ? '.header__about' : '.preloader__skip')?.focus({ preventScroll: true });
+      if (!entered) document.body.classList.add('is-loading');
+      const unsupported = document.getElementById('noGl')?.classList.contains('is-on');
+      document.querySelector<HTMLButtonElement>(unsupported ? '#noGl button' : entered ? '.header__about' : '.preloader__skip')?.focus({ preventScroll: true });
     });
   };
 
   return (
     <>
-      <div hidden={!siteOpen}><Agency onCinema={closeSite} /></div>
-      <div hidden={siteOpen}>
+      <div className="agency-shell" hidden={!siteOpen}><Agency onCinema={closeSite} /></div>
+      <div className={siteOpen ? "cinema-shell is-agency-background" : "cinema-shell"} inert={siteOpen} aria-hidden={siteOpen}>
       {/* Preloader */}
       <div className="preloader" id="preloader" role="status" aria-live="polite">
         <p className="preloader__top caps">Raijuu — AI Automation</p>
