@@ -24,3 +24,9 @@ Agency content uses bidirectional scroll entrances/exits, image-led chapter layo
 Before releasing, check desktop, tablet, and narrow-phone layouts; mobile menu and Escape handling; application filters; FAQ expansion; calculator updates; contact fallback; cinema loading, Enter, scrolling through chapters, and returning to the agency. When the form is configured, verify success and failure with the endpoint owner before sending test enquiries.
 
 `npm run build` may report that the two public CSS links will resolve at runtime. Their files are copied to `dist/css` by Vite; this is expected for the retained cinema stylesheet setup.
+
+## Portfolio and portrait provenance
+
+The 11 case studies in `src/case-studies.ts` and their workflow screenshots in `public/assets/portfolio` were adapted with the owner's permission from the sibling `Ramon's AI Automation Portfolio` project. The source marks all 11 as working demonstration builds for fictional clients. Cards and detail dialogs retain that distinction; outcome figures describe documented workflow behavior or tests rather than client ROI. Case-study source links point to the original public repositories.
+
+The founder portrait in `public/assets/portraits/ramon-roman-general.jpg` is a Roman-inspired oil illustration generated from the owner's supplied portfolio photo, with his requested bronze armor and cloak. The original photo and discarded generated variants are not included in this website.

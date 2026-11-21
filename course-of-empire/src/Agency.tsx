@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
 import SystemGraphic from './SystemGraphic';
+import CaseStudyGallery from './CaseStudyGallery';
 
 const CURRENT_YEAR = new Date().getFullYear();
 
@@ -8,11 +9,6 @@ const SERVICES = [
   { title: 'Workflows that connect the dots.', label: 'Operations & orchestration', description: 'Connect your CRM, inbox, spreadsheets, and internal tools. Turn the handoffs between them into one dependable workflow.', tools: 'n8n / APIs / Postgres', symbol: 'connect', nodes: ['A new request', 'Your business rules', 'The right action'] },
   { title: 'AI that knows your business.', label: 'Knowledge & document systems', description: 'Make company knowledge usable. Search documents, extract the details that matter, and bring a human in when judgment is needed.', tools: 'OpenAI / Claude / Retrieval', symbol: 'knowledge', nodes: ['Your documents', 'Grounded answers', 'Human review'] },
   { title: 'A better first response.', label: 'Customer experience', description: 'Help customers get answers, route incoming enquiries, and prepare the next step with the context your team needs.', tools: 'Chat / Voice / CRM', symbol: 'response', nodes: ['An enquiry', 'Context & intent', 'Answer or handoff'] },
-];
-const EXAMPLES = [
-  { category: 'Sales', title: 'Every lead, in the right hands.', text: 'Capture an enquiry, enrich the details, and route it to the right person with a useful briefing.', input: 'Incoming lead', output: 'CRM + team briefing', image: '02' },
-  { category: 'Operations', title: 'Documents in. Usable data out.', text: 'Extract invoice details, check against your rules, and send exceptions to a person before approval.', input: 'Invoice or PDF', output: 'Validated data + review', image: '04' },
-  { category: 'Support', title: 'Context before conversation.', text: 'Bring order history and approved policies together to draft a response your team can trust.', input: 'Customer question', output: 'Draft + source context', image: '06' },
 ];
 const FAQS = [
   ['Where should we start?', 'Start with one frequent, measurable bottleneck. In the workflow audit, we map your current process, identify the handoffs, and agree on what a useful first build would look like.'],
@@ -29,7 +25,6 @@ function Mark({ small = false }: { small?: boolean }) {
 export default function Agency({ onCinema }: { onCinema: () => void }) {
   const pageRef = useRef<HTMLDivElement>(null);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [filter, setFilter] = useState('All');
   const [team, setTeam] = useState(8);
   const [hours, setHours] = useState(5);
   const [cost, setCost] = useState(30);
@@ -76,19 +71,25 @@ export default function Agency({ onCinema }: { onCinema: () => void }) {
         animations.set(target, animation);
       }
     }, { threshold: [0, 0.12] });
-    page.querySelectorAll('.interlude-frame, .studio-manifesto, .hero-copy, .cinema-invite, .hero-bottom, .stack-strip, .section-heading, .service-row, .application-card, .cinema-feature-copy, .process-grid article, .engagement-section article, .calculator-section > div, .founder-section > div, .faq-section > div, .booking-section > div:not(.booking-art), .process-illustration, .footer-top, .footer-bottom').forEach(target => observer.observe(target));
+    page.querySelectorAll('.interlude-frame, .studio-manifesto, .hero-copy, .cinema-invite, .hero-bottom, .stack-strip, .section-heading, .service-row, .application-card, .cinema-feature-copy, .process-grid article, .engagement-section article, .calculator-section > div, .founder-section > div, .founder-section > figure, .faq-section > div, .booking-section > div:not(.booking-art), .process-illustration, .footer-top, .footer-bottom').forEach(target => observer.observe(target));
+    const galleryObserver = new MutationObserver(() => {
+      page.querySelectorAll('.application-card').forEach(target => observer.observe(target));
+    });
+    const gallery = page.querySelector('.application-grid');
+    if (gallery) galleryObserver.observe(gallery, { childList: true });
     preference.addEventListener('change', reset);
     const syncVisibility = () => page.classList.toggle('motion-paused', document.hidden);
     document.addEventListener('visibilitychange', syncVisibility);
     syncVisibility();
     return () => {
       observer.disconnect();
+      galleryObserver.disconnect();
       backgroundObserver.disconnect();
       preference.removeEventListener('change', reset);
       document.removeEventListener('visibilitychange', syncVisibility);
       reset();
     };
-  }, [filter]);
+  }, []);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -129,7 +130,7 @@ export default function Agency({ onCinema }: { onCinema: () => void }) {
         <a className="agency-brand" href="#agency-top" aria-label="Raijuu home"><Mark /><span>raijuu<span className="brand-sub">AI AUTOMATION</span></span></a>
         <button className="mobile-toggle" type="button" aria-expanded={menuOpen} aria-controls="agency-navigation" onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? 'Close menu' : 'Menu'}<span aria-hidden="true">{menuOpen ? '−' : '+'}</span></button>
         <nav id="agency-navigation" className={menuOpen ? 'agency-navigation is-open' : 'agency-navigation'} aria-label="Main navigation" onClick={() => setMenuOpen(false)} onKeyDown={event => { if (event.key === 'Escape') { setMenuOpen(false); document.querySelector<HTMLButtonElement>('.mobile-toggle')?.focus(); } }}>
-          <a href="#site-systems">What we build</a><a href="#site-portfolio">Applications</a><a href="#site-process">Our approach</a>
+          <a href="#site-systems">What we build</a><a href="#site-portfolio">Selected work</a><a href="#site-process">Our approach</a>
           <button className="nav-cinema" type="button" onClick={onCinema}><span className="play-icon" aria-hidden="true">▷</span> The cinema</button>
           <a className="button button-small" href="#site-book">Let’s talk</a>
         </nav>
@@ -160,10 +161,7 @@ export default function Agency({ onCinema }: { onCinema: () => void }) {
           <p className="section-footnote">Business rules first. AI where it helps. A person where it matters.</p>
         </section>
 
-        <section className="section section-applications" id="site-portfolio">
-          <div className="section-heading"><div><p className="eyebrow">Possible applications</p><h2>Real problems.<br /><em>Considered solutions.</em></h2></div><div><p>A few ways automation can fit into a working business. These are illustrative solutions, not client case studies.</p><div className="filter-group" aria-label="Filter applications">{['All', 'Sales', 'Operations', 'Support'].map(item => <button type="button" key={item} aria-pressed={filter === item} className={filter === item ? 'active' : ''} onClick={() => setFilter(item)}>{item}</button>)}</div></div></div>
-          <div className="application-grid">{EXAMPLES.filter(item => filter === 'All' || item.category === filter).map(item => <article className="application-card" key={item.title}><div className="application-image"><img src={`assets/frames/${item.image}.webp`} alt="" loading="lazy" width="600" height="360" /><span>{item.category}</span></div><div className="application-body"><h3>{item.title}</h3><p>{item.text}</p><div className="application-flow"><span>{item.input}</span><span className="flow-connector" aria-hidden="true" /><span>{item.output}</span></div><a className="text-link" href="#site-book">Discuss a similar workflow</a></div></article>)}</div>
-        </section>
+        <section className="section section-applications" id="site-portfolio"><CaseStudyGallery /></section>
 
         <section className="cinema-feature" aria-labelledby="cinema-heading"><img src="assets/hall/painting.webp" alt="A classical painting of an empire at its height" loading="lazy" width="1200" height="700" /><div className="cinema-feature-copy"><p className="eyebrow">The Raijuu cinema</p><h2 id="cinema-heading">Every system<br />has a <em>turning point.</em></h2><p>Architecture. Friction. Autonomy. Explore the story behind the studio in an immersive, scroll-driven 3D experience.</p><button className="button button-light" type="button" onClick={onCinema}>Enter the 3D cinema <span aria-hidden="true">▷</span></button><span className="cinema-note">Sound optional · Best explored at your own pace</span></div></section>
 
@@ -181,7 +179,7 @@ export default function Agency({ onCinema }: { onCinema: () => void }) {
           { label: 'Hourly time value (USD)', value: cost, max: 200, min: 10, unit: 'USD / hour', set: setCost },
         ].map(({ label, value, max, min, unit, set }) => <label key={label} className="range-field"><span>{label}<strong>{value} <small>{unit}</small></strong></span><input type="range" min={min} max={max} value={value} onChange={e => set(Number(e.target.value))} /></label>)}</div></div><div className="calculator-result"><div className="value-orbit" aria-hidden="true"><span /><span /><span /></div><Mark /><span className="eyebrow">Potential annual time value</span><output aria-live="polite">{money.format(savings)}</output><p>About <strong>{Math.round(hoursSaved)} hours each week</strong> for work that needs your people.</p><div className="calculator-assumptions">Illustrative estimate: 65% of repetitive hours recovered over 50 working weeks. Excludes implementation, tools, and ongoing costs. Time value is not guaranteed cash savings.</div><a className="button" href="#site-book">Explore your opportunity</a></div></section>
 
-        <section className="section founder-section" id="site-about"><div className="founder-monogram" aria-hidden="true"><img src="assets/paintings/desolation.webp" alt="" loading="lazy" /><span className="founder-engraving">RV</span><span>Thoughtfully engineered.</span><div className="founder-seal">Founder &amp; Engineer</div></div><div><p className="eyebrow">The person behind the systems</p><h2>Hi, I’m <em>Ramon.</em></h2><p className="founder-role">Ramon Vallejera Jr · AI Automation Engineer</p><p>I build around a simple principle: understand the work before automating it. Keep calculations exact, use AI for the messy inputs, and make the system easy to understand when something needs attention.</p><div className="founder-links"><a className="text-link" href="https://ramonvallejera.com/" target="_blank" rel="noreferrer">Explore my portfolio</a><span>Philippines · Remote worldwide</span></div></div></section>
+        <section className="section founder-section" id="site-about"><figure className="founder-portrait"><img src="assets/portraits/ramon-roman-general.jpg" alt="Ramon Vallejera Jr in a Roman-inspired oil portrait with bronze armor and a laurel wreath" loading="lazy" width="1024" height="1536" /><figcaption>Ramon Vallejera Jr · Founder &amp; Engineer</figcaption></figure><div><p className="eyebrow">The person behind the systems</p><h2>Hi, I’m <em>Ramon.</em></h2><p className="founder-role">Ramon Vallejera Jr · AI Automation Engineer</p><p>I build around a simple principle: understand the work before automating it. Keep calculations exact, use AI for the messy inputs, and make the system easy to understand when something needs attention.</p><div className="founder-links"><a className="text-link" href="https://ramonvallejera.com/" target="_blank" rel="noreferrer">Explore my portfolio</a><span>Philippines · Remote worldwide</span></div></div></section>
 
         <section className="section faq-section" id="site-faq"><div><p className="eyebrow">Before we begin</p><h2>Good questions.<br /><em>Clear answers.</em></h2><SystemGraphic variant="orbit" /></div><div className="faq-list">{FAQS.map(([question, answer]) => <details key={question}><summary>{question}<span aria-hidden="true">+</span></summary><p>{answer}</p></details>)}</div></section>
 
