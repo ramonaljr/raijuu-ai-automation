@@ -156,6 +156,8 @@ try {
   renderer = new THREE.WebGLRenderer({ canvas, antialias: !REAL_HALL, powerPreference: 'high-performance' });
 } catch (e) {
   $('#noGl').classList.add('is-on');
+  $('#preloader').classList.add('is-done');
+  document.body.classList.remove('is-loading');
   throw e;
 }
 renderer.setClearColor(0x0f0b08, 1);
@@ -1526,10 +1528,18 @@ const SOUND_TRACKS = [
 ];
 const Sound = (() => {
   let on = true, ctx = null, master = null;
+  let visible = true;
+  document.addEventListener('cinema-visibility', (event) => {
+    visible = event.detail;
+    if (master) master.gain.setTargetAtTime(on && visible && !document.hidden ? SOUND_MASTER : 0, ctx.currentTime, 0.1);
+  });
+  document.addEventListener('visibilitychange', () => {
+    if (master) master.gain.setTargetAtTime(on && visible && !document.hidden ? SOUND_MASTER : 0, ctx.currentTime, 0.1);
+  });
   const tracks = SOUND_TRACKS.map((t) => ({ ...t, gain: null }));
   const buttons = [...document.querySelectorAll('[data-sound-toggle]')];
   const show = () => buttons.forEach((b) => { b.setAttribute('aria-pressed', String(on)); b.querySelector('[data-sound-label]').textContent = `Sound [${on ? 'on' : 'off'}]`; });
-  buttons.forEach((b) => b.addEventListener('click', () => { on = !on; show(); if (master) master.gain.setTargetAtTime(on ? SOUND_MASTER : 0, ctx.currentTime, 0.25); }));
+  buttons.forEach((b) => b.addEventListener('click', () => { on = !on; show(); if (master) master.gain.setTargetAtTime(on && visible ? SOUND_MASTER : 0, ctx.currentTime, 0.25); }));
   show();
   function level(points, t) {
     if (t <= points[0][0]) return points[0][1];
@@ -1559,7 +1569,7 @@ const Sound = (() => {
       if (ctx || !AC) return;
       ctx = new AC();
       master = ctx.createGain();
-      master.gain.value = on ? SOUND_MASTER : 0;
+      master.gain.value = on && visible ? SOUND_MASTER : 0;
       master.connect(ctx.destination);
       if (ctx.state === 'suspended') ctx.resume().catch(() => {});   // Safari may hand over a context that is not running yet
       tracks.forEach(load);
@@ -1577,6 +1587,7 @@ function track(promise) { const k = arrived.push(0) - 1; return promise.then((v)
 function bin(src) {     // a film, reporting how much of it has arrived
   const k = arrived.push(0) - 1;
   return fetch(src, { cache: 'no-cache' }).then(async (res) => {
+    if (!res.ok) throw new Error(`Could not load cinema asset: ${res.status}`);
     const size = Number(res.headers.get('content-length')) || 0;
     if (!res.body || !size) { const b = await res.arrayBuffer(); arrived[k] = 1; return b; }
     const reader = res.body.getReader(), chunks = []; let got = 0;
@@ -1588,7 +1599,7 @@ function bin(src) {     // a film, reporting how much of it has arrived
   });
 }
 let sceneReady = false, shown = 0;
-const PRELOAD_MIN_MS = 4200, preStart = performance.now();
+const PRELOAD_MIN_MS = 1200, preStart = performance.now();
 function tickPreloader(now) {
   const actual = arrived.reduce((a, b) => a + b, 0) / arrived.length * 100;
   const u = clamp((now - preStart) / PRELOAD_MIN_MS);
@@ -1652,7 +1663,13 @@ Promise.all([
   update(0);
   if (hall3d) hall3d.bakeEnv(renderer, scene);
   await renderer.compileAsync(scene, camera);   // build every shader before the first frame, so nothing stalls later
-  renderer.setAnimationLoop(frame);
+  const syncPlayback = () => {
+    const active = !document.body.classList.contains('agency-active') && !document.hidden;
+    renderer.setAnimationLoop(active ? frame : null);
+  };
+  document.addEventListener('cinema-visibility', syncPlayback);
+  document.addEventListener('visibilitychange', syncPlayback);
+  syncPlayback();
   sceneReady = true;
   window.__hero3d = { renderer, scene, camera, post, view, T_TOTAL, SEGS, pose(t, time, dt = 1 / 30) { hold = t == null ? null : { t, time, dt }; dirty = true; },
     // for looking into how it runs: the level in use, how long the hall took to draw when it was timed, the sizes of the screen and of the hall's own picture
