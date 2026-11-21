@@ -1,12 +1,17 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Agency from './Agency';
 import { startCinema } from './cinema';
 
 export default function App() {
-  const [siteOpen, setSiteOpen] = useState(true);
+  const [siteOpen, setSiteOpen] = useState(false);
   const agencyScroll = useRef(0);
   const cinemaScroll = useRef(0);
   const cinemaTrigger = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    // Preserve the original cinema-first arrival after React mounts its stage.
+    startCinema();
+  }, []);
 
   const openSite = (section?: string) => {
     cinemaScroll.current = window.scrollY;
@@ -17,9 +22,9 @@ export default function App() {
     document.body.classList.add('agency-active');
     document.dispatchEvent(new CustomEvent('cinema-visibility', { detail: false }));
     requestAnimationFrame(() => {
-      window.scrollTo(0, agencyScroll.current);
+      window.scrollTo({ top: agencyScroll.current, behavior: 'instant' });
       if (section) document.getElementById(section)?.scrollIntoView();
-      else cinemaTrigger.current?.focus({ preventScroll: true });
+      else (cinemaTrigger.current ?? document.getElementById('agency-main'))?.focus({ preventScroll: true });
     });
   };
 
@@ -55,7 +60,7 @@ export default function App() {
           </button>
         </div>
         <button className="preloader__skip caps" type="button" onClick={() => openSite()}>
-          Return to the agency
+          Skip to Agency Website →
         </button>
         <p className="preloader__count caps" id="preCount">000</p>
         <p className="preloader__status caps" id="preStatus">Rising</p>

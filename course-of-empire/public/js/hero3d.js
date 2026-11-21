@@ -1599,7 +1599,7 @@ function bin(src) {     // a film, reporting how much of it has arrived
   });
 }
 let sceneReady = false, shown = 0;
-const PRELOAD_MIN_MS = 1200, preStart = performance.now();
+const PRELOAD_MIN_MS = 4200, preStart = performance.now();
 function tickPreloader(now) {
   const actual = arrived.reduce((a, b) => a + b, 0) / arrived.length * 100;
   const u = clamp((now - preStart) / PRELOAD_MIN_MS);

@@ -9,7 +9,7 @@ npm run build
 npm run lint
 ```
 
-The agency is the default document. The original scroll-driven WebGL cinema is mounted alongside it and its engine is loaded only after a visitor chooses to enter. Returning to the agency preserves its scroll position and pauses cinema rendering and sound. The cinema uses the existing public assets and vendored Three.js modules.
+The original cinema intro is the default arrival, including its loading choreography and Enter button. Its engine starts after React mounts the stage. The redesigned agency is accessible through the skip link and Agency & Services. Opening the agency preserves the cinema position and pauses its rendering and sound. The cinema uses the existing public assets and vendored Three.js modules.
 
 ## Contact requests
 
@@ -19,7 +19,7 @@ Payload fields: `name`, `email`, `company`, `notes`, `bottleneck`, `estimatedAnn
 
 ## Motion and QA
 
-Agency content uses bidirectional scroll entrances/exits and slow ambient light backgrounds. Background motion pauses offscreen and when the tab is hidden. Reduced-motion preferences disable the agency animations. Content remains visible if the animation effect does not initialize.
+Agency content uses bidirectional scroll entrances/exits, image-led chapter layouts, animated SVG workflow studies, and slow ambient light backgrounds. The original cinema intro remains the first experience on every visit. Background motion pauses offscreen and when the tab is hidden. Reduced-motion preferences disable the agency animations. Content remains visible if the animation effect does not initialize.
 
 Before releasing, check desktop, tablet, and narrow-phone layouts; mobile menu and Escape handling; application filters; FAQ expansion; calculator updates; contact fallback; cinema loading, Enter, scrolling through chapters, and returning to the agency. When the form is configured, verify success and failure with the endpoint owner before sending test enquiries.
 
