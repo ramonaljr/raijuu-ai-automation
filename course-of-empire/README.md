@@ -30,3 +30,7 @@ Before releasing, check desktop, tablet, and narrow-phone layouts; mobile menu a
 The 11 case studies in `src/case-studies.ts` and their workflow screenshots in `public/assets/portfolio` were adapted with the owner's permission from the sibling `Ramon's AI Automation Portfolio` project. The source marks all 11 as working demonstration builds for fictional clients. Cards and detail dialogs retain that distinction; outcome figures describe documented workflow behavior or tests rather than client ROI. Case-study source links point to the original public repositories.
 
 The founder portrait in `public/assets/portraits/ramon-roman-general.jpg` is a Roman-inspired oil illustration generated from the owner's supplied portfolio photo, with his requested bronze armor and cloak. The original photo and discarded generated variants are not included in this website.
+
+## Cinematic service and delivery chapters
+
+`src/CinematicSections.tsx` contains the systems gallery, delivery journey, and engagement entrances. The gallery changes paintings and service details with keyboard-accessible buttons and adds a small mouse-controlled perspective tilt. The delivery scene stays in view on desktop while the three explanations change its artwork; phones receive an image with each step. Engagement entrances link to the existing contact section. All three reuse the original cinema artwork, pause ambient animation offscreen, and honor reduced-motion preferences.

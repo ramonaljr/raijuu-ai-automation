@@ -2,14 +2,10 @@ import { useEffect, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
 import SystemGraphic from './SystemGraphic';
 import CaseStudyGallery from './CaseStudyGallery';
+import { SystemsGallery, DeliveryJourney, EngagementEntrances } from './CinematicSections';
 
 const CURRENT_YEAR = new Date().getFullYear();
 
-const SERVICES = [
-  { title: 'Workflows that connect the dots.', label: 'Operations & orchestration', description: 'Connect your CRM, inbox, spreadsheets, and internal tools. Turn the handoffs between them into one dependable workflow.', tools: 'n8n / APIs / Postgres', symbol: 'connect', nodes: ['A new request', 'Your business rules', 'The right action'] },
-  { title: 'AI that knows your business.', label: 'Knowledge & document systems', description: 'Make company knowledge usable. Search documents, extract the details that matter, and bring a human in when judgment is needed.', tools: 'OpenAI / Claude / Retrieval', symbol: 'knowledge', nodes: ['Your documents', 'Grounded answers', 'Human review'] },
-  { title: 'A better first response.', label: 'Customer experience', description: 'Help customers get answers, route incoming enquiries, and prepare the next step with the context your team needs.', tools: 'Chat / Voice / CRM', symbol: 'response', nodes: ['An enquiry', 'Context & intent', 'Answer or handoff'] },
-];
 const FAQS = [
   ['Where should we start?', 'Start with one frequent, measurable bottleneck. In the workflow audit, we map your current process, identify the handoffs, and agree on what a useful first build would look like.'],
   ['Can you work with our existing tools?', 'We start with your current stack and check the available APIs, webhooks, permissions, and data access before recommending an approach. You do not need to replace everything to automate one process.'],
@@ -71,7 +67,7 @@ export default function Agency({ onCinema }: { onCinema: () => void }) {
         animations.set(target, animation);
       }
     }, { threshold: [0, 0.12] });
-    page.querySelectorAll('.interlude-frame, .studio-manifesto, .hero-copy, .cinema-invite, .hero-bottom, .stack-strip, .section-heading, .service-row, .application-card, .cinema-feature-copy, .process-grid article, .engagement-section article, .calculator-section > div, .founder-section > div, .founder-section > figure, .faq-section > div, .booking-section > div:not(.booking-art), .process-illustration, .footer-top, .footer-bottom').forEach(target => observer.observe(target));
+    page.querySelectorAll('.cinematic-heading, .gallery-exhibit, .journey-step, .engagement-entrance, .interlude-frame, .studio-manifesto, .hero-copy, .cinema-invite, .hero-bottom, .stack-strip, .section-heading, .service-row, .application-card, .cinema-feature-copy, .process-grid article, .engagement-section article, .calculator-section > div, .founder-section > div, .founder-section > figure, .faq-section > div, .booking-section > div:not(.booking-art), .process-illustration, .footer-top, .footer-bottom').forEach(target => observer.observe(target));
     const galleryObserver = new MutationObserver(() => {
       page.querySelectorAll('.application-card').forEach(target => observer.observe(target));
     });
@@ -155,23 +151,15 @@ export default function Agency({ onCinema }: { onCinema: () => void }) {
 
         <section className="stack-strip" aria-label="Technology we work with"><span>Good systems.<br /><strong>Familiar tools.</strong></span><div>{['n8n', 'OpenAI', 'Claude', 'Make', 'Postgres', 'Supabase'].map(tool => <span key={tool}>{tool}</span>)}</div></section>
 
-        <section className="section section-services" id="site-systems">
-          <div className="section-heading"><div><p className="eyebrow">What we build</p><h2>From friction<br />to <em>autonomy.</em></h2></div><p>Start with the process that slows you down. Build a system that moves it forward.</p></div>
-          <div className="service-list">{SERVICES.map((service, i) => <article className="service-row" key={service.label}><span className="service-label"><span className="service-glyph" aria-hidden="true">{['⌘', '◇', '◎'][i]}</span>{service.label}</span><div><h3>{service.title}</h3><p>{service.description}</p><span className="tool-caption">{service.tools}</span></div><div className="service-visual"><img className="service-painting" src={`assets/frames/${['03', '07', '11'][i]}.webp`} alt="" loading="lazy" width="600" height="360" /><SystemGraphic variant={(['network', 'knowledge', 'response'] as const)[i]} /><div className="flow-diagram" aria-label="Example workflow">{service.nodes.map((node, index) => <span className={index === 1 ? 'flow-node central' : 'flow-node'} key={node}>{index > 0 && <i aria-hidden="true" />}{node}</span>)}</div></div></article>)}</div>
-          <p className="section-footnote">Business rules first. AI where it helps. A person where it matters.</p>
-        </section>
+        <SystemsGallery />
 
         <section className="section section-applications" id="site-portfolio"><CaseStudyGallery /></section>
 
         <section className="cinema-feature" aria-labelledby="cinema-heading"><img src="assets/hall/painting.webp" alt="A classical painting of an empire at its height" loading="lazy" width="1200" height="700" /><div className="cinema-feature-copy"><p className="eyebrow">The Raijuu cinema</p><h2 id="cinema-heading">Every system<br />has a <em>turning point.</em></h2><p>Architecture. Friction. Autonomy. Explore the story behind the studio in an immersive, scroll-driven 3D experience.</p><button className="button button-light" type="button" onClick={onCinema}>Enter the 3D cinema <span aria-hidden="true">▷</span></button><span className="cinema-note">Sound optional · Best explored at your own pace</span></div></section>
 
-        <section className="section" id="site-process"><div className="section-heading"><div><p className="eyebrow">Our approach</p><h2>Clarity first.<br /><em>Confidence follows.</em></h2></div><p>Small, deliberate steps. Clear decisions. A system your team can actually operate.</p></div><div className="process-illustration"><SystemGraphic variant="process" /><div><span>Understand the inputs</span><span>Design the system</span><span>Own the outcome</span></div></div><div className="process-grid">{[
-          ['Discover', 'Map what matters.', 'We walk through your process, tools, and exceptions. Together, we choose a useful first problem and define how to measure the result.'],
-          ['Build', 'Make the pieces work.', 'We connect the tools, encode your business rules, and use AI for unstructured inputs. Reviews and safeguards stay where they belong.'],
-          ['Handover', 'Leave you in control.', 'We test the edge cases, make errors visible, and document how it works. Your team gets the workflow and the knowledge to run it.'],
-        ].map(([label, title, text]) => <article key={label}><span className="process-label">{label}</span><h3>{title}</h3><p>{text}</p></article>)}</div></section>
+        <DeliveryJourney />
 
-        <section className="section engagement-section" aria-label="Ways to work together"><article><p className="eyebrow">A focused project</p><h3>One process. A clear scope.</h3><p>A defined workflow, agreed deliverables, and a documented handover. A practical place to begin.</p></article><article><p className="eyebrow">An ongoing partnership</p><h3>Keep making work better.</h3><p>Build on your first system with a prioritized roadmap. Scope improvements, maintenance, and support around your team.</p></article></section>
+        <EngagementEntrances />
 
         <section className="section calculator-section" id="site-roi"><div><p className="eyebrow">A useful starting point</p><h2>What could your<br />team <em>get back?</em></h2><p className="section-intro">Explore the value of time spent on repetitive work. A starting conversation, not a promise.</p><div className="range-fields">{[
           { label: 'People on your team', value: team, max: 50, min: 1, unit: 'people', set: setTeam },
